@@ -1,0 +1,52 @@
+{
+  "name": "biblio-client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.8.1",
+    "web-vitals": "^1.1.0",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@monaco-editor/react": "^3.7.4",
+    "@priolo/iistore": "^0.1.9",
+    "i18next": "^19.8.3",
+    "js-cookie": "^2.2.1",
+    "monaco-editor": "^0.21.2",
+    "react-i18next": "^11.7.3",
+    "react-router-dom": "^5.2.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-scripts": "4.0.3",
+    "node-sass": "^5.0.0"
+  },
+  "devDependencies": {
+    "cypress": "^6.0.1",
+    "cra-build-watch": "^3.4.0",
+    "msw": "^0.22.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "watch": "cra-build-watch",
+    "test": "react-scripts test",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:ci": "cypress run --headless",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

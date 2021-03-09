@@ -1,0 +1,7 @@
+*.map
+
+node_modules/
+.vscode/
+dist/
+examples/
+src/examples/
