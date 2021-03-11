@@ -5,16 +5,16 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-		"build-watch": "tsc -w",
-		"build-test": "tsc && jest dist",
-		"start": "node dist/start.js",
-		"test": "jest dist",
-		"test-watch": "jest dist --watch"
+    "build-watch": "tsc -w",
+    "build-test": "tsc && jest dist",
+    "start": "node dist/start.js",
+    "test": "jest dist",
+    "test-watch": "jest dist --watch"
   },
   "author": "Ivano Iorio",
   "license": "MIT",
   "dependencies": {
-    "typexpress": "0.0.6"
+    "typexpress": "file://C:/Users/iorio/Documents/typexpress/typexpress"
   },
   "devDependencies": {
     "@types/express": "^4.17.8",

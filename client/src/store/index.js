@@ -1,7 +1,7 @@
 import { setupStore, MultiStoreProvider } from '@priolo/iistore'
 import doc from "./doc/store"
-import mainMenu from "./mainMenu/store"
+import menu from "./menu/store"
 
-setupStore({ doc, mainMenu})
+setupStore({ doc, menu})
 
 export default MultiStoreProvider

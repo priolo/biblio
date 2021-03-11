@@ -1,5 +1,7 @@
-const {RootService} = require("typexpress")
-const path = require("path")
+import  {RootService} from "typexpress"
+import path from "path"
+
+import {index} from "./repository"
 
 RootService.Start([
 	{
@@ -11,7 +13,17 @@ RootService.Start([
 				dir: path.join(__dirname, "../../client/build"),
 				path: "/",
 				spaFile: "index.html",
-			}
+			},
+			
 		]
+	},
+	{
+		class: "typeorm",
+		typeorm: {
+			type: "sqlite",
+			database: path.join(__dirname, "../db/database.sqlite"),
+			synchronize: true
+		},
+		children: [index]
 	}
 ])

@@ -1,9 +1,13 @@
 
-
 .container {
 	width: 125px;
 	display: flex; flex-direction: column;
-	
 }
 
+.top {
+	flex: 1 0 auto,
+}
 
+.bottom {
+	flex: 0 1,
+}
