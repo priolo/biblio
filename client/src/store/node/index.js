@@ -1,4 +1,4 @@
-import { getStore, useStore } from '@priolo/iistore'
+import { getStore, useStore } from '@priolo/jon'
 import { useLayout } from '../layout'
 
 export function getStoreNode() {

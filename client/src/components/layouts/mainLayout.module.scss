@@ -27,12 +27,12 @@
 	position: absolute; left: 0px; top: 0px;
 	width: 100%; height: 100%;
 	overflow-x: auto;
+	scroll-behavior: smooth;
 }
 .contHorizDoc {
 	display: flex; flex: 1; 
 	position: absolute; left: 0px; top: 0px;
 	width: 100%; height: 100%;
-	
 }
 
 .docLeftSpace {

@@ -1,4 +1,6 @@
 import CloseIcon from "../../imeges/close"
+import { useDoc } from "../../store/doc"
+
 import Button from "../app/Button"
 
 import styles from "./docLayout.module.scss"
@@ -8,8 +10,18 @@ import styles from "./docLayout.module.scss"
 function DocLayout ({
 	content
 }) {
+
+	// HOOKs
+	const { state:doc, close } = useDoc()
+
+
+
+
+	// HANDLE
+	const handleClickClose = e => close(content.id)
+
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} >
 
 			<div className={styles.left}>
 				<div className={styles.headerSpace} />
@@ -42,7 +54,9 @@ function DocLayout ({
 
 			<div className={styles.rigth}>
 				<div className={styles.icons}>
-					<Button icon={<CloseIcon />} />
+					<Button icon={<CloseIcon />} 
+						onClick={handleClickClose}
+					/>
 				</div>
 			</div>
 			

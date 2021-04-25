@@ -1,13 +1,9 @@
-import { useLayout, getStoreLayout } from "../layout";
-import { getStore, useStore } from '@priolo/iistore'
-
+import { getStore, useStore } from '@priolo/jon'
 
 export function getStoreAuth() {
-	const bundle = getStoreLayout()
-	return getStore("auth", bundle)
+	return getStore("auth")
 }
 
 export function useAuth() {
-	const bundle = useLayout()
-	return useStore("auth", bundle)
+	return useStore("auth")
 }

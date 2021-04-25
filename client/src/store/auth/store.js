@@ -1,5 +1,5 @@
 /* eslint eqeqeq: "off" */
-import ajax from "../../plugin/AjaxService";
+import ajax from "../../plugins/AjaxService";
 import Cookies from 'js-cookie'
 import i18n from "i18next";
 import { getStoreNode } from "../node";
@@ -11,7 +11,8 @@ const store = {
 		user: null, //{ id:<???>, username:<string>, has_to_change_password:<bool>, role:<???> }
 		token: Cookies.get('token'),
 
-		username: "",
+		email: "",
+		activationToken: "",
 		oldpassword: "",
 		password: "",
 		repassword: "",
@@ -37,16 +38,15 @@ const store = {
 				modal: false 
 			})
 		},
-		signin: async (state, payload, store, { dialogOpen }) => {
+		register: async (state, payload, store) => {
 			const data = {
-				username: state.username,
-				password: state.password,
+				email: state.email,
 			}
 			store.resetTexts() // remove password from memory
-			const response = await ajax.post("auth/signin", data);
-			dialogOpen({ type: "success", text: i18n.t("app.auth.msg_sigin"), modal: false })
+			const response = await ajax.post("auth/register", data);
+			dialogOpen({ type: "success", text: "check email", modal: false })
 		},
-		login: async (state, payload, store, { dialogOpen }) => {
+		login: async (state, _, store) => {
 			const data = {
 				username: state.username,
 				password: state.password,

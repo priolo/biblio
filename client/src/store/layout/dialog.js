@@ -1,50 +1,54 @@
-/* eslint eqeqeq: "off" */
+/* eslint eqeqeq: "off", react-hooks/exhaustive-deps: "off"*/
+//import { DIALOG_TYPES } from "./utils";
+//import i18n from "i18next";
 
 // used when dialog closed
 let resolveClose = null;
 
-const dialog = {
+const optionsDefault = {
+	modal: true,
+	//type: DIALOG_TYPES.INFO,
+}
+
+const store = {
 	state: {
 		dialogIsOpen: false,
-		dialogTitle: "",
-		dialogText: "",
-		dialogLabelOk: "",
-		dialogLabelCancel: null,
-		dialogModal: true, // false: Snackbar; true: Dialog
-		dialogType: "info",	// "info" "warning" "error" "success"
-	},
-	getters: {
+		dialogOptions: optionsDefault,
 	},
 	actions: {
-		dialogOpen: (state, payload, store) => {
-			store.setDialogOpen(payload)
+		dialogOpen: (state, options, store) => {
+			store.setDialogOpen(options)
 			return new Promise((resolve, reject) => {
 				resolveClose = resolve
 			})
 		},
-		dialogClose: (state, payload, store) => {
-			state.dialogIsOpen = false
-			if (resolveClose) resolveClose(payload)
+		dialogClose: (state, response, store) => {
+			store.setDialogClose()
+			if (resolveClose) resolveClose(response)
 			resolveClose = null
-			store._update()
-			//return true
+			//store._update()
 		}
 	},
 	mutators: {
-		setDialogIsOpen: (state, dialogIsOpen) => ({ dialogIsOpen }),
-		setDialogOpen: (state, payload) => {
-			const { title = "", text = "", labelOk = "Ok", labelCancel = null, modal = true, type = "info" } = payload
+		setDialogOpen: (state, options) => {
+			options = { ...optionsDefault, ...options }
+			//if (options.type && options.modal) {
+				//const path = `dialog.${options.type}.default`
+				// options = {
+				// 	title: i18n.t(`${path}.title`),
+				// 	text: i18n.t(`${path}.text`),
+				// 	labelOk: i18n.t(`${path}.ok`),
+				// 	...options
+				// }
+			//}
 			return {
-				dialogTitle: title,
-				dialogText: text,
-				dialogIsOpen: true,
-				dialogLabelOk: labelOk,
-				dialogLabelCancel: labelCancel,
-				dialogModal: modal,
-				dialogType: type
+				dialogOptions: options,
+				dialogIsOpen: true
 			}
 		},
+		setDialogClose: (state, _) => ({ dialogIsOpen: false }),
 	},
 }
 
-export default dialog
+export default store
+

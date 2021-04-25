@@ -1,4 +1,4 @@
-import { getStore, useStore } from '@priolo/iistore'
+import { getStore, useStore } from '@priolo/jon'
 
 export function getMenu() {
 	return getStore("menu")

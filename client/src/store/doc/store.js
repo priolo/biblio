@@ -1,18 +1,18 @@
 /* eslint eqeqeq: "off" */
 
-export const DOC_STATUS = {
-	FULL: 0, ICON: 1
-}
+import { DOC_STATUS, DOC_TYPE } from "."
+import { getStoreUrl } from "../url"
 
 
 const store = {
 	state: {
-		// docs
-		all: [],
 		// visible docs
-		views: [],
+		all: [],
+		focus: null,
 	},
 	getters: {
+		findIndex: (state, id, store) => state.all.findIndex(doc => doc.id==id ),
+		findByType: (state, type, store) => state.all.filter(doc => doc.type==type )
 	},
 	actions: {
 		fetch: async (state, _, store) => {
@@ -45,18 +45,36 @@ const store = {
 			])
 		},
 		// inserisce un doc in coda
-		open: async ( state, doc, store) => {
-			if ( !doc.id ) doc.id = "tmp_" + Math.round(999*Math.random())
+		open: async (state, doc, store) => {
+			const { setHash } = getStoreUrl()
+
+			if (doc.type==DOC_TYPE.LOGIN) {
+				const docs = store.findByType(DOC_TYPE.LOGIN)
+				if ( docs.length > 0 ) {
+					setHash(docs[0].id)
+					return
+				}
+			}
+
+			if (!doc.id) doc.id = "tmp_" + Math.round(999 * Math.random())
+			const docs = [doc, ...state.all]
+			store.setAll(docs)
+			setHash(doc.id)
+		},
+		push: async (state, doc, store) => {
+			if (!doc.id) doc.id = "tmp_" + Math.round(999 * Math.random())
 			const docs = [...state.all, doc]
 			store.setAll(docs)
 		},
-		close: async ( state, id, store) => {
-
+		close: async (state, id, store) => {
+			const docs = state.all.filter(doc => doc.id != id)
+			store.setAll(docs)
 		}
 
 	},
 	mutators: {
 		setAll: (state, all) => ({ all }),
+		setFocus: (state, focus) => ({ focus }),
 	},
 }
 

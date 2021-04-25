@@ -9,17 +9,18 @@ import { useAuth } from "../../store/auth"
 
 
 
-function LoginLayout() {
+function RegisterLayout() {
 
 	// HOOKs
-	const { state: auth, setPassword, setUsername, login } = useAuth()
+	const { state: auth, setUsername, register } = useAuth()
 
 
 	// HANDLEs
-	const handleClickEnter = e => login()
-	const handleChangePassword = e => setPassword(e.target.value)
-	const handleChangeUsername = e => setUsername(e.target.value)
+	const handleClickRegister = e => register()
+	const handleChangeEmail = e => setUsername(e.target.value)
+	
 
+	// RENDER
 	
 	return (
 		<div className={styles.container}>
@@ -27,31 +28,27 @@ function LoginLayout() {
 			<div className={styles.left}>
 			</div>
 
+
 			<div className={styles.center}>
 
 				<div className={styles.header}>
-					<div className={styles.title}>LOGIN</div>
+					<div className={styles.title}>REGISTER</div>
 				</div>
 
 				<div className={styles.body}>
-					<Control label="Username">
+					<Control label="Email">
 						<Input
 							value={auth.username}
-							onChange={handleChangeUsername}
+							onChange={handleChangeEmail}
 						/>
 					</Control>
-					<Control label="Password">
-						<Input
-							value={auth.password}
-							onChange={handleChangePassword}
-						/>
-					</Control>
-					<Button onClick={handleClickEnter}>
-						Enter
+					<Button onClick={handleClickRegister}>
+						Register
 					</Button>
 				</div>
 
 			</div>
+
 
 			<div className={styles.rigth}>
 				<div className={styles.icons}>
@@ -63,4 +60,4 @@ function LoginLayout() {
 	)
 }
 
-export default LoginLayout
+export default RegisterLayout

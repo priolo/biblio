@@ -3,7 +3,7 @@ import styles from "./menuLayout.module.scss"
 
 function MenuLayout({
 	children,
-	renderBottom
+	renderBottom	// render visualizzato in basso
 }) {
 	return (
 		<div className={styles.container}>

@@ -5,11 +5,12 @@ import ElementLayout from "./ElementLayout"
 import PolyLayout from './PolyLayout';
 import Tree from "../app/Tree"
 
-import { useDoc } from "../../store/doc"
+import { DOC_TYPE, useDoc } from "../../store/doc"
 import { useMenu } from "../../store/menu"
 
 import styles from './mainLayout.module.scss';
-
+import MsgBox from '../app/MsgBox';
+import { useLayout } from '../../store/layout';
 
 
 
@@ -19,43 +20,66 @@ import styles from './mainLayout.module.scss';
  */
 function MainLayout() {
 
-    const { state: docs, fetch: fetchDoc, open } = useDoc()
+
+    // HOOKs
+    const { state: doc, fetch: fetchDoc, open } = useDoc()
     const { state: menu, fetch: fetchMenu, setAll } = useMenu()
+    const { state: layout, dialogOpen } = useLayout()
 
     useEffect(() => {
         fetchDoc()
         fetchMenu()
     }, [])
+    
 
+    // HANDLE
     const handleChangeExpanded = (value) => {
-        //debugger
         setAll(value)
     }
-    const handleClickNode = (node) => console.log(node)
-
+    const handleClickNode = (node) => {
+    }
     const handleClickMenu = (node) => {
         if (node.id == "login") {
-            open({ type: "login" })
+            open({ type: DOC_TYPE.LOGIN })
+            // dialogOpen({
+            //     title: "titolo 111",
+            //     text: "testo del messaggiolo",
+            //     labelOk: "ok",
+            //     labelCancel: "cancel",
+            //     modal: false,
+            // })
+        }
+        if (node.id == "register") {
+            open({ type: DOC_TYPE.REGISTER })
         }
     }
+
+
+    // RENDER
 
     return (
         <div className={styles.main}>
 
+            {/* DOCUMENTI APERTI */}
             <div className={styles.contAbs}>
                 <div className={styles.contHorizDoc}>
 
+                    {/* spazio vuoto a sinistra del primo doc */}
                     <div className={styles.docLeftSpace} />
 
-                    {docs.all.map((doc, index) => (
+                    {doc.all.map((doc, index) => (
                         <ElementLayout key={doc.id}>
                             <PolyLayout content={doc} />
                         </ElementLayout>
                     ))}
 
+                    {/* spazio vuoto a destra dell'ultimo doc */}
+                    <div className={styles.docLeftSpace} />
+
                 </div>
             </div>
 
+            {/* MENU LATERALE */}
             <div className={styles.contAbsMenu}>
                 <div className={styles.contHorizMenu}>
 
@@ -83,8 +107,12 @@ function MainLayout() {
 
                 </div>
             </div>
+        
+            {/* MESSAGE BOX */}
+            <MsgBox />
+
         </div>
-    );
+    )
 }
 
 export default MainLayout
