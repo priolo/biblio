@@ -3,6 +3,8 @@ import ajax from "../../plugins/AjaxService";
 import Cookies from 'js-cookie'
 import i18n from "i18next";
 import { getStoreNode } from "../node";
+import { DOC_TYPE, getStoreDoc } from "../doc";
+import { getStoreLayout } from "../layout";
 
 let idPolling = null
 
@@ -10,13 +12,7 @@ const store = {
 	state: {
 		user: null, //{ id:<???>, username:<string>, has_to_change_password:<bool>, role:<???> }
 		token: Cookies.get('token'),
-
 		email: "",
-		activationToken: "",
-		oldpassword: "",
-		password: "",
-		repassword: "",
-		isChangePasswordOpen: false,
 	},
 	getters: {
 		isLogged: state => state.token != null && state.user != null,
@@ -25,58 +21,41 @@ const store = {
 		// },
 	},
 	actions: {
-		activate: async (state, token, store, { dialogOpen }) => {
-			store.setToken(token)
-			const {response} = await ajax.post("auth/activate", { token })
-			if ( response=="activate" ) {
-				window.location.href = "/"
-				return
-			}
-			dialogOpen({ 
-				type: "success", 
-				text: i18n.t( "app.auth.msg_sigin_fail"), 
-				modal: false 
-			})
-		},
-		register: async (state, payload, store) => {
+
+		register: async (state, _, store) => {
+			const { open } = getStoreDoc()
+			const { dialogOpen } = getStoreLayout()
+
 			const data = {
 				email: state.email,
 			}
-			store.resetTexts() // remove password from memory
-			const response = await ajax.post("auth/register", data);
+			const response = await ajax.post("auth/register", data)
 			dialogOpen({ type: "success", text: "check email", modal: false })
+			open({ type: DOC_TYPE.LOGIN, options: { singletone: true } })
 		},
+
 		login: async (state, _, store) => {
+			const { dialogOpen } = getStoreLayout()
+
 			const data = {
-				username: state.username,
+				email: state.email,
 				password: state.password,
 			}
-
-			store.resetTexts() // remove password from memory
-
 			try {
 				const response = await ajax.post("auth/login", data);
-				store.setToken(response.access_token)
 			} catch (error) {
 				store.logout()
 				return;
 			}
-
-			// msg success!!
-			dialogOpen({ type: "success", text: i18n.t("app.auth.msg_login"), modal: false })
-			// get the user
+			dialogOpen({ type: "success", text: "login!!!", modal: false })
 			await store.fetchCurrentUser()
 		},
-		logout: (state, { flash } = { flash: false }, store, { dialogOpen }) => {
-			store.stopPollingRefreshToken()
-			store.setToken(null)
-			store.setUser(null)
-			if (flash) dialogOpen({ type: "success", text: i18n.t("app.auth.msg_logout"), modal: false })
-		},
+
 		refresh: async (state, payload, store) => {
 			if (state.token == null) return
 			await store.fetchCurrentUser()
 		},
+	
 		changePassword: async (state, payload, store, { dialogOpen }) => {
 			const data = {
 				old_password: state.oldpassword,
@@ -98,6 +77,7 @@ const store = {
 			store.setUser({ ...state.user, has_to_change_password: false })
 			return { error: false }
 		},
+
 		fetchCurrentUser: async (state, payload, store, { setDrawerListByUser }) => {
 			try {
 				const response = await ajax.get("user/me")
@@ -108,6 +88,7 @@ const store = {
 			const { fetchRoot } = getStoreNode()
 			await fetchRoot()
 		},
+
 		refreshToken: async (state, payload, store) => {
 			try {
 				const response = await ajax.get("auth/refresh", null, { noBusy: true });
@@ -116,6 +97,7 @@ const store = {
 				store.logout()
 			}
 		},
+
 		startPollingRefreshToken: (state, payload, store) => {
 			if (idPolling != null) return;
 			const delay = process.env.REACT_APP_TOKEN_POLLING_TIME != null ? +process.env.REACT_APP_TOKEN_POLLING_TIME : 720000
@@ -123,31 +105,35 @@ const store = {
 				store.refreshToken()
 			}, delay)
 		},
+
 		stopPollingRefreshToken: (state, payload, store) => {
 			if (idPolling == null) return;
 			clearInterval(idPolling)
 			idPolling = null
 		},
+
+		logout: (state, { flash } = { flash: false }, store, { dialogOpen }) => {
+			store.stopPollingRefreshToken()
+			store.setToken(null)
+			store.setUser(null)
+			if (flash) dialogOpen({ type: "success", text: i18n.t("app.auth.msg_logout"), modal: false })
+		},
 	},
 	mutators: {
 		// [II] deve essere il layout che pesca lo user e adatta la lista non il contrario
 		setUser: (state, user, store, { setDrawerListByUser }) => ({ user }),
+
 		setToken: (state, token, store) => {
 			if (token == null) {
-	debugger
+				debugger
 				Cookies.remove('token');
 			} else {
 				Cookies.set('token', token) //, { expires: remember ? 365 : null });
 			}
 			return { token }
 		},
-		setIsChangePasswordOpen: (state, isChangePasswordOpen) => ({ isChangePasswordOpen }),
 
-		setUsername: (state, username) => ({ username }),
-		setPassword: (state, password) => ({ password }),
-		setOldPassword: (state, oldpassword) => ({ oldpassword }),
-		setRepassword: (state, repassword) => ({ repassword }),
-		resetTexts: (state) => ({ username: "", password: "", repassword: "", oldpassword: "" }),
+		setEmail: (state, email) => ({ email }),
 	},
 }
 

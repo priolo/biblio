@@ -18,7 +18,10 @@ const repo: any = {
 				onDelete: "CASCADE",
 			}
 		}
-	}
+	},
+	seeds: [
+		{ type: RepoStructActions.TRUNCATE },
+	],
 }
 
 

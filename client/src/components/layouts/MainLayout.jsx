@@ -40,7 +40,10 @@ function MainLayout() {
     }
     const handleClickMenu = (node) => {
         if (node.id == "login") {
-            open({ type: DOC_TYPE.LOGIN })
+            open({ 
+                type: DOC_TYPE.LOGIN,
+                options: { singletone: true }
+            })
             // dialogOpen({
             //     title: "titolo 111",
             //     text: "testo del messaggiolo",
@@ -50,7 +53,10 @@ function MainLayout() {
             // })
         }
         if (node.id == "register") {
-            open({ type: DOC_TYPE.REGISTER })
+            open({ 
+                type: DOC_TYPE.REGISTER,
+                options: { singletone: true }
+            })
         }
     }
 
@@ -87,7 +93,7 @@ function MainLayout() {
                         <MenuLayout
                             renderBottom={<Tree onClickNode={handleClickMenu} values={[
                                 { label: "Login", id: "login" },
-                                { label: "Signin", id: "signin" }
+                                { label: "Register", id: "register" }
                             ]} />}
                         >
                             <Tree

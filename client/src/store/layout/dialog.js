@@ -1,4 +1,4 @@
-/* eslint eqeqeq: "off", react-hooks/exhaustive-deps: "off"*/
+/* eslint eqeqeq: "off" */
 //import { DIALOG_TYPES } from "./utils";
 //import i18n from "i18next";
 

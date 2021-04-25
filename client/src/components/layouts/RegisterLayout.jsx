@@ -4,7 +4,7 @@ import Control from "../app/Control"
 import Button from "../app/Button"
 import Input from "../app/Input"
 
-import styles from "./loginLayout.module.scss"
+import styles from "./registerLayout.module.scss"
 import { useAuth } from "../../store/auth"
 
 
@@ -12,13 +12,11 @@ import { useAuth } from "../../store/auth"
 function RegisterLayout() {
 
 	// HOOKs
-	const { state: auth, setUsername, register } = useAuth()
-
+	const { state: auth, setEmail, register } = useAuth()
 
 	// HANDLEs
+	const handleChangeEmail = e => setEmail(e.target.value)
 	const handleClickRegister = e => register()
-	const handleChangeEmail = e => setUsername(e.target.value)
-	
 
 	// RENDER
 	
@@ -38,7 +36,7 @@ function RegisterLayout() {
 				<div className={styles.body}>
 					<Control label="Email">
 						<Input
-							value={auth.username}
+							value={auth.email}
 							onChange={handleChangeEmail}
 						/>
 					</Control>

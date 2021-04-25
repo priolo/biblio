@@ -17,13 +17,11 @@ function PolyLayout ({
 	const contentRef = useRef(null)
 	useEffect(()=> {
 		if ( getHash() != content.id ) return 
-		contentRef.current.scrollIntoView({behavior: "smooth", /*block: "center",*/ inline: "center"})
+		contentRef.current?.scrollIntoView({behavior: "smooth", /*block: "center",*/ inline: "center"})
     }, [url.url])
-
 
 	// HANDLEs
 	const handleClickContent = e => setHash(content.id)
-
 
 	// RENDER
 	const contents = {

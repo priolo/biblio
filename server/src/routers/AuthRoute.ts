@@ -38,13 +38,14 @@ class AuthRoute extends Router.Service {
 				to: "to@test.com",
 				subject: "Richiesta registraziuone",
 				html: `
-					<span>ue ueue ti vuoi reggggistrare! he? allora clicca qua!</span> 
-					</br>
+					<div>ue ueue ti vuoi reggggistrare! he? allora clicca qua!</div> 
+					<div>Il tuo codice è: <span>${token}</span></div>
 					<a href="http://localhost:8080/public/regiterme?tkn=${token}">registrami ti prego!</a>
 				`,
 			}
 		})
-		
+
+		res.sendStatus(200)
 	}
 }
 
