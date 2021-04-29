@@ -12,7 +12,7 @@ const repo: any = {
 			email: { type: String, default: "" },
 			name: { type: String, default: "" },
 			password: { type: String, default: "" },
-			activationToken: { type: String, default: "" },
+			salt: { type: String, default: "" },
 		},
 		// https://typeorm.delightful.studio/interfaces/_entity_schema_entityschemarelationoptions_.entityschemarelationoptions.html
 		relations: {

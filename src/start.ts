@@ -23,6 +23,20 @@ RootService.Start([
 					{
 						class: AuthRoute,
 					},
+					{
+						class: "http-router/jwt",
+						repository: "/typeorm/user",
+						jwt: "/jwt",
+						children: [
+							{
+								class: "http-router",
+								path: "/user",
+								routers: [
+									{ method: (req, res, next) => res.json(req.user) },
+								]
+							}
+						]
+					},
 				]
 			},
 			{
@@ -54,5 +68,9 @@ RootService.Start([
 				pass: 'EBnZ54KhH68uUKawGf'
 			}
 		},
+	},
+	{
+		class: "jwt",
+		secret: "secret_word!!!"
 	},
 ])
