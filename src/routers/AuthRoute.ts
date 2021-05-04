@@ -1,9 +1,10 @@
 import { Request, Response } from "express"
 import { PathFinder, Router, Email, RepoRestActions, Typeorm, Bus } from "typexpress"
 import crypto from "crypto"
+import { Biblio } from "../global"
 
 class AuthRoute extends Router.Service {
-	
+
 	get defaultConfig(): any {
 		return {
 			...super.defaultConfig,
@@ -20,11 +21,12 @@ class AuthRoute extends Router.Service {
 	}
 
 	async registerUser(req: Request, res: Response) {
-		const { email:emailPath, repository } = this.state
+		const { email: emailPath, repository } = this.state
 		const { email } = req.body
 		const emailService = new PathFinder(this).getNode<Email.Service>(emailPath)
 		const userService = new PathFinder(this).getNode<Typeorm.Repo>(repository)
-		var token = crypto.randomBytes(8).toString('hex')
+
+		const token = !Biblio.inDebug() ? crypto.randomBytes(8).toString('hex') : "AAA"
 
 		await userService.dispatch({
 			type: RepoRestActions.SAVE,
@@ -49,7 +51,7 @@ class AuthRoute extends Router.Service {
 			}
 		})
 
-		res.sendStatus(200)
+		res.status(200).json({ data: "activate:ok" })
 	}
 
 	async activate(req: Request, res: Response) {
@@ -59,54 +61,61 @@ class AuthRoute extends Router.Service {
 
 		const users = await userService.dispatch({
 			type: Typeorm.Actions.FIND,
-			payload: { 
-				where: { salt: code } 
+			payload: {
+				where: { salt: code }
 			}
 		})
 
-		if ( users.length==0 ) return res.sendStatus(404)
+		if (users.length == 0) return res.status(404).json({ error: "activate:code:not_found" })
 		const user = users[0]
 
 		// Creating a unique salt for a particular user 
-		user.salt = crypto.randomBytes(16).toString('hex');   
+		user.salt = crypto.randomBytes(16).toString('hex');
 		// Hashing user's salt and password with 1000 iterations, 
-		user.password = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`); 
+		user.password = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`);
 
 		await userService.dispatch({
 			type: RepoRestActions.SAVE,
 			payload: user,
 		})
 
-		res.sendStatus(200)
+		res.status(200).json({ data: "activate:ok" })
 	}
- 
+
 	async login(req: Request, res: Response) {
 		const { repository } = this.state
 		var { email, password } = req.body
 		const userService = new PathFinder(this).getNode<Typeorm.Repo>(repository)
 
+		// get user
 		const users = await userService.dispatch({
 			type: Typeorm.Actions.FIND,
-			payload: { 
-				where: { email: email } 
+			payload: {
+				where: { email: email }
 			}
 		})
-
-		if ( users.length==0 ) return res.sendStatus(404)
+		if (users.length == 0) return res.sendStatus(404)
 		const user = users[0]
 
+		// check password
 		const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`)
 		const correct = hash == user.password
+		if (!correct) return res.status(404).json({ error: "login:account:not_found" })
 
-		if ( !correct ) return res.sendStatus(404)
-
-
-		await new Bus(this, "/http/route/route-jwt").dispatch({
-			type: Router.Actions.JWT.LOGIN,
-			payload: { user },
+		// generate token
+		const token = await new Bus(this, "/http/route/route-jwt").dispatch({
+			type: Router.Actions.JWT.GENERATE_TOKEN,
+			payload: { 
+				id: user.id, 
+				email: user.email, 
+				name: user.name 
+			},
 		})
 
-		res.sendStatus(200)
+		// metto il token nei cookie
+		res.cookie('token', token, { maxAge: 900000, httpOnly: true })
+
+		res.status(200).json({ data: "login:ok" })
 	}
 }
 

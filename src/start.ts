@@ -1,10 +1,10 @@
-import { RootService } from "typexpress"
+import { Bus, PathFinder, RepoStructActions, RootService } from "typexpress"
 import path from "path"
 
 import repositories  from "./repository"
 import NodeRoute from "./routers/NodeRoute"
 import AuthRoute from "./routers/AuthRoute"
-
+import { Biblio } from "./global"
 
 
 RootService.Start([
@@ -16,6 +16,17 @@ RootService.Start([
 				class: "http-router",
 				path: "/api",
 				children: [
+					Biblio.inDebug() ? {
+						class: "http-router",
+						path: "/debug",
+						routers: [
+							{ path: "/reset", verb:"post", method: async function (req, res, next) {
+								await new Bus(this, "/typeorm/nodes").dispatch({ type: RepoStructActions.SEED })
+								await new Bus(this, "/typeorm/users").dispatch({ type: RepoStructActions.SEED })
+								res.json({ data: "debug:reset:ok" })
+							}},
+						]
+					} : null,
 					{
 						class: NodeRoute,
 						repository: "/typeorm/nodes",
@@ -25,14 +36,14 @@ RootService.Start([
 					},
 					{
 						class: "http-router/jwt",
-						repository: "/typeorm/user",
+						repository: "/typeorm/users",
 						jwt: "/jwt",
 						children: [
 							{
 								class: "http-router",
 								path: "/user",
 								routers: [
-									{ method: (req, res, next) => res.json(req.user) },
+									{ path: "/me", method: (req, res, next) => res.json(req.user) },
 								]
 							}
 						]
@@ -42,7 +53,7 @@ RootService.Start([
 			{
 				class: "http-static",
 				path: "/public",
-				dir: path.join(__dirname, "../../client/build"),
+				dir: path.join(__dirname, "../../biblio-client/build"),
 				spaFile: "index.html",
 			},	
 		]
@@ -74,3 +85,5 @@ RootService.Start([
 		secret: "secret_word!!!"
 	},
 ])
+
+

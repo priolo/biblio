@@ -1,3 +1,4 @@
+import { Biblio } from "../global"
 import { RepoStructActions } from "typexpress"
 
 
@@ -24,7 +25,7 @@ const repo: any = {
 			}
 		},
 	},
-	seeds: [
+	seeds: Biblio.inDebug() && [
 		{ type: RepoStructActions.TRUNCATE },
 		{
 			email: "ivano@test.com",
