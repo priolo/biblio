@@ -1,5 +1,4 @@
-
-export const PORT = 5001
+export const PORT = process.env.PORT || 3000;
 
 function buildNodeConfig() {
 	return [
