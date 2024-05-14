@@ -1,5 +1,3 @@
-import { Biblio } from "../global"
-import { RepoStructActions } from "typexpress"
 
 
 const repo: any = {
@@ -13,16 +11,20 @@ const repo: any = {
 		},
 		// https://typeorm.delightful.studio/interfaces/_entity_schema_entityschemarelationoptions_.entityschemarelationoptions.html
 		relations: {
+			parent: {
+				type: "many-to-one",
+				target: "nodes",
+				nullable: true,
+				onDelete: "CASCADE",
+			},
 			user: {
 				type: "many-to-one",
 				target: "users",
+				nullable: true,
 				onDelete: "CASCADE",
 			}
 		}
-	},
-	seeds: Biblio.inDebug() && [
-		{ type: RepoStructActions.TRUNCATE },
-	],
+	}
 }
 
 

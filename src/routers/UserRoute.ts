@@ -1,12 +1,12 @@
 import { httpRouter } from "typexpress"
 
 
-export default class NodeRoute extends httpRouter.repo {
+export default class UserRoute extends httpRouter.repo {
 	
 	get stateDefault(): any {
 		return {
 			...super.stateDefault,
-			path: "/nodes",
+			path: "/users",
 			routers: [
 				{ path: "/", verb: "get", method: "_getAll" },
 				{ path: "/:id", verb: "get", method: "_getById" },

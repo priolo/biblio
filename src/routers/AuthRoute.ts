@@ -1,13 +1,19 @@
 import { Request, Response } from "express"
-import { PathFinder, Router, Email, RepoRestActions, Typeorm, Bus } from "typexpress"
 import crypto from "crypto"
-import { Biblio } from "../global"
+import { ENV } from "../utils"
 
-class AuthRoute extends Router.Service {
+import { 
+	PathFinder, RepoRestActions,
+	email as emailNs, typeorm, httpRouter 
+} from "typexpress"
 
-	get defaultConfig(): any {
+
+
+class AuthRoute extends httpRouter.Service {
+
+	get stateDefault(): any {
 		return {
-			...super.defaultConfig,
+			...super.stateDefault,
 			path: "/auth",
 			email: "/email",
 			repository: "/typeorm/users",
@@ -20,24 +26,30 @@ class AuthRoute extends Router.Service {
 		}
 	}
 
+	/**
+	 * Grazie all'"email" registra un nuovo utente
+	 */
 	async registerUser(req: Request, res: Response) {
 		const { email: emailPath, repository } = this.state
 		const { email } = req.body
-		const emailService = new PathFinder(this).getNode<Email.Service>(emailPath)
-		const userService = new PathFinder(this).getNode<Typeorm.Repo>(repository)
+		const emailService = new PathFinder(this).getNode<emailNs.Service>(emailPath)
+		const userService = new PathFinder(this).getNode<typeorm.repo>(repository)
 
-		const token = !Biblio.inDebug() ? crypto.randomBytes(8).toString('hex') : "AAA"
+		// creo il codice segreto da inviare per email
+		const code = process.env.NODE_ENV == ENV.TEST ? "AAA" : crypto.randomBytes(8).toString('hex')
 
+		// creo un utente temporaneo con il codice da attivare
 		await userService.dispatch({
 			type: RepoRestActions.SAVE,
 			payload: {
-				email: email,
-				salt: token,
+				email,
+				salt: code,
 			}
 		})
 
+		// invio l'email per l'attivazione del codice
 		await emailService.dispatch({
-			type: Email.Actions.SEND,
+			type: emailNs.Actions.SEND,
 			payload: {
 				from: "from@test.com",
 				to: "to@test.com",
@@ -45,8 +57,8 @@ class AuthRoute extends Router.Service {
 				html: `
 					<div>ue ueue ti vuoi reggggistrare! he?</div> 
 					<div>questo è il codice</div> 
-					<div>${token}</div> 
-					<a href="http://localhost:8080/api/activate?code=${token}">registrami ti prego!</a>
+					<div>${code}</div> 
+					<a href="http://localhost:8080/api/activate?code=${code}">registrami ti prego!</a>
 				`,
 			}
 		})
@@ -54,16 +66,17 @@ class AuthRoute extends Router.Service {
 		res.status(200).json({ data: "activate:ok" })
 	}
 
+	/**
+	 * Permette di attivare un utente confermado con il "code" e la "password"
+	 */
 	async activate(req: Request, res: Response) {
 		const { repository } = this.state
 		var { code, password } = req.body
-		const userService = new PathFinder(this).getNode<Typeorm.Repo>(repository)
+		const userService = new PathFinder(this).getNode<typeorm.repo>(repository)
 
 		const users = await userService.dispatch({
-			type: Typeorm.Actions.FIND,
-			payload: {
-				where: { salt: code }
-			}
+			type: typeorm.Actions.FIND,
+			payload: { where: { salt: code } }
 		})
 
 		if (users.length == 0) return res.status(404).json({ error: "activate:code:not_found" })
@@ -82,17 +95,18 @@ class AuthRoute extends Router.Service {
 		res.status(200).json({ data: "activate:ok" })
 	}
 
+	/**
+	 * eseguo il login grazie a "email" e "password"
+	 */
 	async login(req: Request, res: Response) {
 		const { repository } = this.state
 		var { email, password } = req.body
-		const userService = new PathFinder(this).getNode<Typeorm.Repo>(repository)
+		const userService = new PathFinder(this).getNode<typeorm.repo>(repository)
 
 		// get user
 		const users = await userService.dispatch({
-			type: Typeorm.Actions.FIND,
-			payload: {
-				where: { email: email }
-			}
+			type: typeorm.Actions.FIND,
+			payload: { where: { email } }
 		})
 		if (users.length == 0) return res.sendStatus(404)
 		const user = users[0]
@@ -102,20 +116,10 @@ class AuthRoute extends Router.Service {
 		const correct = hash == user.password
 		if (!correct) return res.status(404).json({ error: "login:account:not_found" })
 
-		// generate token
-		const token = await new Bus(this, "/http/route/route-jwt").dispatch({
-			type: Router.Actions.JWT.GENERATE_TOKEN,
-			payload: { 
-				id: user.id, 
-				email: user.email, 
-				name: user.name 
-			},
-		})
-
-		// metto il token nei cookie
-		res.cookie('token', token, { maxAge: 900000, httpOnly: true })
-
-		res.status(200).json({ data: "login:ok" })
+		// inserisco user nel payload jwt
+		const jwtService = new PathFinder(this).getNode<httpRouter.jwt.Service>("/http/route/route-jwt")
+		const token = await jwtService.putPayload(user, res)
+		res.json({ token })
 	}
 }
 
