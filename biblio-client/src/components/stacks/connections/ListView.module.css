@@ -1,0 +1,25 @@
+.icon {
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2px;
+	color: #FFF;
+}
+
+.icon.undefined {
+	background-color: grey;
+}
+
+.icon.connected {
+	background-color: #37d300;
+}
+
+.icon.reconnecting {
+	background-color: var(--var-4);
+	color: #000;
+}
+
+.icon.disconnected {
+	background-color: var(--var-5);
+}
