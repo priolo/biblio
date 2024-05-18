@@ -2,7 +2,7 @@
   "name": "biblio-server",
   "version": "0.0.1",
   "description": "general biblio",
-  "main": "index.js",
+  "main": "dist/start.js",
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc -w",

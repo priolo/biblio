@@ -23,7 +23,7 @@ function buildNodeConfig() {
 				},
 				{
 					class: "http-static",
-					path: "/",
+					path: "/app",
 					dir: path.join(__dirname, "../biblio-client/dist"),
 					spaFile: "index.html",
 				}
