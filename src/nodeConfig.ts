@@ -1,3 +1,5 @@
+import path from "path";
+
 export const PORT = process.env.PORT || 3000;
 
 function buildNodeConfig() {
@@ -19,6 +21,12 @@ function buildNodeConfig() {
 						}
 					]
 				},
+				{
+					class: "http-static",
+					path: "/",
+					dir: path.join(__dirname, "../biblio-client/dist"),
+					spaFile: "index.html",
+				}
 			]
 		},
 	]
