@@ -20,6 +20,12 @@ const repo: any = {
 				target: "nodes",
 				cascade: true,
 				inverseSide: 'user',
+			},
+			providers: {
+				type: "one-to-many",
+				target: "providers",
+				cascade: true,
+				inverseSide: 'user',
 			}
 		},
 	},

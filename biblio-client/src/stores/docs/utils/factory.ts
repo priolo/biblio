@@ -23,6 +23,7 @@ import { MSG_FORMAT } from "@/utils/editor";
 import { createStore } from "@priolo/jon";
 import { ViewState, ViewStore } from "../../stacks/viewBase";
 import editCodeSetup from "@/stores/stacks/editorCode";
+import userSetup from "@/stores/stacks/user";
 
 
 
@@ -70,6 +71,13 @@ export function buildStore(state: Partial<ViewState>): ViewStore {
 		[DOC_TYPE.HELP]: helpSetup,
 
 		[DOC_TYPE.SYNC]: syncSetup,
+
+
+
+		[DOC_TYPE.USER]: userSetup,
+
+
+		
 	}[state?.type]
 	if (!setup) return
 	const store: ViewStore = <ViewStore>createStore(setup)

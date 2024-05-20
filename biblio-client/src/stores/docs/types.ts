@@ -27,6 +27,13 @@ export enum DOC_TYPE {
 	CODE_EDITOR = "code_editor",
 	HELP = "help",
 	SYNC = "sync",
+
+
+
+
+
+
+	USER = "user",
 }
 
 export enum DOC_ANIM {

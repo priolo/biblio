@@ -11,6 +11,8 @@ import cls from "./MainMenu.module.css"
 import StoreButton from "./StoreButton"
 import MenuButton from "./MenuButton"
 import EditorIcon from "@/icons/EditorIcon"
+import HelpIcon from "@/icons/HelpIcon"
+import { buildUserCard } from "@/stores/stacks/user/utils/factory"
 
 
 
@@ -34,14 +36,18 @@ const MainMenu: FunctionComponent<Props> = ({
 		deckCardsSo.add({ view, anim: true })
 	}
 	const handleHelp = () => window.open("https://natsnui.app/help/")
+	const handleUser = () => {
+		const view = buildUserCard()
+		deckCardsSo.add({ view, anim: true })
+	}
 
 	// RENDER
 	if (!docsSo.state?.fixedViews) return null
-	const views = menuSa.all
+	//const views = menuSa.all
 
 	return <div style={style} className={cls.root}>
 
-		<StoreButton
+		{/* <StoreButton
 			label="ALL"
 			store={docsSo.state.fixedViews[FIXED_CARD.CONNECTIONS]}
 		/>
@@ -50,7 +56,7 @@ const MainMenu: FunctionComponent<Props> = ({
 			<StoreButton key={view.state.uuid}
 				store={view}
 			/>
-		))}
+		))} */}
 
 		<div style={{ flex: 1 }} />
 
@@ -59,7 +65,6 @@ const MainMenu: FunctionComponent<Props> = ({
 			<Button children="SAVE" onClick={() => SaveSession()} />
 			<Button children="LOAD" onClick={() => LoadSession()} />
 			<Button children="RESET" onClick={() => ClearSession()} />
-			<Button children="EDITOR" onClick={() => handleOpenEditor()} />
 		</>}
 		{/* *** DEBUG *** */}
 
@@ -68,26 +73,26 @@ const MainMenu: FunctionComponent<Props> = ({
 			store={docSo.state.fixedViews[FIXED_CARD.HELP]}
 		/> */}
 
-		{/* <MenuButton 
-			title={"HELP"}
-			subtitle={"https://natsnui.app/help/"}
-			onClick={handleHelp}
+		<MenuButton 
+			title={"USER"}
+			subtitle={"SEI TU!"}
+			onClick={handleUser}
 		>
 			<HelpIcon style={{ width: 20 }} className="color-fg" />
-		</MenuButton> */}
+		</MenuButton>
 
 		<StoreButton
 			label="LOG"
 			store={docsSo.state.fixedViews[FIXED_CARD.LOGS]}
 		/>
 
-		{/* <MenuButton 
+		<MenuButton 
 			title="A little reminder"
 			subtitle="NOTE"
 			onClick={() => handleOpenEditor()}
 		>
 			<EditorIcon style={{ width: 20 }} className="color-fg" />
-		</MenuButton> */}
+		</MenuButton>
 
 		<AboutButton />
 

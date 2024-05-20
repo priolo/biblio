@@ -1,11 +1,10 @@
-import { Request, Response } from "express"
 import crypto from "crypto"
+import { Request, Response } from "express"
+import { OAuth2Client } from 'google-auth-library'
+import { Bus, PathFinder, RepoRestActions, email as emailNs, httpRouter, jwt, typeorm } from "typexpress"
 import { ENV } from "../utils"
 
-import { 
-	PathFinder, RepoRestActions,
-	email as emailNs, typeorm, httpRouter 
-} from "typexpress"
+const client = new OAuth2Client('YOUR_GOOGLE_CLIENT_ID');
 
 
 
@@ -19,12 +18,112 @@ class AuthRoute extends httpRouter.Service {
 			repository: "/typeorm/users",
 			jwt: "/jwt",
 			routers: [
+				{ path: "/google", verb: "post", method: "googleLogin" },
+				{ path: "/current", verb: "get", method: "current" },
+				{ path: "/logout", verb: "post", method: "logout" },
+
 				{ path: "/register", verb: "post", method: "registerUser" },
 				{ path: "/activate", verb: "post", method: "activate" },
 				{ path: "/login", verb: "post", method: "login" },
 			]
 		}
 	}
+
+
+	async current(req: Request, res: Response) {
+		const token = req.cookies.jwt;
+		if (!token) {
+			return res.status(401).json({ user: null });
+		}
+
+		// Verifica il token (puoi usare una libreria come jsonwebtoken per verificarlo)
+		client.verifyIdToken({
+			idToken: token,
+			audience: '106027300810-0udm0cjghhjr87626qrvcoug5ahgq1bh.apps.googleusercontent.com',
+		})
+			.then(ticket => {
+				const payload = ticket.getPayload();
+				res.status(200).json({ user: payload });
+			})
+			.catch(() => res.status(401).json({ user: null }));
+	}
+
+
+	async logout(req: Request, res: Response) {
+		res.clearCookie('jwt');
+		res.status(200).send('Logout successful');
+	}
+
+
+	async googleLogin(req: Request, res: Response) {
+		const { token } = req.body;
+		try {
+			const ticket = await client.verifyIdToken({
+				idToken: token,
+				audience: '106027300810-0udm0cjghhjr87626qrvcoug5ahgq1bh.apps.googleusercontent.com',
+			});
+			const payload = ticket.getPayload();
+
+			// Genera il token JWT (qui usiamo lo stesso token, ma in pratica potresti voler generare un nuovo JWT)
+			const jwtToken = await new Bus(this, "/jwt").dispatch({
+				type: jwt.Actions.ENCODE,
+				payload: {
+					payload: {
+						email: payload.email,
+					}
+				},
+			})
+			// cerco un utente tramite email
+			const users:any[] = await new Bus(this, "/typeorm/users").dispatch({
+				type: typeorm.Actions.FIND,
+				payload: {
+					where: { email: payload.email },
+					relations: ['providers']
+				}
+			})
+			let user = users?.[0]
+			
+			if (!user) {
+				user = await new Bus(this, "/typeorm/users").dispatch({
+					type: RepoRestActions.SAVE,
+					payload: {
+						email: payload.email,
+						name: payload.name,
+						// providers: [
+						// 	{ type: "google", token }
+						// ]
+					}
+				})
+			}
+			let provider = user.providers?.find(p => p.type == "google")
+			if (!provider) {
+				provider = await new Bus(this, "/typeorm/providers").dispatch({
+					type: RepoRestActions.SAVE,
+					payload: {
+						type: "google",
+						token,
+						user: { id: user.id },
+					}
+				})
+			}
+
+
+
+			// Imposta il cookie HTTP-only
+			res.cookie('jwt', jwtToken, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production', // Assicurati di usare secure solo in produzione
+				maxAge: 24 * 60 * 60 * 1000, // 1 giorno
+			});
+
+			// Qui puoi gestire la logica per trovare o creare l'utente nel database
+			res.status(200).json({ user: payload });
+		} catch (error) {
+			res.status(401).json({ error: 'Invalid Token' });
+		}
+	}
+
+
 
 	/**
 	 * Grazie all'"email" registra un nuovo utente

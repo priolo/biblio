@@ -41,6 +41,8 @@ import StreamMessagesView from "../stacks/streams/messages/View"
 import SyncView from "../stacks/sync/View"
 import { EditorCodeStore } from "@/stores/stacks/editorCode"
 import EditorCodeView from "../stacks/editorCode/View"
+import UserView from "../stacks/user/View"
+import { UserStore } from "@/stores/stacks/user"
 
 
 
@@ -99,6 +101,11 @@ const PolymorphicCard: FunctionComponent<DocCmpProps> = ({
 				return <HelpView store={view as HelpStore} />
 			case DOC_TYPE.SYNC:
 				return <SyncView store={view as SyncStore} />
+
+
+
+			case DOC_TYPE.USER:
+				return <UserView store={view as UserStore} />
 
 			default:
 				return null

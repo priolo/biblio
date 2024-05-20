@@ -4,11 +4,12 @@ import DragCmp from "@/components/DragCmp"
 import TooltipCmp from "@/components/tooltip/TooltipCmp"
 import docsSo from "@/stores/docs"
 import { useStore } from "@priolo/jon"
-import { FunctionComponent } from "react"
+import { FunctionComponent, useEffect } from "react"
 import cls from "./App.module.css"
 import DeckGroup from "./DeckGroup"
 import DrawerGroup from "./DrawerGroup"
 import ZenCard from "./ZenCard"
+import authSo from "@/stores/auth"
 
 
 
@@ -18,6 +19,9 @@ const App: FunctionComponent = () => {
 	const docsSa = useStore(docsSo)
 
 	// HOOKS
+	useEffect(()=>{
+		authSo.current()
+	},[])
 
 	// HANDLERS
 

@@ -5,9 +5,9 @@ import UserRoute from "./UserRoute"
 
 export {
 	AuthRoute,
-	NodeRoute,
-	testRoute,
-	UserRoute,
+	// NodeRoute,
+	// testRoute,
+	// UserRoute,
 }
 
 

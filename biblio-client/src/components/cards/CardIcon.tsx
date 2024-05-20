@@ -81,6 +81,13 @@ const CardIcon: FunctionComponent<Props> = ({
 		case DOC_TYPE.SYNC:
 			return <SyncIcon className={className} style={style} />
 
+
+
+
+		case DOC_TYPE.USER:
+			return <SyncIcon className={className} style={style} />
+	
+
 		default:
 			return null
 	}

@@ -1,9 +1,8 @@
 import logSo from "@/stores/log"
 import { MESSAGE_TYPE } from "@/stores/log/utils"
-import { ViewStore } from "@/stores/stacks/viewBase"
+import { LoadBaseStore } from "@/stores/stacks/loadBase"
 import { LOAD_STATE } from "@/stores/stacks/utils"
 import { camelToSnake, snakeToCamel } from "@/utils/object"
-import { LoadBaseStore } from "@/stores/stacks/loadBase"
 
 
 
@@ -14,45 +13,25 @@ enum METHOD {
 	PUT = "put",
 	DELETE = "delete"
 }
-interface Options {
-	baseUrl: string
-}
-export interface CallOptions {
-	isLogin?: boolean
-	loading?: boolean
-	noError?: boolean
-	store?: ViewStore
-	/** utilizza questo signal per fare l'abort */
-	signal?: AbortSignal
-	/** se true setto nello store l'oggetto per l'abort */
-	manageAbort?: boolean
-	/** non restituire trasformato in camelCase */
-	noCamel?: boolean
-}
 
-const httpUrlBuilder = () => {
-	if (import.meta.env.VITE_TARGET == "desktop") return "http://localhost:31311/api/"
-	return import.meta.env.DEV || !import.meta.env.VITE_API_URL ? "/api/" : import.meta.env.VITE_API_URL
-}
-
-const optionsParamDefault: CallOptions = {
+const optionsDefault = {
+	baseUrl: import.meta.env.VITE_API_URL ?? "/api/",
 	isLogin: false,
 	loading: true,
 	noError: false,
 	store: null,
+	/** utilizza questo signal per fare l'abort */
+	signal: <AbortSignal>null,
+	/** se true setto nello store l'oggetto per l'abort */
+	manageAbort: false,
+	/** non restituire trasformato in camelCase */
+	noCamel: false,
+
 }
-const optionsDefault: Options = {
-	baseUrl: httpUrlBuilder(),
-}
+export type CallOptions = typeof optionsDefault
 
 
 export class AjaxService {
-
-	options: Options
-
-	constructor(options: Options = optionsDefault) {
-		this.options = { ...optionsDefault, ...options }
-	}
 
 	async post(url: string, data?: any, options?: CallOptions) {
 		return await this.send(url, METHOD.POST, data, options)
@@ -73,8 +52,8 @@ export class AjaxService {
 	/**
 	 * Send a ajax to server
 	 */
-	async send(url: string, method: METHOD, data?: any, options: CallOptions = {}) {
-		options = { ...optionsParamDefault, ...options }
+	async send(url: string, method: METHOD, data?: any, options: Partial<CallOptions> = {}) {
+		options = { ...optionsDefault, ...options }
 
 		// PREPARE DATA
 		data = camelToSnake(data)
@@ -94,7 +73,7 @@ export class AjaxService {
 				options.signal = loadStore.state.fetchAbort.signal
 			}
 			response = await fetch(
-				`${this.options.baseUrl}${url}`,
+				`${options.baseUrl}${url}`,
 				{
 					method: method,
 					headers,
