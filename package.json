@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@priolo/jon-utils": "^0.4.3",
-    "dotenv": "^16.4.5",
     "google-auth-library": "^9.10.0",
     "mysql2": "^3.9.7",
     "typexpress": "^0.4.0"
