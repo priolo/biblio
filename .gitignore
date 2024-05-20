@@ -6,4 +6,3 @@ dist/
 examples/
 src/examples/
 db/
-.env
