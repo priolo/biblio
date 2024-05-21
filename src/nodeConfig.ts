@@ -1,33 +1,14 @@
+import fs from "fs";
 import path from "path";
+import repositories from "./repository";
 import { AuthRoute } from "./routers";
-import fs from "fs"
-import repositories  from "./repository"
 import { ENV } from "./utils";
-import dotenv from "dotenv"
 
-// carico i dati del file .env
-dotenv.config()
 
 
 export const PORT = process.env.PORT || 3000;
 
 function buildNodeConfig() {
-
-
-	let dbPath: string = path.join(__dirname, "../db/database.test.sqlite")
-	// if (process.env.NODE_ENV == ENV.TEST) {
-	// 	try { if (fs.existsSync(dbPath)) fs.unlinkSync(dbPath) }
-	// 	catch (e) { console.log(e) }
-	// 	dbPath = path.join(__dirname, "../db/database.test.sqlite")
-
-	// } else if (process.env.NODE_ENV == ENV.DEV) {
-	// 	dbPath = path.join(__dirname, "../db/database.dev.sqlite")
-		
-	// } else {
-	// 	dbPath = path.join(__dirname, "../db/database.sqlite")
-	// }
-
-	
 	return [
 		{
 			class: "http",
@@ -69,7 +50,6 @@ function buildNodeConfig() {
 	]
 }
 
-
 export default buildNodeConfig
 
 
@@ -104,5 +84,6 @@ const getDBConnectionOptions = () => {
 		password: process.env.DB_PASSWORD,
 		database: process.env.DB_NAME,
 		synchronize: true,
+		logging: true,
 	}
 }

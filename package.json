@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc -w",
-    "start": "node dist/start.js"
+    "start": "cross-env NODE_ENV=production node dist/start.js",
+    "start:dev": "cross-env NODE_ENV=development node dist/start.js"
   },
   "author": "Ivano Iorio",
   "license": "MIT",
@@ -17,6 +18,7 @@
   },
   "dependencies": {
     "@priolo/jon-utils": "^0.4.3",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "google-auth-library": "^9.10.0",
     "mysql2": "^3.9.7",
