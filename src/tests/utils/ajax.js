@@ -1,7 +1,7 @@
 import axios from "axios"
 axios.defaults.adapter = require('axios/lib/adapters/http')
 
-import { PORT } from "../../nodeConfig"
+import { PORT } from "../../config"
 
 function buildAjax( port, baseURL ) {
 	if ( !port ) port = PORT

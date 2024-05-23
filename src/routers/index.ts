@@ -1,5 +1,5 @@
 import AuthRoute from "./AuthRoute"
-import NodeRoute from "./NodeRoute"
+import DocRoute from "./DocRoute"
 import testRoute from "./testRoute"
 import UserRoute from "./UserRoute"
 

@@ -1,4 +1,4 @@
-import buildNodeConfig from "../nodeConfig"
+import buildNodeConfig from "../config"
 import { Bus, email, service, PathFinder, RepoRestActions, RootService, typeorm } from "typexpress"
 import path from "path"
 import fs from "fs"

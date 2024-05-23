@@ -1,7 +1,7 @@
 import { httpRouter } from "typexpress"
 
 
-export default class NodeRoute extends httpRouter.repo {
+export default class DocRoute extends httpRouter.repo {
 	
 	get stateDefault(): any {
 		return {
