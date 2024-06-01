@@ -4,13 +4,14 @@ import { VIEW_SIZE } from "@/stores/stacks/utils"
 import { ViewStore } from "@/stores/stacks/viewBase"
 import { DOC_ANIM } from "@/types"
 import { useStore, useStoreNext } from "@priolo/jon"
-import React, { FunctionComponent, useEffect, useMemo } from "react"
+import React, { CSSProperties, FunctionComponent, useEffect, useMemo } from "react"
 import { createPortal } from "react-dom"
 import PolymorphicCard from "./PolymorphicCard"
 import ResizerCmp from "./ResizerCmp"
 import cls from "./RootCard.module.css"
 import SnackbarCmp from "./SnackbarCmp"
 import mouseSo from "@/stores/mouse"
+import layoutSo from "../../stores/layout"
 
 
 
@@ -78,13 +79,7 @@ const RootCard: FunctionComponent<Props> = ({
 	const clsAnimation = inAnimation ? cls.animation : ""
 	const clsRoot = `${cls.root} ${clsAnimation} ${className}`
 	const clsDoc = `var${variant} ${haveFocus ? cls.focus : ""} ${cls.doc} ${!inRoot ? cls.is_linked : ""}`
-	const styContainerDoc: React.CSSProperties = {
-		zIndex: deep,
-		width: view.getWidth(),
-		maxWidth: view.state.widthMax,
-		minWidth: view.state.widthMin,
-		...view.getStyAni(),
-	}
+	const styContainerDoc = getStyAni(view, deep)
 
 	const card = (
 		<div draggable={false}
@@ -149,3 +144,35 @@ const RootCard: FunctionComponent<Props> = ({
 }
 
 export default RootCard
+
+
+function getStyAni (store: ViewStore, deep:number):CSSProperties {
+	let style: React.CSSProperties = {
+		zIndex: deep,
+		width: store.getWidth(),
+		maxWidth: store.state.widthMax,
+		minWidth: store.state.widthMin,
+	}
+	switch (store.state.docAnim) {
+		case DOC_ANIM.EXIT:
+		case DOC_ANIM.EXITING:
+			style = {
+				...style,
+				width: 0,
+				transform: `translate(${-style.width}px, 0px)`,
+			}
+			break
+		case DOC_ANIM.SHOWING:
+			break
+		case DOC_ANIM.DRAGGING:
+			const color = layoutSo.state.theme.palette.var[store.state.colorVar]
+			style = {
+				...style,
+				border: `2px dashed ${color.bg}`,
+			}
+			break
+		default:
+			break
+	}
+	return style
+}

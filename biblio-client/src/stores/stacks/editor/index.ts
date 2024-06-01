@@ -79,13 +79,13 @@ const setup = {
 		},
 		//#endregion
 
-		onValueChange: (_: void, store?: ViewStore) => {
-			debounce("doc-change", () => {
-				console.log("handleValueChange")
-				const state = store.state as TextEditorState
-				IdbSaveOrUpdateData(store.state.uuid, state.editor.children)
-			}, 1000)
-		},
+		// onValueChange: (_: void, store?: ViewStore) => {
+		// 	debounce("doc-change", () => {
+		// 		console.log("handleValueChange")
+		// 		const state = store.state as TextEditorState
+		// 		IdbSaveOrUpdateData(store.state.uuid, state.editor.children)
+		// 	}, 1000)
+		// },
 
 	},
 

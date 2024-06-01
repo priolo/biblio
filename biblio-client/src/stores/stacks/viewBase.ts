@@ -64,34 +64,6 @@ const viewSetup = {
 	},
 
 	getters: {
-		getStyAni: (_: void, store?: ViewStore) => {
-			let style: React.CSSProperties = {
-				width: store.getWidth()
-			}
-			switch (store.state.docAnim) {
-				case DOC_ANIM.EXIT:
-				case DOC_ANIM.EXITING:
-					style = {
-						...style,
-						width: 0,
-						transform: `translate(${-style.width}px, 0px)`,
-					}
-					break
-				case DOC_ANIM.SHOWING:
-					break
-				case DOC_ANIM.DRAGGING:
-					const color = layoutSo.state.theme.palette.var[store.state.colorVar]
-					style = {
-						...style,
-						border: `2px dashed ${color.bg}`,
-					}
-					break
-				default:
-					break
-			}
-			return style
-		},
-
 		//#region OVERRIDABLE
 		/** restituisce il width effettivo */
 		getWidth: (_: void, store?: ViewStore) => {
@@ -105,7 +77,6 @@ const viewSetup = {
 			return {
 				uuid: store.state.uuid,
 				type: store.state.type,
-				//position: store.state.position,
 				size: store.state.size,
 				linked: store.state.linked?.getSerialization(),
 			}
@@ -226,16 +197,16 @@ const viewSetup = {
 	},
 
 	// [II] da sistemare trovare un modo per avere puntualmente la connection SE la CARD è collegata con una connection
-	onListenerChange: (store: ViewStore, type: LISTENER_CHANGE) => {
-		if (store._listeners.size == 1 && type == LISTENER_CHANGE.ADD) {
-			const cnnId = store.state.type == DOC_TYPE.CONNECTION ? store.state["connection"]?.id : store.state["connectionId"]
-			if (cnnId) socketPool.create(`global::${cnnId}`, cnnId)
-		} else if (store._listeners.size == 0) {
-			const cnnId = store.state.type == DOC_TYPE.CONNECTION ? store.state["connection"]?.id : store.state["connectionId"]
-			if (cnnId) socketPool.destroy(`global::${cnnId}`)
-			store["fetchAbort"]?.()
-		}
-	}
+	// onListenerChange: (store: ViewStore, type: LISTENER_CHANGE) => {
+	// 	if (store._listeners.size == 1 && type == LISTENER_CHANGE.ADD) {
+	// 		const cnnId = store.state.type == DOC_TYPE.CONNECTION ? store.state["connection"]?.id : store.state["connectionId"]
+	// 		if (cnnId) socketPool.create(`global::${cnnId}`, cnnId)
+	// 	} else if (store._listeners.size == 0) {
+	// 		const cnnId = store.state.type == DOC_TYPE.CONNECTION ? store.state["connection"]?.id : store.state["connectionId"]
+	// 		if (cnnId) socketPool.destroy(`global::${cnnId}`)
+	// 		store["fetchAbort"]?.()
+	// 	}
+	// }
 }
 
 export type ViewState = Partial<typeof viewSetup.state>

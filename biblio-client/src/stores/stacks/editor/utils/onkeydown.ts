@@ -3,7 +3,7 @@ import { NODE_TYPES, NodeType } from "./types"
 import { SugarEditor } from "./withSugar"
 
 
-
+/** gestisce l'evento ON KEY DOWN sulla card in base ai tipi di NODE */
 export function biblioOnKeyDown(event: React.KeyboardEvent<HTMLDivElement>, editor: SugarEditor) {
 	const node = editor.node(editor.selection, { depth: 1 })?.[0] as NodeType
 	const fn = {

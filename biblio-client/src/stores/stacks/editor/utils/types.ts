@@ -48,5 +48,7 @@ export type TextType = {
 	code?:boolean
 } & BaseText
 
+
+/** NODE tipizzato dell'editor */
 export type NodeType = Node & ElementCard & ElementImage & TextType
 
