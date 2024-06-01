@@ -4,7 +4,9 @@ import { Doc } from "./repository/Doc";
 import { Provider } from "./repository/Provider";
 import { User } from "./repository/User";
 import { getDBConnectionOptions } from "./repository/connection";
-import { AuthRoute } from "./routers";
+import UserRoute from "./routers/UserRoute";
+import AuthRoute from "./routers/AuthRoute";
+import DocRoute from "./routers/DocRoute";
 
 
 
@@ -22,7 +24,15 @@ function buildNodeConfig() {
 				{
 					class: "http-router",
 					path: "/api",
+					cors: {
+						"origin": "*",
+						// "allowedHeaders": "*",
+						// "credentials": true,
+					},
 					children: [
+						{ class: UserRoute },
+						{ class: DocRoute },
+						{ class: AuthRoute },
 						{
 							class: "http-router",
 							path: "/test",
@@ -30,9 +40,7 @@ function buildNodeConfig() {
 								{ method: (req, res, next) => res.json({ data: "debug:reset:ok" }) },
 							]
 						},
-						{
-							class: AuthRoute,
-						},
+
 					]
 				},
 				{

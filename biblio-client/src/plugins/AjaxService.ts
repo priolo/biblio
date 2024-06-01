@@ -28,7 +28,7 @@ const optionsDefault = {
 	noCamel: false,
 
 }
-export type CallOptions = typeof optionsDefault
+export type CallOptions = Partial<typeof optionsDefault>
 
 
 export class AjaxService {

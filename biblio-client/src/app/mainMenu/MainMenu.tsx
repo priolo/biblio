@@ -12,7 +12,8 @@ import StoreButton from "./StoreButton"
 import MenuButton from "./MenuButton"
 import EditorIcon from "@/icons/EditorIcon"
 import HelpIcon from "@/icons/HelpIcon"
-import { buildUserCard } from "@/stores/stacks/user/utils/factory"
+import { buildUserCard } from "@/stores/stacks/account/utils/factory"
+import { buildUsers } from "../../stores/stacks/streams/utils/factory"
 
 
 
@@ -38,6 +39,10 @@ const MainMenu: FunctionComponent<Props> = ({
 	const handleHelp = () => window.open("https://natsnui.app/help/")
 	const handleUser = () => {
 		const view = buildUserCard()
+		deckCardsSo.add({ view, anim: true })
+	}
+	const handleUsers = () => {
+		const view = buildUsers()
 		deckCardsSo.add({ view, anim: true })
 	}
 
@@ -77,6 +82,14 @@ const MainMenu: FunctionComponent<Props> = ({
 			title={"USER"}
 			subtitle={"SEI TU!"}
 			onClick={handleUser}
+		>
+			<HelpIcon style={{ width: 20 }} className="color-fg" />
+		</MenuButton>
+
+		<MenuButton 
+			title={"USERS"}
+			subtitle={"TUTTI GLI ALTRI"}
+			onClick={handleUsers}
 		>
 			<HelpIcon style={{ width: 20 }} className="color-fg" />
 		</MenuButton>

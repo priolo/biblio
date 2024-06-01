@@ -1,12 +1,5 @@
-import {CNN_STATUS} from "@/types"
 
 
-export interface SocketOptions {
-    protocol?: string
-    host?: string
-    port?: string
-    base?: string
-}
 
 export enum MSG_TYPE {
     /** SUBSCRIPTIONS REQUEST - client */
@@ -17,6 +10,20 @@ export enum MSG_TYPE {
     CNN_STATUS = "connection_status",
     /** ERROR MESSAGE - client server */
     ERROR = "error",
+}
+
+export enum CNN_STATUS {
+	UNDEFINED = "undefined",
+	CONNECTED = "connected",
+	RECONNECTING = "reconnecting",
+	DISCONNECTED = "disconnected",
+}
+
+export interface SocketOptions {
+    protocol?: string
+    host?: string
+    port?: string
+    base?: string
 }
 
 export interface SocketMessage {

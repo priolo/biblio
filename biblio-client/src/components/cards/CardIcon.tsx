@@ -34,36 +34,10 @@ const CardIcon: FunctionComponent<Props> = ({
 }) => {
 	switch (type) {
 
-		case DOC_TYPE.CONNECTIONS:
-			return <ConnectionsIcon className={className} style={style} />
-		case DOC_TYPE.CONNECTION:
-			return <ConnectionIcon className={className} style={style} />
-		case DOC_TYPE.MESSAGES:
-			return <MessagesIcon className={className} style={style} />
-		case DOC_TYPE.MESSAGE:
-			return <MessageIcon className={className} style={style} />
-		case DOC_TYPE.MESSAGE_SEND:
-
-		case DOC_TYPE.STREAMS:
+		case DOC_TYPE.USERS:
 			return <StreamsIcon className={className} style={style} />
-		case DOC_TYPE.STREAM:
+		case DOC_TYPE.USER:
 			return <StreamIcon className={className} style={style} />
-		case DOC_TYPE.STREAM_MESSAGES:
-			return <MessagesIcon className={className} style={style} />
-
-		case DOC_TYPE.CONSUMERS:
-			return <ConsumersIcon className={className} style={style} />
-		case DOC_TYPE.CONSUMER:
-			return <ConsumerIcon className={className} style={style} />
-
-		case DOC_TYPE.BUCKETS:
-			return <BucketsIcon className={className} style={style} />
-		case DOC_TYPE.BUCKET:
-			return <BucketIcon className={className} style={style} />
-		case DOC_TYPE.KVENTRIES:
-			return <KvEntriesIcon className={className} style={style} />
-		case DOC_TYPE.KVENTRY:
-			return <KvEntryIcon className={className} style={style} />
 
 		case DOC_TYPE.LOGS:
 			return <LogIcon className={className} style={style} />
@@ -73,20 +47,9 @@ const CardIcon: FunctionComponent<Props> = ({
 			return <EditorIcon className={className} style={style} />
 		case DOC_TYPE.CODE_EDITOR:
 			return <EditorIcon className={className} style={style} />
-		case DOC_TYPE.MESSAGE:
-			return <MessageIcon className={className} style={style} />
-		// case DOC_TYPE.HELP:
-		// 	return <HelpIcon className={className} style={style} />
 
-		case DOC_TYPE.SYNC:
+		case DOC_TYPE.ACCOUNT:
 			return <SyncIcon className={className} style={style} />
-
-
-
-
-		case DOC_TYPE.USER:
-			return <SyncIcon className={className} style={style} />
-	
 
 		default:
 			return null

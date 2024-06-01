@@ -1,10 +1,9 @@
 import Base64Cmp from "@/components/formatters/base64/Base64Cmp"
 import HexTable from "@/components/formatters/hex/HexTable"
-import { getEditorLanguage } from "@/stores/stacks/message/utils"
 import { MSG_FORMAT } from "@/utils/editor"
 import { Editor, Monaco } from "@monaco-editor/react"
 import { editor } from "monaco-editor"
-import { ForwardRefRenderFunction, forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from "react"
+import { ForwardRefRenderFunction, forwardRef, useEffect, useImperativeHandle, useRef } from "react"
 import { editorOptionsDefault } from "./utils"
 
 
@@ -73,7 +72,7 @@ const EditorCodeBase: ForwardRefRenderFunction<EditorRefProps, Props> = ({
 	return <Editor
 		className={className}
 		defaultLanguage="json"
-		language={getEditorLanguage(format)}
+		language={format.toString()}
 		value={value}
 		theme="vs-dark"
 		onMount={handleEditorDidMount}

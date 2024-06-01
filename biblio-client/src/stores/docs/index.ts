@@ -1,6 +1,5 @@
 import { DOC_TYPE } from "@/stores/docs/types"
 import { StoreCore, createStore } from "@priolo/jon"
-import { CnnListStore } from "../stacks/connection"
 import { ViewLogStore } from "../stacks/log"
 import { AboutStore } from "../stacks/about"
 import { ViewStore } from "../stacks/viewBase"
@@ -26,7 +25,7 @@ export enum FIXED_CARD {
 const setup = {
 
 	state: {
-		fixedViews: <[CnnListStore?, ViewLogStore?, AboutStore?]>null,
+		fixedViews: <[ViewLogStore?, AboutStore?]>null,
 		zenCard: <ViewStore>null,
 		zenOpen: false,
 		cardOptions: <{ [type: string]: DOC_TYPE }>{},
@@ -61,7 +60,7 @@ const setup = {
 	},
 
 	mutators: {
-		setFixedViews: (fixedViews: [CnnListStore, ViewLogStore, AboutStore, HelpStore]) => ({ fixedViews }),
+		setFixedViews: (fixedViews: [ViewLogStore, AboutStore, HelpStore]) => ({ fixedViews }),
 		setZenCard: (zenCard: ViewStore) => ({ zenCard }),
 		setZenOpen: (zenOpen: boolean) => ({ zenOpen }),
 		setDrawerPosition: (drawerPosition: DRAWER_POSITION) => ({ drawerPosition }),

@@ -1,24 +1,9 @@
 
 export enum DOC_TYPE {
 	EMPTY = "empty",
-	CONNECTIONS = "connectons",
-	CONNECTION = "connecton",
 
-	MESSAGES = "messages",
-	MESSAGE = "message",
-	MESSAGE_SEND = "message_send",
-
-	STREAMS = "streams",
-	STREAM = "stream",
-	STREAM_MESSAGES = "stream_messages",
-
-	CONSUMERS = "consumers",
-	CONSUMER = "consumer",
-
-	BUCKETS = "buckets",
-	BUCKET = "bucket",
-	KVENTRIES = "kventries",
-	KVENTRY = "kventry",
+	USERS = "users",
+	USER = "user",
 
 	LOGS = "logs",
 	ABOUT = "about",
@@ -26,14 +11,8 @@ export enum DOC_TYPE {
 	TEXT_EDITOR = "text_editor",
 	CODE_EDITOR = "code_editor",
 	HELP = "help",
-	SYNC = "sync",
 
-
-
-
-
-
-	USER = "user",
+	ACCOUNT = "account",
 }
 
 export enum DOC_ANIM {

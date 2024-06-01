@@ -3,8 +3,6 @@ import { Reconnect } from "./reconnect.js";
 import { MSG_TYPE, Payload, PayloadError, PayloadMessage, PayloadStatus, SocketMessage, SocketOptions } from "./types.js";
 import { MESSAGE_TYPE } from "@/stores/log/utils.js";
 import { optionsDefault } from "./utils.js";
-import cnnSo from "@/stores/connections"
-import { CNN_STATUS } from "@/types/Connection.js";
 
 
 
@@ -85,7 +83,7 @@ export class SocketService {
 			title: "WS-CONNECTIONS",
 			body: `disconnect`
 		})
-		changeConnectionStatus(this.cnnId, CNN_STATUS.UNDEFINED)
+		//changeConnectionStatus(this.cnnId, CNN_STATUS.UNDEFINED)
 		this.cnnId = null
 		this.reconnect.enabled = false
 		this.reconnect.stop()
@@ -131,26 +129,25 @@ export class SocketService {
 		this.reconnect.stop()
 		this.reconnect.tryZero()
 		this.onOpen?.()
-		changeConnectionStatus(this.cnnId, CNN_STATUS.RECONNECTING)
+		//changeConnectionStatus(this.cnnId, CNN_STATUS.RECONNECTING)
 	}
 
 	handleClose(_: CloseEvent) {
 		//console.log("socket:close")
 		this.clear()
 		this.reconnect.start()
-		changeConnectionStatus(this.cnnId, CNN_STATUS.RECONNECTING)
+		//changeConnectionStatus(this.cnnId, CNN_STATUS.RECONNECTING)
 	}
 
 	/** ricevo un messaggio dal BE */
 	handleMessage(e: MessageEvent) {
 		const message: SocketMessage = JSON.parse(e.data) as SocketMessage
 		const type = message.type
-		let payload: Payload = null
 		switch (type) {
-			case MSG_TYPE.CNN_STATUS:
-				payload = message.payload as PayloadStatus
+
+			case MSG_TYPE.CNN_STATUS: {
+				let payload = message.payload as PayloadStatus
 				this.onStatus?.(payload)
-				changeConnectionStatus(this.cnnId, payload.status)
 				let body = `${payload.status}`
 				if (payload.error) {body += ` - ${payload.error}`}
 				logSo.add({
@@ -159,15 +156,19 @@ export class SocketService {
 					body: body
 				})
 				break
-			case MSG_TYPE.NATS_MESSAGE:
+			}
+
+			case MSG_TYPE.NATS_MESSAGE: {
 				if (!this.onMessage) return
-				payload = message.payload as PayloadMessage
+				let payload = message.payload as PayloadMessage
 				this.onMessage({
 					subject: payload.subject,
 					payload: atob(payload.payload),
 				})
 				break
-			case MSG_TYPE.ERROR:
+			}
+			
+			case MSG_TYPE.ERROR: {
 				const error: string = (message.payload as PayloadError)?.error
 				//this.onError?.(message.payload as PayloadError)
 				logSo.add({
@@ -176,6 +177,7 @@ export class SocketService {
 					body: error,
 				})
 				break
+			}
 		}
 	}
 
@@ -188,11 +190,4 @@ export class SocketService {
 	}
 
 	//#endregion
-}
-
-
-function changeConnectionStatus(cnnId: string, status: CNN_STATUS) {
-	const cnn = cnnSo.getById(cnnId)
-	if (!cnn || cnn.status == status) return
-	cnnSo.update({ id: cnnId, status })
 }

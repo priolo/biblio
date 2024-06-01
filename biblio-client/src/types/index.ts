@@ -1,5 +1,3 @@
-
-export * from "./Connection"
 export * from "../stores/docs/types"
 
 type RGB = `rgb(${number}, ${number}, ${number})`;

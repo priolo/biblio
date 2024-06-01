@@ -1,19 +1,17 @@
-import cnnSo from "@/stores/connections"
 import docsSo from "@/stores/docs"
 import { GetAllCards, deckCardsSo, drawerCardsSo } from "@/stores/docs/cards"
 import { menuSo } from "@/stores/docs/links"
 import { buildStore } from "@/stores/docs/utils/factory"
 import { forEachViews } from "@/stores/docs/utils/manage"
 import logSo from "@/stores/log"
-import { CnnListStore } from "@/stores/stacks/connection"
+import { AboutStore } from "@/stores/stacks/about"
+import { HelpStore } from "@/stores/stacks/help"
 import { ViewLogStore } from "@/stores/stacks/log"
 import { ViewStore } from "@/stores/stacks/viewBase"
 import { DOC_TYPE } from "@/types"
 import { delay } from "../time"
 import { loadLocalStorage, saveLocalStorage } from "./storage"
 import { Session } from "./types"
-import { AboutStore } from "@/stores/stacks/about"
-import { HelpStore } from "@/stores/stacks/help"
 
 
 
@@ -54,9 +52,6 @@ export async function LoadSession() {
 
 	// BUILD SINGLETONE CARDS
 	buildFixedCards(allStores)
-
-	// LOAD ALL CONNECTIONS
-	await cnnSo.fetch()
 
 	deckCardsSo.setAll(deckStores)
 	drawerCardsSo.setAll(drawerStores)
@@ -109,9 +104,8 @@ function buildCards(session: Session) {
 }
 
 function buildFixedCards(allStores: ViewStore[]) {
-	const fixedCnn = (allStores.find(s => s.state.type == DOC_TYPE.CONNECTIONS) ?? buildStore({ type: DOC_TYPE.CONNECTIONS })) as CnnListStore
 	const fixedLogs = (allStores.find(s => s.state.type == DOC_TYPE.LOGS) ?? buildStore({ type: DOC_TYPE.LOGS })) as ViewLogStore
 	const fixedAbout = (allStores.find(s => s.state.type == DOC_TYPE.ABOUT) ?? buildStore({ type: DOC_TYPE.ABOUT })) as AboutStore
 	const fixedHelp = buildStore({ type: DOC_TYPE.HELP }) as HelpStore
-	docsSo.setFixedViews([fixedCnn, fixedLogs, fixedAbout, fixedHelp])
+	docsSo.setFixedViews([fixedLogs, fixedAbout, fixedHelp])
 }
