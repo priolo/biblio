@@ -1,30 +1,34 @@
 {
-    "extends": "@tsconfig/node14/tsconfig.json",
     "compilerOptions": {
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        //"watch": true,
-        "allowJs": true,
-        "outDir": "dist",
-        "baseUrl": "./src",
-        //"rootDir": "./src",
-        "declaration": true,
-        "declarationMap": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        // "typeRoots": [
-        //     //"./typings",
-        //     "./node_modules/@types/**/*"
-        // ],
-        "strict": false,
-        "paths": { "*": ["*"]}
+      "target": "ES6",
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "sourceMap": true,
+      "preserveConstEnums": true,
+      "allowJs": true,
+      "paths": {
+        "@/*": [
+          "./src/*"
+        ]
+      },
+      "declaration": true,
+      "declarationMap": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "strict": false,
+      "strictNullChecks": false
     },
     "include": [
-        "src/**/*"
+      "src"
     ],
-    // "exclude": [
-    //     "node_modules",
-    //     "dist",
-    //     "**/*.spec.ts"
-    // ]
-}
+    "exclude": [
+      "node_modules",
+      "dist",
+      "**/*.test.ts"
+    ]
+  }

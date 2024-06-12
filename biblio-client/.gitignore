@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 
+# Mantengo "dist" perche' se l metto in host mi serve per evitare il doppio build
 !dist
 *.local
 

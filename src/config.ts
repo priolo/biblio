@@ -1,13 +1,17 @@
-import path from "path";
-//import HttpService from "typexpress/dist/services/http";
-import { Doc } from "./repository/Doc";
-import { Provider } from "./repository/Provider";
-import { User } from "./repository/User";
-import { getDBConnectionOptions } from "./repository/connection";
-import UserRoute from "./routers/UserRoute";
-import AuthRoute from "./routers/AuthRoute";
-import DocRoute from "./routers/DocRoute";
 
+import { getDBConnectionOptions } from "./repository/connection.js";
+import UserRoute from "./routers/UserRoute.js";
+import AuthRoute from "./routers/AuthRoute.js";
+import DocRoute from "./routers/DocRoute.js";
+import userRepo from "./repository/User.js";
+import providerRepo from "./repository/Provider.js";
+import docRepo from "./repository/Doc.js";
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
+import { ws } from "typexpress"
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 
 //type HttpCnf = Partial<HttpService["stateDefault"]>
@@ -49,6 +53,24 @@ function buildNodeConfig() {
 					dir: path.join(__dirname, "../biblio-client/dist"),
 					spaFile: "index.html",
 				},
+				{
+					class: "ws",
+					children: [
+						{
+							class: "ws/route",
+							onMessage: async function (client, message) {
+								await this.dispatch({
+									type: ws.SocketRouteActions.SEND,
+									payload: { client, message }
+								})
+								await this.dispatch({
+									type: ws.SocketRouteActions.DISCONNECT,
+									payload: client
+								})
+							},
+						}
+					],
+				}
 			]
 		},
 		{
@@ -57,23 +79,25 @@ function buildNodeConfig() {
 				...getDBConnectionOptions(),
 				//entities: repositories
 			},
-			children:  [
-				{
-					name: "users",
-					class: "typeorm/repo",
-					model: User,
-				},
-				{
-					name: "providers",
-					class: "typeorm/repo",
-					model: Provider,
-				},
-				{
-					name: "docs",
-					class: "typeorm/repo",
-					model: Doc,
-				}
-			
+			children: [
+				// {
+				// 	name: "users",
+				// 	class: "typeorm/repo",
+				// 	model: User,
+				// },
+				// {
+				// 	name: "providers",
+				// 	class: "typeorm/repo",
+				// 	model: Provider,
+				// },
+				// {
+				// 	name: "docs",
+				// 	class: "typeorm/repo",
+				// 	model: Doc,
+				// }
+				userRepo,
+				providerRepo,
+				docRepo,
 			],
 		},
 		{

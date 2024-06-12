@@ -1,16 +1,18 @@
 {
+    "extends": "@tsconfig/node18/tsconfig.json",
     "compilerOptions": {
-        "target": "ES2020",
-        "useDefineForClassFields": true,
+        "target": "ES6",
+        "module": "esnext",
         "lib": [
             "ES2020",
             "DOM",
             "DOM.Iterable"
         ],
-        "module": "esnext",
+        "moduleResolution": "NodeNext",
+
+        "useDefineForClassFields": true,
         "skipLibCheck": true,
         /* Bundler mode */
-        "moduleResolution": "bundler",
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
@@ -24,6 +26,7 @@
         "checkJs": false,
         "noImplicitAny": false,
         "strictNullChecks": false,
+        "allowSyntheticDefaultImports": true,
         "typeRoots": [
             "node_modules/@types",
         ],
@@ -39,11 +42,13 @@
         "src",
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "dist",
+        "public",
     ],
-    "references": [
-        {
-            "path": "./tsconfig.node.json"
-        }
-    ]
+    // "references": [
+    //     {
+    //         "path": "./tsconfig.node.json"
+    //     }
+    // ]
 }

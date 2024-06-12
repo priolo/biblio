@@ -1,14 +1,16 @@
 import { COLOR_VAR } from "@/stores/layout"
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
+import { IdbLoadData } from "@/utils/session/indexeddb"
+import { debounce } from "@/utils/time"
 import { StoreCore, mixStores } from "@priolo/jon"
-import { createEditor } from "slate"
+import { Descendant, createEditor } from "slate"
 import { withHistory } from 'slate-history'
 import { withReact } from "slate-react"
 import { EditorState } from "../editorBase"
-import { NODE_TYPES } from "./utils/types"
+import { NODE_TYPES, NodeType, RemoteDoc, isNodeEq } from "./utils/types"
 import { SugarEditor, withSugar } from "./utils/withSugar"
-import { debounce } from "@/utils/time"
-import { IdbLoadData, IdbSaveOrUpdateData } from "@/utils/session/indexeddb"
+import { getActionsFromDocDiff } from "./utils/actions"
+import { editor } from "monaco-editor"
 
 
 
@@ -18,6 +20,8 @@ const setup = {
 		editor: <SugarEditor>null,
 		/** valora iniziale non viene aggiornato */
 		initValue: <string>null,
+
+		remote: <RemoteDoc>null,
 
 		//formatOpen: false,
 
@@ -62,30 +66,46 @@ const setup = {
 		onCreated: (_: void, store?: ViewStore) => {
 			const editorSo = store as TextEditorStore
 			const editor: SugarEditor = withSugar(withHistory(withReact(createEditor())))
-			//editor.insertNodes(initialValue)
 			editor.insertNodes(initValue)
 			editor.view = store
 			editorSo.state.editor = editor
+			editorSo.state.remote = {
+				children: initValue
+			}
+
 		},
 		setSerialization: (data: any, store?: ViewStore) => {
 			const state = store.state as TextEditorState
 			viewSetup.actions.setSerialization(data, store)
-			IdbLoadData(store.state.uuid).then(editorData => {
-				state.editor.delete({
-					at: { anchor: state.editor.start([]), focus: state.editor.end([]) },
-				});
-				state.editor.insertNodes(editorData, { at: [0] });
-			})
+			// IdbLoadData(store.state.uuid).then(editorData => {
+			// 	state.editor.delete({
+			// 		at: { anchor: state.editor.start([]), focus: state.editor.end([]) },
+			// 	});
+			// 	state.editor.insertNodes(editorData, { at: [0] });
+			// })
 		},
 		//#endregion
 
-		// onValueChange: (_: void, store?: ViewStore) => {
-		// 	debounce("doc-change", () => {
-		// 		console.log("handleValueChange")
-		// 		const state = store.state as TextEditorState
-		// 		IdbSaveOrUpdateData(store.state.uuid, state.editor.children)
-		// 	}, 1000)
-		// },
+		onValueChange: (_: void, store?: TextEditorStore) => {
+			debounce("doc-change", () => {
+				//console.log("handleValueChange", store.state.editor.children)
+				//const state = store.state as TextEditorState
+				//IdbSaveOrUpdateData(store.state.uuid, state.editor.children)
+				const actions = getActionsFromDocDiff(
+					store.state.editor.children as NodeType[],
+					store.state.remote.children,
+					isNodeEq
+				)
+				store.state.remote.actions = actions
+				//store.state.editor.children = current as Descendant[]
+				console.log(actions)
+				//console.log(store.state.editor.children)
+			}, 1000)
+		},
+
+		fromLocalRemote: (_: void, store?: TextEditorStore) => {
+			store.state.editor.insertNodes(store.state.remote)
+		},
 
 	},
 

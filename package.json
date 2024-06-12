@@ -2,19 +2,21 @@
   "name": "biblio-server",
   "version": "0.0.1",
   "description": "general biblio",
+  "private": true,
+  "type": "module",
   "main": "dist/start.js",
-  "scripts": {
-    "build": "tsc",
-    "build-watch": "tsc -w",
-    "start": "cross-env NODE_ENV=production node dist/start.js",
-    "start:dev": "cross-env NODE_ENV=development node dist/start.js"
-  },
-  "author": "Ivano Iorio",
+  "author": "Iorio Ivano <iorioivano@gmail.com>",
   "license": "MIT",
   "//dependencies": {
     "typexpress": "file://C:/Users/iorio/Documents/typexpress/typexpress",
     "@priolo/jon-utils#local": "file:C://Users//iorio//Documents//jon-utils",
     "@priolo/jon-utils": "^0.2.2"
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "build-watch": "tsc -w",
+    "start": "cross-env NODE_ENV=production node dist/start.js",
+    "start:dev": "cross-env NODE_ENV=development node dist/start.js"
   },
   "dependencies": {
     "@priolo/jon-utils": "^0.4.3",
@@ -22,16 +24,16 @@
     "dotenv": "^16.4.5",
     "google-auth-library": "^9.10.0",
     "mysql2": "^3.9.7",
-    "typexpress": "file://C:/Users/iorio/Documents/typexpress/typexpress"
+    "typexpress": "file://C:/Users/iorio/Documents/typexpress/typexpress",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
-    "@tsconfig/node14": "^1.0.0",
+    "@tsconfig/node18": "^18.2.4",
     "@types/express": "^4.17.8",
     "@types/node": "^14.14.7",
-    "typescript": "^4.2.3"
+    "typescript": "^5.4.5"
   },
   "engines": {
-    "node": ">=14.0.0",
-    "npm": ">=6.0.0"
+    "node": ">=16"
   }
 }

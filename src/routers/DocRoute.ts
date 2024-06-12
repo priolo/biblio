@@ -1,20 +1,22 @@
 import { Request, Response } from "express"
 import { Bus, RepoRestActions, httpRouter } from "typexpress"
-import { Doc } from "../repository/Doc"
+import { HttpRouterRestRepoServiceConf } from "typexpress/dist/services/http-router/rest/HttpRouterRestRepoService"
+
 
 
 export default class DocRoute extends httpRouter.Service {
 
-	get stateDefault() {
+	get stateDefault(): HttpRouterRestRepoServiceConf {
 		return {
 			...super.stateDefault,
-			path: "/nodes",
+			path: "/docs",
 			repository: "/typeorm/docs",
 			routers: [
 				{ path: "/", verb: "get", method: "getAll" },
 				{ path: "/:id", verb: "get", method: "getById" },
 				{ path: "/", verb: "post", method: "save" },
 				{ path: "/:id", verb: "delete", method: "delete" },
+				{ path: "/update", verb: "post", method: "update"}
 			]
 		}
 	}
@@ -37,7 +39,7 @@ export default class DocRoute extends httpRouter.Service {
 
 	async save(req: Request, res: Response) {
 		const doc = req.body
-		const docDB: Doc = await new Bus(this, this.state.repository).dispatch({
+		const docDB = await new Bus(this, this.state.repository).dispatch({
 			type: RepoRestActions.SAVE,
 			payload: doc,
 		})
@@ -45,6 +47,15 @@ export default class DocRoute extends httpRouter.Service {
 	}
 
 	async delete(req: Request, res: Response) {
+		const id = req.params["id"]
+		const doc = await new Bus(this, this.state.repository).dispatch({
+			type: RepoRestActions.DELETE,
+			payload: id
+		})
+		res.json(doc)
+	}
+
+	async update(req: Request, res: Response) {
 		const id = req.params["id"]
 		const doc = await new Bus(this, this.state.repository).dispatch({
 			type: RepoRestActions.DELETE,

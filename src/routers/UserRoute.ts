@@ -1,12 +1,12 @@
 import { Request, Response } from "express"
 import { Bus, RepoRestActions, httpRouter } from "typexpress"
-import { User } from "../repository/User"
+import { HttpRouterRestRepoServiceConf } from "typexpress/dist/services/http-router/rest/HttpRouterRestRepoService"
 
 
 
 export default class UserRoute extends httpRouter.Service {
 
-	get stateDefault() {
+	get stateDefault(): HttpRouterRestRepoServiceConf {
 		return {
 			...super.stateDefault,
 			path: "/users",
@@ -35,7 +35,7 @@ export default class UserRoute extends httpRouter.Service {
 
 }
 
-function secureUser(user: User): void {
+function secureUser(user: any): void {
 	if (!user) return
 	user.password = (user.password && user.password.length > 0) ? "***" : ""
 	user.salt = ""

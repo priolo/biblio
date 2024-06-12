@@ -1,5 +1,5 @@
 import { Bus, RepoStructActions, RootService } from "typexpress";
-import buildNodeConfig from "./config";
+import buildNodeConfig from "./config.js";
 
 import dotenv from "dotenv";
 const envFile = `.env.${process.env.NODE_ENV}`;

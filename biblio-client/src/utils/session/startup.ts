@@ -12,6 +12,7 @@ import { DOC_TYPE } from "@/types"
 import { delay } from "../time"
 import { loadLocalStorage, saveLocalStorage } from "./storage"
 import { Session } from "./types"
+import { SocketService } from "../../plugins/SocketService"
 
 
 
@@ -58,6 +59,11 @@ export async function LoadSession() {
 	menuSo.setAll(menuStores)
 
 	logSo.add({ body: "STARTUP NUI - load session" })
+
+	// mi connetto a chicchessia
+	new SocketService({
+		
+	})
 }
 
 export function ClearSession() {

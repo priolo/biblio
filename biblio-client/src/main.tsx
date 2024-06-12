@@ -18,6 +18,7 @@ import './css/button.css';
 import './css/interaction.css';
 import './css/layout.css';
 import './css/monaco.css';
+
 import "./utils/session/startup.ts"
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

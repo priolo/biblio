@@ -2,6 +2,7 @@ import { BaseOperation, Editor, Element, Node, Range, Transforms } from "slate"
 import { NODE_TYPES, NodeType } from "./types"
 import { ReactEditor } from "slate-react"
 import { ViewStore } from "../../viewBase"
+import { generateUUID } from "../../../../utils/object"
 
 /**
 
@@ -9,8 +10,49 @@ import { ViewStore } from "../../viewBase"
 export const withSugar = (editor: ReactEditor) => {
 
 	//const { onChange/*normalizeNode, isInline, isVoid*/ } = editor
+	const { insertNode, insertFragment } = editor;
+	const { insertData } = editor
 	const se = editor as SugarEditor
 
+
+	const { apply } = editor;
+
+	editor.apply = operation => {
+		switch (operation.type) {
+			case "insert_node":
+				(operation.node as NodeType).id = generateUUID()
+				break
+			case "split_node":
+				if (operation.position == 1 && operation.path?.length == 1) {
+					(<Partial<NodeType>>operation.properties).id = generateUUID()
+				}
+				break
+		}
+		console.log(operation)
+		apply(operation);
+	};
+
+	// const { normalizeNode } = editor
+
+	// editor.normalizeNode = entry => {
+	// 	const [node, path] = entry
+
+	// 	// // If the element is a paragraph, ensure its children are valid.
+	// 	if (Element.isElement(node)) {
+	// 		console.log(entry)
+	// 		const nodeType = node as NodeType
+	// 		if (nodeType.id == null) nodeType.id = generateUUID()
+	// 		// 	for (const [child, childPath] of Node.children(editor, path)) {
+	// 		// 		if (Element.isElement(child) && !editor.isInline(child)) {
+	// 		// 			Transforms.unwrapNodes(editor, { at: childPath })
+	// 		// 			return
+	// 		// 		}
+	// 		// 	}
+	// 	}
+
+	// 	// Fall back to the original `normalizeNode` to enforce other constraints.
+	// 	normalizeNode(entry)
+	// }
 
 	// se.onChange =  (
 	// 	options?: {operation?: BaseOperation}
@@ -70,6 +112,43 @@ export const withSugar = (editor: ReactEditor) => {
 		})
 	}
 
+
+	// editor.insertData = (data) => {
+	// 	const fnOrigin = insertData(data)
+	// 	// if (!fnOrigin) return null
+
+	// 	// const text = data.getData('text/plain')
+	// 	// if (eq.isUrl(text)) {
+	// 	// 	Editor.insertNode(editor, {
+	// 	// 		type: BLOCK_TYPE.TEXT, 
+	// 	// 		children: [{ 
+	// 	// 			link: true,
+	// 	// 			text: text, 
+	// 	// 			url: text,
+	// 	// 		}]
+	// 	// 	})
+	// 	// 	return null
+	// 	// }
+	// 	return fnOrigin
+	// }
+
+	// editor.insertNode = (node) => {
+	// 	debugger
+	// 	//if (node.type === 'paragraph') {
+	// 		node.id = null; // Set the id to null for new paragraph nodes
+	// 	//}
+	// 	insertNode(node);
+	// };
+
+	// editor.insertFragment = (fragment) => {
+	// 	debugger
+	// 	fragment.forEach(node => {
+	// 		//if (node.type === 'paragraph') {
+	// 			node.id = null; // Set the id to null for new paragraph nodes
+	// 		//}
+	// 	});
+	// 	insertFragment(fragment);
+	// };
 
 	return se
 }
