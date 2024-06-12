@@ -1,5 +1,5 @@
 import fs from "fs";
-import { ENV } from "../utils.js";
+import { ENV_TYPE } from "../utils.js";
 import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 
@@ -13,11 +13,11 @@ export const getDBConnectionOptions = () => {
 		let dbPath: string
 		const base = path.join(__dirname, "../", process.env.DB_DIR)
 
-		if (process.env.NODE_ENV == ENV.TEST) {
+		if (process.env.NODE_ENV == ENV_TYPE.TEST) {
 			if (!dbPath) dbPath = path.join(base, "/database.test.sqlite")
 			try { if (fs.existsSync(dbPath)) fs.unlinkSync(dbPath) }
 			catch (e) { console.log(e) }
-		} else if (process.env.NODE_ENV == ENV.DEV) {
+		} else if (process.env.NODE_ENV == ENV_TYPE.DEV) {
 			dbPath = path.join(base, "/database.dev.sqlite")
 		} else {
 			dbPath = path.join(base, "/database.sqlite")

@@ -1,8 +1,8 @@
-import { ENV } from "../utils"
+import { ENV_TYPE } from "../utils.js"
 import { Bus, RepoStructActions } from "typexpress"
 
 
-const route = process.env.NODE_ENV == ENV.TEST ? {
+const route = process.env.NODE_ENV == ENV_TYPE.TEST ? {
 	class: "http-router",
 	path: "/debug",
 	routers: [

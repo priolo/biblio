@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { Bus, RepoRestActions, httpRouter } from "typexpress"
-import { HttpRouterRestRepoServiceConf } from "typexpress/dist/services/http-router/rest/HttpRouterRestRepoService"
+import { HttpRouterRestRepoServiceConf } from "typexpress/dist/services/http-router/rest/HttpRouterRestRepoService.js"
 
 
 

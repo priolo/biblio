@@ -2,7 +2,8 @@ import crypto from "crypto"
 import { Request, Response } from "express"
 import { OAuth2Client } from 'google-auth-library'
 import { Bus, PathFinder, RepoRestActions, email as emailNs, httpRouter, jwt, typeorm } from "typexpress"
-import { ENV } from "../utils"
+import { ENV_TYPE } from "../utils.js";
+
 
 const client = new OAuth2Client('YOUR_GOOGLE_CLIENT_ID');
 
@@ -135,7 +136,7 @@ class AuthRoute extends httpRouter.Service {
 		const userService = new PathFinder(this).getNode<typeorm.repo>(repository)
 
 		// creo il codice segreto da inviare per email
-		const code = process.env.NODE_ENV == ENV.TEST ? "AAA" : crypto.randomBytes(8).toString('hex')
+		const code = process.env.NODE_ENV == ENV_TYPE.TEST ? "AAA" : crypto.randomBytes(8).toString('hex')
 
 		// creo un utente temporaneo con il codice da attivare
 		await userService.dispatch({
