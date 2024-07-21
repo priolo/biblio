@@ -2,13 +2,13 @@
     "extends": "@tsconfig/node18/tsconfig.json",
     "compilerOptions": {
         "target": "ES6",
-        "module": "esnext",
+        "module": "ES2022",
         "lib": [
             "ES2020",
             "DOM",
             "DOM.Iterable"
         ],
-        "moduleResolution": "NodeNext",
+        "moduleResolution": "Bundler",
 
         "useDefineForClassFields": true,
         "skipLibCheck": true,

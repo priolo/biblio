@@ -11,8 +11,8 @@ import { ViewStore } from "@/stores/stacks/viewBase"
 import { DOC_TYPE } from "@/types"
 import { delay } from "../time"
 import { loadLocalStorage, saveLocalStorage } from "./storage"
-import { Session } from "./types"
 import { SocketService } from "../../plugins/SocketService"
+import { Session } from "./types"
 
 
 
@@ -61,9 +61,13 @@ export async function LoadSession() {
 	logSo.add({ body: "STARTUP NUI - load session" })
 
 	// mi connetto a chicchessia
-	new SocketService({
-		
+	const ss = new SocketService({
+		protocol: window.location.protocol == "http:" ? "ws:" : "wss:",
+		host: window.location.hostname,
+		port: 3000, //import.meta.env.VITE_API_WS_PORT ?? window.location.port,
+		base: "",
 	})
+	ss.connect()
 }
 
 export function ClearSession() {

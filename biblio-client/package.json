@@ -13,14 +13,15 @@
     "test": "vitest watch"
   },
   "//dependencies": {
-    "@priolo/jon": "C:/Users/ivano.iorio/Documents/jon",
-    "_@priolo/jon": "^0.7.6"
+    "@priolo/jon": "file:C:/Users/iorio/Documents/Jon",
+    "@priolo/jack": "file:C:/Users/iorio/Documents/Jack"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.0.17",
     "@fontsource/darker-grotesque": "^5.0.8",
     "@monaco-editor/react": "^4.6.0",
     "@priolo/jon": "^0.7.7",
+    "@priolo/jack": "0.0.3",
     "@react-oauth/google": "^0.12.1",
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.10",

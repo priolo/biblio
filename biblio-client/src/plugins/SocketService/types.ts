@@ -22,7 +22,7 @@ export enum CNN_STATUS {
 export interface SocketOptions {
     protocol?: string
     host?: string
-    port?: string
+    port?: number
     base?: string
 }
 
