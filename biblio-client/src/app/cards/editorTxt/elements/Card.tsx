@@ -1,4 +1,3 @@
-import IconButton from "@/components/buttons/IconButton"
 import CardIcon from "@/components/cards/CardIcon"
 import ArrowRightIcon from "@/icons/ArrowRightIcon"
 import CloseIcon from "@/icons/CloseIcon"
@@ -6,13 +5,13 @@ import { GetAllCards, deckCardsSo } from "@/stores/docs/cards"
 import { buildStore } from "@/stores/docs/utils/factory"
 import { getById } from "@/stores/docs/utils/manage"
 import { ElementCard } from "@/stores/stacks/editor/utils/types"
+import { SugarEditor } from "@/stores/stacks/editor/utils/withSugar"
 import { ViewStore } from "@/stores/stacks/viewBase"
 import { DOC_TYPE } from "@/types"
+import { IconButton, mouseSo } from "@priolo/jack"
 import { FunctionComponent } from "react"
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from "slate-react"
 import cls from "./Card.module.css"
-import { SugarEditor } from "@/stores/stacks/editor/utils/withSugar"
-import mouseSo from "@/stores/mouse"
 import Drop from "./Drop"
 
 
@@ -63,7 +62,7 @@ const Card: FunctionComponent<CardProps> = ({
 	const clsFocus = selected && focused ? cls.focus : ''
 	const clsRoot = `${cls.root} ${clsFocus} hover-container`
 	const styColor = `var(--var-${element.colorVar})`
-	const cardType: DOC_TYPE = element.data.type
+	const cardType: DOC_TYPE = element.data.type as DOC_TYPE
 
 	return <Drop
 		attributes={attributes}

@@ -1,14 +1,12 @@
 import userApi from "@/api/user"
 import { findInRoot } from "@/stores/docs/utils/manage"
-import { COLOR_VAR } from "@/stores/layout"
 import { MESSAGE_TYPE } from "@/stores/log/utils"
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
 import { DOC_TYPE, EDIT_STATE } from "@/types"
 import { StoreCore, mixStores } from "@priolo/jon"
 import { UsersState, UsersStore } from "."
 import { User } from "../../../types/User"
-import loadBaseSetup, { LoadBaseState, LoadBaseStore } from "../loadBase"
-import { VIEW_SIZE } from "../utils"
+import { loadBaseSetup, LoadBaseState, LoadBaseStore, VIEW_SIZE } from "@priolo/jack"
 
 
 
@@ -22,8 +20,6 @@ const setup = {
 		editState: EDIT_STATE.READ,
 
 		//#region VIEWBASE
-
-		colorVar: COLOR_VAR.YELLOW,
 		width: 230,
 		size: VIEW_SIZE.COMPACT,
 
@@ -129,7 +125,7 @@ export type UserState = typeof setup.state & ViewState & LoadBaseState
 export type UserGetters = typeof setup.getters
 export type UserActions = typeof setup.actions
 export type UserMutators = typeof setup.mutators
-export interface UserStore extends ViewStore, LoadBaseStore, StoreCore<UserState>, UserGetters, UserActions, UserMutators {
+export interface UserStore extends ViewStore, LoadBaseStore, UserGetters, UserActions, UserMutators {
 	state: UserState
 }
 const userSetup = mixStores(viewSetup, loadBaseSetup, setup)

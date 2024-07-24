@@ -1,7 +1,4 @@
-import Button from "@/components/buttons/Button"
-import IconButton from "@/components/buttons/IconButton"
-import TextInput from "@/components/input/TextInput"
-import ClearIcon from "@/icons/ClearIcon"
+import { Button, IconButton, TextInput } from "@priolo/jack"
 import LinkIcon from "@/icons/LinkIcon"
 import { TextEditorStore } from "@/stores/stacks/editor"
 import { NODE_TYPES, NodeType } from "@/stores/stacks/editor/utils/types"
@@ -9,6 +6,7 @@ import { SugarEditor } from "@/stores/stacks/editor/utils/withSugar"
 import { useStore } from "@priolo/jon"
 import { FunctionComponent, useState } from "react"
 import { ReactEditor, useSlate } from "slate-react"
+import cls from "./View.module.css"
 
 
 
@@ -100,7 +98,7 @@ const ActionsCmp: FunctionComponent<Props> = ({
 	const urlMark = marks?.["url"] ?? ""
 
 	return (<div
-		className="btt-actions"
+		className={cls.actions}
 		style={style}
 	>
 

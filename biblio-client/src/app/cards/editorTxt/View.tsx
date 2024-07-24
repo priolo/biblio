@@ -8,6 +8,8 @@ import ActionsCmp from "./Actions"
 import cls from "./View.module.css"
 import BiblioElement from "./elements/BiblioElement"
 import BiblioLeaf from "./leafs/BiblioLeaf"
+import clsCard from "../CardCyanDef.module.css"
+import MessageIcon from "../../../icons/cards/MessageIcon"
 
 
 
@@ -46,6 +48,8 @@ const EditorView: FunctionComponent<Props> = ({
 	const editor = store.state.editor
 	console.log("SLATE render")
 	return <FrameworkCard
+		className={clsCard.root}
+		icon={<MessageIcon />}
 		store={store}
 		//actionsRender={<ActionsCmp store={store} />}
 		iconizedRender={null}

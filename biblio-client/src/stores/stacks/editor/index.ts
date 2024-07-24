@@ -1,16 +1,13 @@
-import { COLOR_VAR } from "@/stores/layout"
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
-import { IdbLoadData } from "@/utils/session/indexeddb"
 import { debounce } from "@/utils/time"
-import { StoreCore, mixStores } from "@priolo/jon"
-import { Descendant, createEditor } from "slate"
+import { mixStores } from "@priolo/jon"
+import { createEditor } from "slate"
 import { withHistory } from 'slate-history'
 import { withReact } from "slate-react"
 import { EditorState } from "../editorBase"
+import { getActionsFromDocDiff } from "./utils/actions"
 import { NODE_TYPES, NodeType, RemoteDoc, isNodeEq } from "./utils/types"
 import { SugarEditor, withSugar } from "./utils/withSugar"
-import { getActionsFromDocDiff } from "./utils/actions"
-import { editor } from "monaco-editor"
 
 
 
@@ -26,7 +23,6 @@ const setup = {
 		//formatOpen: false,
 
 		//#region VIEWBASE
-		colorVar: COLOR_VAR.CYAN,
 		width: 370,
 		widthMax: 1000,
 		//#endregion
@@ -71,7 +67,7 @@ const setup = {
 			editorSo.state.editor = editor
 			editorSo.state.remote = {
 				children: initValue
-			}
+			} as RemoteDoc
 
 		},
 		setSerialization: (data: any, store?: ViewStore) => {
@@ -118,7 +114,7 @@ export type TextEditorState = typeof setup.state & ViewState & EditorState
 export type TextEditorGetters = typeof setup.getters
 export type TextEditorActions = typeof setup.actions
 export type TextEditorMutators = typeof setup.mutators
-export interface TextEditorStore extends ViewStore, StoreCore<TextEditorState>, TextEditorGetters, TextEditorActions, TextEditorMutators {
+export interface TextEditorStore extends ViewStore, TextEditorGetters, TextEditorActions, TextEditorMutators {
 	state: TextEditorState
 }
 const txtEditorSetup = mixStores(viewSetup, setup)

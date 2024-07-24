@@ -1,10 +1,9 @@
-import { COLOR_VAR } from "@/stores/layout"
 import { ViewState, ViewStore, default as docSetup, default as viewSetup } from "@/stores/stacks/viewBase"
 import { User } from "@/types/User"
-import { StoreCore, mixStores } from "@priolo/jon"
-import loadBaseSetup, { LoadBaseState, LoadBaseStore } from "../loadBase"
-import { buildUser } from "./utils/factory"
+import { mixStores } from "@priolo/jon"
 import userApi from "../../../api/user"
+import { buildUser } from "./utils/factory"
+import { loadBaseSetup, LoadBaseState, LoadBaseStore } from "@priolo/jack"
 
 
 
@@ -20,7 +19,6 @@ const setup = {
 		//#region VIEWBASE
 		width: 310,
 		widthMax: 800,
-		colorVar: COLOR_VAR.YELLOW,
 		//#endregion
 	},
 
@@ -96,7 +94,7 @@ export type UsersState = typeof setup.state & ViewState & LoadBaseState
 export type UsersGetters = typeof setup.getters
 export type UsersActions = typeof setup.actions
 export type UsersMutators = typeof setup.mutators
-export interface UsersStore extends ViewStore, LoadBaseStore, StoreCore<UsersState>, UsersGetters, UsersActions, UsersMutators {
+export interface UsersStore extends ViewStore, LoadBaseStore, UsersGetters, UsersActions, UsersMutators {
 	state: UsersState
 }
 const usersSetup = mixStores(docSetup, loadBaseSetup, setup)

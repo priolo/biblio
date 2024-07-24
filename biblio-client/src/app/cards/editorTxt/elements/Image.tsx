@@ -4,7 +4,7 @@ import { FunctionComponent, useRef } from 'react';
 import { Transforms } from "slate";
 import { RenderElementProps, useFocused, useSelected } from "slate-react";
 import cls from "./Image.module.css";
-import IconButton from "@/components/buttons/IconButton";
+import { IconButton } from "@priolo/jack";
 
 
 

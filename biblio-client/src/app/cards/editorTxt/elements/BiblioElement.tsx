@@ -1,12 +1,11 @@
-import { NODE_TYPES, ElementType } from "@/stores/stacks/editor/utils/types"
+import { ElementType, NODE_TYPES } from "@/stores/stacks/editor/utils/types"
 import { FunctionComponent } from "react"
 import { RenderElementProps } from "slate-react"
 import Card, { CardProps } from "./Card"
 import Chapter from "./Chapter"
+import Code from "./Code"
 import Paragraph from "./Paragraph"
 import Text from "./Text"
-import Code from "./Code"
-import { TextEditorStore } from "@/stores/stacks/editor"
 
 
 

@@ -1,11 +1,9 @@
-import { FunctionComponent, HTMLProps, useState } from "react"
-import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from "slate-react"
-import cls from "./Drop.module.css"
-import mouseSo from "@/stores/mouse"
 import { SugarEditor } from "@/stores/stacks/editor/utils/withSugar"
+import { mouseSo } from "@priolo/jack"
 import { useStore } from "@priolo/jon"
-import { NODE_TYPES, NodeType } from "@/stores/stacks/editor/utils/types"
-
+import { FunctionComponent, HTMLProps } from "react"
+import { ReactEditor, RenderElementProps, useSlate } from "slate-react"
+import cls from "./Drop.module.css"
 
 
 

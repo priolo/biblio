@@ -1,12 +1,10 @@
-import CopyButton from "@/components/buttons/CopyButton";
-import IconButton from "@/components/buttons/IconButton";
-import ArrowRightIcon from "@/icons/ArrowRightIcon";
 import { GetAllCards } from "@/stores/docs/cards";
 import { getById } from "@/stores/docs/utils/manage";
 import { ElementCard } from "@/stores/stacks/editor/utils/types";
 import { SugarEditor } from "@/stores/stacks/editor/utils/withSugar";
 import { buildCodeEditor } from "@/stores/stacks/editorCode/factory";
 import { ViewStore } from "@/stores/stacks/viewBase";
+import { CopyButton } from "@priolo/jack";
 import { FunctionComponent } from "react";
 import { Node } from "slate";
 import { RenderElementProps, useFocused, useSelected, useSlate } from "slate-react";

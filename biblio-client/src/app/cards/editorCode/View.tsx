@@ -1,10 +1,8 @@
 import FrameworkCard from "@/components/cards/FrameworkCard"
 import EditorCode from "@/components/editor"
-import FormatAction from "@/components/editor/FormatAction"
 import { EditorCodeState, EditorCodeStore } from "@/stores/stacks/editorCode"
 import { useStore } from "@priolo/jon"
 import { FunctionComponent } from "react"
-import FormatDialog from "../../../components/editor/FormatDialog"
 import cls from "./View.module.css"
 
 

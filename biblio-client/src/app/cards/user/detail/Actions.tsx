@@ -1,8 +1,6 @@
-import Button from "@/components/buttons/Button"
-import OptionsCmp from "@/components/loaders/OptionsCmp"
-import { MESSAGE_TYPE } from "@/stores/log/utils"
 import { UserStore } from "@/stores/stacks/streams/detail"
 import { EDIT_STATE } from "@/types"
+import { Button, OptionsCmp } from "@priolo/jack"
 import { useStore } from "@priolo/jon"
 import { FunctionComponent } from "react"
 
@@ -27,7 +25,6 @@ const ActionsCmp: FunctionComponent<Props> = ({
 	const handleSaveClick = async () => streamSo.save()
 
 	// RENDER
-	if (streamSa.stream == null) return null
 	if (streamSa.editState == EDIT_STATE.NEW) {
 		return (
 			<Button

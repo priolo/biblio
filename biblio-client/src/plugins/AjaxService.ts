@@ -1,8 +1,7 @@
 import logSo from "@/stores/log"
 import { MESSAGE_TYPE } from "@/stores/log/utils"
-import { LoadBaseStore } from "@/stores/stacks/loadBase"
-import { LOAD_STATE } from "@/stores/stacks/utils"
 import { camelToSnake, snakeToCamel } from "@/utils/object"
+import { LOAD_STATE, LoadBaseStore } from "@priolo/jack"
 
 
 

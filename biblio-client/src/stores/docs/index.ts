@@ -14,9 +14,8 @@ export enum DRAWER_POSITION {
 }
 
 export enum FIXED_CARD {
-	CONNECTIONS = 0,
-	LOGS = 1,
-	ABOUT = 2,
+	LOGS = 0,
+	ABOUT,
 }
 
 /**

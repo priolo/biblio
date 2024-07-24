@@ -1,7 +1,6 @@
-import TitleAccordion from "@/components/accordion/TitleAccordion"
-import TextInput from "@/components/input/TextInput"
 import { UserStore } from "@/stores/stacks/streams/detail"
 import { EDIT_STATE } from "@/types"
+import { TextInput, TitleAccordion } from "@priolo/jack"
 import { useStore } from "@priolo/jon"
 import { FunctionComponent } from "react"
 

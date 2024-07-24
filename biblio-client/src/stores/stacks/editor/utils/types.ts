@@ -1,6 +1,5 @@
 import { BaseElement, BaseText } from "slate"
 import { ViewState } from "../../viewBase"
-import { COLOR_VAR } from "@/stores/layout"
 import { Action } from "./actions"
 
 
@@ -35,7 +34,6 @@ export type ElementType = {
 export type ElementCard = {
 	data: Partial<ViewState>
 	subtitle?: string
-	colorVar?: COLOR_VAR
 } & ElementType
 
 export type ElementImage = {

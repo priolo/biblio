@@ -1,6 +1,5 @@
-import { COLOR_VAR } from "@/stores/layout"
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
-import { StoreCore, mixStores } from "@priolo/jon"
+import { mixStores } from "@priolo/jon"
 
 
 
@@ -10,7 +9,6 @@ const setup = {
 		code: <string>null,
 
 		//#region VIEWBASE
-		colorVar: COLOR_VAR.CYAN,
 		width: 420,
 		widthMax: 1000,
 		//#endregion
@@ -54,7 +52,7 @@ export type EditorCodeState = typeof setup.state & ViewState
 export type EditorCodeGetters = typeof setup.getters
 export type EditorCodeActions = typeof setup.actions
 export type EditorCodeMutators = typeof setup.mutators
-export interface EditorCodeStore extends ViewStore, StoreCore<EditorCodeState>, EditorCodeGetters, EditorCodeActions, EditorCodeMutators {
+export interface EditorCodeStore extends ViewStore, EditorCodeGetters, EditorCodeActions, EditorCodeMutators {
 	state: EditorCodeState
 }
 const editCodeSetup = mixStores(viewSetup, setup)

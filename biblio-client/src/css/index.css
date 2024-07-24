@@ -15,4 +15,11 @@ body {
   height: 100%;
 }
 
+:root {
+  --color-primary-fg: #393939;
+  --color-primary-bg: #BBFB35;
+  
+  --color-element-fg: #dedede;
+  --color-element-bg: #393939;
+}
 

@@ -1,7 +1,7 @@
-import { RenderElementProps, useFocused, useSelected } from "slate-react"
-import styles from "./Paragraph.module.css"
 import { FunctionComponent } from "react"
+import { RenderElementProps, useFocused, useSelected } from "slate-react"
 import Drop from "./Drop"
+import styles from "./Paragraph.module.css"
 
 
 

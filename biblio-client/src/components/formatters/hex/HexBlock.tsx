@@ -1,4 +1,3 @@
-import layoutSo from "@/stores/layout"
 import { FunctionComponent, useMemo } from "react"
 
 
@@ -46,7 +45,7 @@ const cssHex1 = {
 }
 const cssHex2 = {
 	padding: "0px 3px",
-	color: layoutSo.state.theme.palette.default.fg2,
+	opacity: .7,
 }
 const toHex = (value: number): string => {
 	if ( value == null ) return ".."
