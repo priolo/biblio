@@ -16,13 +16,13 @@ import { Session } from "./types"
 
 
 
-window.addEventListener("load", async (event) => LoadSession())
-window.addEventListener("beforeunload", async (event) => SaveSession())
+window.addEventListener("load", async (event) => StartSession())
+window.addEventListener("beforeunload", async (event) => EndSession())
 window.onerror = (message, url, line, col, error) => {
 	logSo.addError(error)
 }
 
-export async function SaveSession() {
+export async function EndSession() {
 	const deckStates = deckCardsSo.state.all.map(store => store.getSerialization())
 	const drawerStates = drawerCardsSo.state.all.map(store => store.getSerialization())
 	const menuStates = menuSo.state.all.reduce((acc, store) => {
@@ -41,33 +41,35 @@ export async function SaveSession() {
 	saveLocalStorage(session)
 }
 
-export async function LoadSession() {
+export async function StartSession() {
 
 	// altrimenti MSW non funziona
 	if (import.meta.env.DEV) await delay(1000)
 
+	// carico e costruisco la CARD in CACHE
 	const session = loadLocalStorage()
 	docsSo.setSerialization(session.docsState)
 	const { deckStores, drawerStores, menuStores } = buildCards(session)
 	const allStores = [...deckStores, ...drawerStores, ...menuStores]
-
-	// BUILD SINGLETONE CARDS
-	buildFixedCards(allStores)
-
+	// inserisco negli STOREs
 	deckCardsSo.setAll(deckStores)
 	drawerCardsSo.setAll(drawerStores)
 	menuSo.setAll(menuStores)
 
+	// BUILD SINGLETONE CARDS
+	buildFixedCards(allStores)
+
+	// FINITO! lo indico nel LOGs
 	logSo.add({ body: "STARTUP NUI - load session" })
 
 	// mi connetto a chicchessia
-	const ss = new SocketService({
-		protocol: window.location.protocol == "http:" ? "ws:" : "wss:",
-		host: window.location.hostname,
-		port: 3000, //import.meta.env.VITE_API_WS_PORT ?? window.location.port,
-		base: "",
-	})
-	ss.connect()
+	// const ss = new SocketService({
+	// 	protocol: window.location.protocol == "http:" ? "ws:" : "wss:",
+	// 	host: window.location.hostname,
+	// 	port: 3000, //import.meta.env.VITE_API_WS_PORT ?? window.location.port,
+	// 	base: "",
+	// })
+	// ss.connect()
 }
 
 export function ClearSession() {

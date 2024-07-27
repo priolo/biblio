@@ -51,9 +51,11 @@ export type TextType = {
 /** NODE tipizzato dell'editor */
 export type NodeType = Node & ElementCard & ElementImage & TextType
 
+/** aggiornamento DOC remoto*/
 export interface RemoteDoc {
 	children: NodeType[]
 	actions: Action[]
+	updateAt: number,
 }
 
 

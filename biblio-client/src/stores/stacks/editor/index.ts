@@ -1,6 +1,6 @@
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
 import { debounce } from "@/utils/time"
-import { mixStores } from "@priolo/jon"
+import { mixStores, StoreCore } from "@priolo/jon"
 import { createEditor } from "slate"
 import { withHistory } from 'slate-history'
 import { withReact } from "slate-react"
@@ -8,16 +8,20 @@ import { EditorState } from "../editorBase"
 import { getActionsFromDocDiff } from "./utils/actions"
 import { NODE_TYPES, NodeType, RemoteDoc, isNodeEq } from "./utils/types"
 import { SugarEditor, withSugar } from "./utils/withSugar"
+import { DragDoc } from "@priolo/jack/dist/stores/mouse/utils"
+import { IdbLoadData } from "../../../utils/session/indexeddb"
+import docApi from "../../../api/doc"
 
 
 
 const setup = {
 
 	state: {
+		docId: <string>null,
 		editor: <SugarEditor>null,
 		/** valora iniziale non viene aggiornato */
 		initValue: <string>null,
-
+		/** aggiornamento rispetto il remoto */
 		remote: <RemoteDoc>null,
 
 		//formatOpen: false,
@@ -32,47 +36,62 @@ const setup = {
 		//#region VIEWBASE
 		getTitle: (_: void, store?: ViewStore) => "NOTE",
 		getSubTitle: (_: void, store?: ViewStore) => "Just for an ephemeral note",
-		// getSerialization: (_: void, store?: ViewStore) => {
-		// 	// const state = store.state as TextEditorState
-		// 	// return {
-		// 	// 	...viewSetup.getters.getSerialization(null, store),
-		// 	// 	children: state.editor.children,
-		// 	// }
-		// 	return viewSetup.getters.getSerialization(null, store)
-		// },
+		getSerialization: (_: void, store?: ViewStore) => {
+			const state = store.state as TextEditorState
+			return {
+				...viewSetup.getters.getSerialization(null, store),
+				children: state.editor.children,
+			}
+		},
 		//#endregion
 	},
 
 	actions: {
-		//#region VIEWBASE
-		// onDrop: (data: DragDoc, store?: ViewStore) => {
-		// 	const editorSo = store as TextEditorStore
-		// 	const editor = editorSo.state.editor
-		// 	if ( !data.srcView ) return 
 
-		// 	const node = {
-		// 		type: NODE_TYPES.CARD,
-		// 		data: data.srcView.getSerialization(),
-		// 		subtitle: data.srcView.getSubTitle(),
-		// 		colorVar: data.srcView.state.colorVar,
-		// 		children: [{ text: data.srcView.getTitle() }],
-		// 	}
-		// 	editor.insertNode(node)
-		// },
+		//#region VIEWBASE
+
+		onDrop: (data: DragDoc, store?: ViewStore) => {
+			const editorSo = store as TextEditorStore
+			const editor = editorSo.state.editor
+			if (!data.source?.view) return
+
+			if (data.source.view == data.destination?.view) {
+				editor.moveNodes({ at: [data.source.index], to: [data.destination.index] })
+
+			} else {
+				if (data.source.index) {
+					const sourceEditor = (<TextEditorStore>data.source.view).state.editor
+					if (!sourceEditor) return
+					const [node] = sourceEditor.node([data.source.index])
+					editor.insertNode(node, { at: [data.destination.index] })
+				} else {
+					// cotruisco un NODE da una VIEW
+					const node = {
+						type: NODE_TYPES.CARD,
+						data: data.source.view.getSerialization(),
+						subtitle: data.source.view.getSubTitle(),
+						children: [{ text: data.source.view.getTitle() }],
+					}
+					editor.insertNode(node, { at: [data.destination.index] })
+				}
+			}
+		},
+
 		onCreated: (_: void, store?: ViewStore) => {
 			const editorSo = store as TextEditorStore
 			const editor: SugarEditor = withSugar(withHistory(withReact(createEditor())))
 			editor.insertNodes(initValue)
 			editor.view = store
 			editorSo.state.editor = editor
-			editorSo.state.remote = {
-				children: initValue
-			} as RemoteDoc
-
 		},
+
 		setSerialization: (data: any, store?: ViewStore) => {
-			const state = store.state as TextEditorState
 			viewSetup.actions.setSerialization(data, store)
+			const state = store.state as TextEditorState
+			state.editor.removeNodes({ at: [0] });
+			state.editor.insertNodes(data.children ?? [], { at: [0] });
+
+
 			// IdbLoadData(store.state.uuid).then(editorData => {
 			// 	state.editor.delete({
 			// 		at: { anchor: state.editor.start([]), focus: state.editor.end([]) },
@@ -80,7 +99,12 @@ const setup = {
 			// 	state.editor.insertNodes(editorData, { at: [0] });
 			// })
 		},
+
 		//#endregion
+
+		fetch: async (_: void, store?: TextEditorStore) => {
+			const doc = await docApi.get(store.state.docId)
+		},
 
 		onValueChange: (_: void, store?: TextEditorStore) => {
 			debounce("doc-change", () => {
@@ -114,7 +138,7 @@ export type TextEditorState = typeof setup.state & ViewState & EditorState
 export type TextEditorGetters = typeof setup.getters
 export type TextEditorActions = typeof setup.actions
 export type TextEditorMutators = typeof setup.mutators
-export interface TextEditorStore extends ViewStore, TextEditorGetters, TextEditorActions, TextEditorMutators {
+export interface TextEditorStore extends ViewStore, StoreCore<TextEditorState>, TextEditorGetters, TextEditorActions, TextEditorMutators {
 	state: TextEditorState
 }
 const txtEditorSetup = mixStores(viewSetup, setup)

@@ -1,32 +1,13 @@
 {
-    "extends": "@tsconfig/node18/tsconfig.json",
     "compilerOptions": {
-        "target": "ES6",
-        "module": "ES2022",
+        "target": "ES2020",
+        "moduleResolution": "bundler",
         "lib": [
             "ES2020",
             "DOM",
             "DOM.Iterable"
         ],
-        "moduleResolution": "Bundler",
-
-        "useDefineForClassFields": true,
-        "skipLibCheck": true,
-        /* Bundler mode */
-        "allowImportingTsExtensions": true,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "noUnusedLocals": false,
-        "jsx": "react-jsx",
-        /* Linting */
-        "strict": false,
-        "noUnusedParameters": false,
-        "noFallthroughCasesInSwitch": true,
-        "checkJs": false,
-        "noImplicitAny": false,
-        "strictNullChecks": false,
-        "allowSyntheticDefaultImports": true,
+        "module": "esnext",
         "typeRoots": [
             "node_modules/@types",
         ],
@@ -36,19 +17,27 @@
                 "./src/*"
             ]
         },
+        "useDefineForClassFields": true,
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true,
+        "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "noUnusedLocals": false,
+        "jsx": "react-jsx",
+        "strict": false,
+        "noUnusedParameters": false,
+        "noFallthroughCasesInSwitch": true,
+        "checkJs": false,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
         "esModuleInterop": true,
     },
     "include": [
         "src",
     ],
     "exclude": [
-        "node_modules",
-        "dist",
-        "public",
-    ],
-    // "references": [
-    //     {
-    //         "path": "./tsconfig.node.json"
-    //     }
-    // ]
+        "node_modules"
+    ]
 }

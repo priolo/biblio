@@ -13,7 +13,7 @@
 }
 
 .root.focus {
-	border-left: 2px solid var(--var-2);
+	border-left: 2px solid var(--cmp-select-bg);
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
 }

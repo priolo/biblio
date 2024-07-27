@@ -1,6 +1,6 @@
 import { ViewState, ViewStore, default as docSetup, default as viewSetup } from "@/stores/stacks/viewBase"
 import { User } from "@/types/User"
-import { mixStores } from "@priolo/jon"
+import { mixStores, StoreCore } from "@priolo/jon"
 import userApi from "../../../api/user"
 import { buildUser } from "./utils/factory"
 import { loadBaseSetup, LoadBaseState, LoadBaseStore } from "@priolo/jack"

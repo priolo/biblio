@@ -8,6 +8,7 @@ import { FunctionComponent, useEffect } from "react"
 import cls from "./App.module.css"
 import DeckGroup from "./DeckGroup"
 import DrawerGroup from "./DrawerGroup"
+import { delay } from "../utils/time"
 
 
 
@@ -18,7 +19,11 @@ const App: FunctionComponent = () => {
 
 	// HOOKS
 	useEffect(() => {
-		authSo.current()
+		async function fn() {
+			await delay(1000)
+			await authSo.current()
+		}
+		fn() 
 	}, [])
 
 	// HANDLERS

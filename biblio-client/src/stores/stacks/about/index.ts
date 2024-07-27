@@ -1,7 +1,7 @@
 import aboutApi from "@/api/about"
 import viewSetup, { ViewStore } from "@/stores/stacks/viewBase"
 import { About } from "@/types/About"
-import { mixStores } from "@priolo/jon"
+import { mixStores, StoreCore } from "@priolo/jon"
 import { ViewState } from "../viewBase"
 
 
@@ -59,7 +59,7 @@ export type AboutState = typeof setup.state & ViewState
 export type AboutGetters = typeof setup.getters
 export type AboutActions = typeof setup.actions
 export type AboutMutators = typeof setup.mutators
-export interface AboutStore extends ViewStore, AboutGetters, AboutActions, AboutMutators {
+export interface AboutStore extends ViewStore, StoreCore<AboutState>, AboutGetters, AboutActions, AboutMutators {
 	state: AboutState
 }
 const aboutSetup = mixStores(viewSetup, setup)

@@ -13,16 +13,13 @@ const setup = {
 
 	actions: {
 		current: (_: void, store?: AuthStore) => {
+
 			fetch('/api/auth/current', {
 				method: 'GET',
 				credentials: 'include', // Includi i cookie nella richiesta
 			})
 				.then(response => response.json())
-				.then(data => {
-					if (data.user) {
-						store.setUser(data.user);
-					}
-				})
+				.then(data => store.setUser(data))
 				.catch(error => console.error('Error:', error));
 		},
 		createSession: (token: string, store?: AuthStore) => {
@@ -47,7 +44,7 @@ const setup = {
 			fetch('/auth/logout', {
 				method: 'POST',
 				credentials: 'include',
-			  })
+			})
 				.then(() => store.setUser(null))
 				.catch(error => console.error('Error:', error));
 		},

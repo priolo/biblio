@@ -23,7 +23,7 @@ const StoreButton: FunctionComponent<Props> = ({
 
 	// STORE
 	const state = useStore(store)
-
+	if ( !state ) return null
 	// HOOKs
 
 	// HANDLER

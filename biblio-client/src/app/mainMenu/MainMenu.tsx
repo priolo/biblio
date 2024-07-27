@@ -5,7 +5,7 @@ import { deckCardsSo } from "@/stores/docs/cards"
 import { menuSo } from "@/stores/docs/links"
 import { buildUserCard } from "@/stores/stacks/account/utils/factory"
 import { buildTextEditor } from "@/stores/stacks/editor/utils/factory"
-import { ClearSession, LoadSession, SaveSession } from "@/utils/session/startup"
+import { ClearSession, StartSession, EndSession } from "@/utils/session/startup"
 import { Button } from "@priolo/jack"
 import { useStore } from "@priolo/jon"
 import React, { FunctionComponent } from "react"
@@ -47,7 +47,7 @@ const MainMenu: FunctionComponent<Props> = ({
 	}
 
 	// RENDER
-	if (!docsSo.state?.fixedViews) return null
+	//if (!docsSo.state?.fixedViews) return null
 	//const views = menuSa.all
 
 	return <div style={style} className={cls.root}>
@@ -67,8 +67,8 @@ const MainMenu: FunctionComponent<Props> = ({
 
 		{/* *** DEBUG *** */}
 		{process.env.NODE_ENV === 'development' && <>
-			<Button children="SAVE" onClick={() => SaveSession()} />
-			<Button children="LOAD" onClick={() => LoadSession()} />
+			<Button children="SAVE" onClick={() => EndSession()} />
+			<Button children="LOAD" onClick={() => StartSession()} />
 			<Button children="RESET" onClick={() => ClearSession()} />
 		</>}
 		{/* *** DEBUG *** */}
@@ -96,7 +96,7 @@ const MainMenu: FunctionComponent<Props> = ({
 
 		<StoreButton
 			label="LOG"
-			store={docsSo.state.fixedViews[FIXED_CARD.LOGS]}
+			store={docsSo.state.fixedViews?.[FIXED_CARD.LOGS]}
 		/>
 
 		<MenuButton 

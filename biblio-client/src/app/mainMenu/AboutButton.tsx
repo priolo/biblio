@@ -13,7 +13,7 @@ const AboutButton: FunctionComponent<Props> = ({
 }) => {
 
 	// STORE
-	const store = docSo.state.fixedViews[FIXED_CARD.ABOUT]
+	const store = docSo.state.fixedViews?.[FIXED_CARD.ABOUT]
 	const state = useStore(store)
 
 	// HOOKs

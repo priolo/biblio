@@ -61,7 +61,7 @@ const Card: FunctionComponent<CardProps> = ({
 	// RENDER
 	const clsFocus = selected && focused ? cls.focus : ''
 	const clsRoot = `${cls.root} ${clsFocus} hover-container`
-	const styColor = `var(--var-${element.colorVar})`
+	const styColor = "var(--cmp-select-bg)"//`var(--var-${element.colorVar})`
 	const cardType: DOC_TYPE = element.data.type as DOC_TYPE
 
 	return <Drop

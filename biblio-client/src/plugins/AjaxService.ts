@@ -35,8 +35,8 @@ export class AjaxService {
 	async post(url: string, data?: any, options?: CallOptions) {
 		return await this.send(url, METHOD.POST, data, options)
 	}
-	async get(url: string, data?: any, options?: CallOptions) {
-		return await this.send(url, METHOD.GET, data, options)
+	async get(url: string, options?: CallOptions) {
+		return await this.send(url, METHOD.GET, null, options)
 	}
 	async patch(url: string, data?: any, options?: CallOptions) {
 		return await this.send(url, METHOD.PATCH, data, options)
