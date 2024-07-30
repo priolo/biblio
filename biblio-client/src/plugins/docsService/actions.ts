@@ -1,25 +1,7 @@
-import { generateUUID } from "../../../../utils/object";
+import { Action, ACTION_VERB, NodeWithId } from "../../types/Doc";
+import { generateUUID } from "../../utils/object";
 
-/** l'informazione da trasformare */
-export interface NodeWithId {
-	id?: string
-}
 
-/** tipo di azione da compiere */
-export enum ACTION_VERB {
-	ADD,
-	MODIFY,
-	MOVE,
-	DELETE,
-	TRIM,
-}
-
-/** un Action di trasformazione */
-export interface Action {
-	verb: ACTION_VERB
-	node?: NodeWithId
-	position?: number
-}
 
 /** restituisce un array di Action ce indicano come trasformare doc1 in doc2 */
 export function getActionsFromDocDiff(

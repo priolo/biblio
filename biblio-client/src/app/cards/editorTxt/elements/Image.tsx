@@ -1,4 +1,4 @@
-import { ElementImage } from "@/stores/stacks/editor/utils/types";
+import { ElementImage } from "@/stores/stacks/editor/slate/types";
 import { useStore } from "@priolo/jon";
 import { FunctionComponent, useRef } from 'react';
 import { Transforms } from "slate";

@@ -14,6 +14,9 @@ import AboutButton from "./AboutButton"
 import cls from "./MainMenu.module.css"
 import MenuButton from "./MenuButton"
 import StoreButton from "./StoreButton"
+import { buildStore } from "../../stores/docs/utils/factory"
+import { DOC_TYPE } from "../../types"
+import { TextEditorState, TextEditorStore } from "../../stores/stacks/editor"
 
 
 
@@ -45,6 +48,13 @@ const MainMenu: FunctionComponent<Props> = ({
 		const view = buildUsers()
 		deckCardsSo.add({ view, anim: true })
 	}
+	const handleDevDoc = () => {
+		const view = buildStore({
+			type: DOC_TYPE.TEXT_EDITOR,
+			doc: { id: "test-uuid"},
+		} as TextEditorState) as TextEditorStore
+		deckCardsSo.add({ view, anim: true })
+	}
 
 	// RENDER
 	//if (!docsSo.state?.fixedViews) return null
@@ -70,6 +80,7 @@ const MainMenu: FunctionComponent<Props> = ({
 			<Button children="SAVE" onClick={() => EndSession()} />
 			<Button children="LOAD" onClick={() => StartSession()} />
 			<Button children="RESET" onClick={() => ClearSession()} />
+			<Button children="DOC" onClick={handleDevDoc} />
 		</>}
 		{/* *** DEBUG *** */}
 

@@ -1,6 +1,6 @@
 import { Range } from "slate"
-import { NODE_TYPES, NodeType } from "./types"
-import { SugarEditor } from "./withSugar"
+import { NODE_TYPES, NodeType } from "../slate/types"
+import { SugarEditor } from "../slate/withSugar"
 
 
 /** gestisce l'evento ON KEY DOWN sulla card in base ai tipi di NODE */

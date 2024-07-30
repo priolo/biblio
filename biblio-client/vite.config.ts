@@ -17,6 +17,15 @@ export default defineConfig(() => {
             alias: {
                 '@': path.resolve(__dirname, './src')
             }
-        }
+        },
+        server: {
+            proxy: {
+                '/api': {
+                    target: 'http://localhost:3000', // Sostituisci con la porta del tuo server API
+                    changeOrigin: true,
+                    //rewrite: (path) => path.replace(/^\/api/, ''), // Opzionale: riscrivi il percorso se necessario
+                },
+            },
+        },
     }
 })

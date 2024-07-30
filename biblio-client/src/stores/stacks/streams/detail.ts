@@ -7,6 +7,7 @@ import { StoreCore, mixStores } from "@priolo/jon"
 import { UsersState, UsersStore } from "."
 import { User } from "../../../types/User"
 import { loadBaseSetup, LoadBaseState, LoadBaseStore, VIEW_SIZE } from "@priolo/jack"
+import docApi from "../../../api/doc"
 
 
 
@@ -21,8 +22,6 @@ const setup = {
 
 		//#region VIEWBASE
 		width: 230,
-		size: VIEW_SIZE.COMPACT,
-
 		//#endregion
 	},
 
@@ -60,11 +59,15 @@ const setup = {
 		},
 
 		async fetch(_: void, store?: LoadBaseStore) {
-			const s = <UserStore>store
-			const id = s.state.user.id
-			const user = await userApi.get( id, { store, manageAbort: true })
-			s.setUser(user)
-			await loadBaseSetup.actions.fetch(_, store)
+
+			const docs = docApi.index()
+			console.log(docs)
+
+			// const s = <UserStore>store
+			// const id = s.state.user.id
+			// const user = await userApi.get( id, { store, manageAbort: true })
+			// s.setUser(user)
+			// await loadBaseSetup.actions.fetch(_, store)
 		},
 		//#endregion
 

@@ -4,6 +4,14 @@ import { http, HttpResponse } from 'msw'
 
 
 export const doc = [
+	http.get('/api/doc/:id', async ({ params, request }) => {
+		const { id } = params
+		
+		return HttpResponse.json(
+			{ data: body },
+			{ status: 200 }
+		)
+	}),
 	http.post('/api/doc/:id', async ({ params, request }) => {
 		const { id } = params
 		const body = await request.json()

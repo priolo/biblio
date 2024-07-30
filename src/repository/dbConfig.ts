@@ -8,7 +8,9 @@ const __dirname = dirname(__filename);
 
 
 // in base ai settaggi dell'env imposto la connessione al DB
-export const getDBConnectionOptions = () => {
+export const getDBConnectionConfig = () => {
+
+	// se c'e' una path allora stiamo parlando di SQLITE
 	if (process.env.DB_DIR != null) {
 		let dbPath: string
 		const base = path.join(__dirname, "../", process.env.DB_DIR)
@@ -30,6 +32,8 @@ export const getDBConnectionOptions = () => {
 			logging: true,
 		}
 	}
+	
+	// ... altrimenti MYSQL
 	return {
 		type: "mysql",
 		host: process.env.DB_HOST,

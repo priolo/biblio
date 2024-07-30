@@ -1,4 +1,4 @@
-import { SugarEditor } from "@/stores/stacks/editor/utils/withSugar"
+import { SugarEditor } from "@/stores/stacks/editor/slate/withSugar"
 import { mouseSo } from "@priolo/jack"
 import { useStore } from "@priolo/jon"
 import { FunctionComponent, HTMLProps } from "react"

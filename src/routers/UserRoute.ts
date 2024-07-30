@@ -6,7 +6,7 @@ import { HttpRouterRestRepoServiceConf } from "typexpress/dist/services/http-rou
 
 export default class UserRoute extends httpRouter.Service {
 
-	get stateDefault(): HttpRouterRestRepoServiceConf {
+	get stateDefault() {
 		return {
 			...super.stateDefault,
 			path: "/users",

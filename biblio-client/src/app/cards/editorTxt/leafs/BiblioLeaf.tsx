@@ -1,4 +1,4 @@
-import { TextType } from "@/stores/stacks/editor/utils/types";
+import { TextType } from "@/stores/stacks/editor/slate/types";
 import { FunctionComponent } from "react";
 import { RenderLeafProps } from "slate-react";
 import cls from "./BiblioLeaf.module.css";

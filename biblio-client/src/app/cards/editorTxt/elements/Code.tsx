@@ -1,7 +1,7 @@
 import { GetAllCards } from "@/stores/docs/cards";
 import { getById } from "@/stores/docs/utils/manage";
-import { ElementCard } from "@/stores/stacks/editor/utils/types";
-import { SugarEditor } from "@/stores/stacks/editor/utils/withSugar";
+import { ElementCard } from "@/stores/stacks/editor/slate/types";
+import { SugarEditor } from "@/stores/stacks/editor/slate/withSugar";
 import { buildCodeEditor } from "@/stores/stacks/editorCode/factory";
 import { ViewStore } from "@/stores/stacks/viewBase";
 import { CopyButton } from "@priolo/jack";

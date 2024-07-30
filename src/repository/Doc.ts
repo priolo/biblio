@@ -11,6 +11,9 @@ export class Doc {
 	@Column({ type: 'varchar', default: '' })
 	label: string;
 
+	@Column({ type: 'json', nullable: true })
+	children: any;  // Utilizziamo 'any' per rappresentare un JSON generico
+
 	@ManyToOne(() => User, user => user.docs, { nullable: true, onDelete: 'CASCADE' })
 	user: Relation<User>;
 }

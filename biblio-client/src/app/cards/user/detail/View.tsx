@@ -5,6 +5,8 @@ import { useStore } from "@priolo/jon"
 import { FunctionComponent, useEffect } from "react"
 import ActionsCmp from "./Actions"
 import Form from "./Form"
+import LogIcon from "../../../../icons/LogIcon"
+import clsCard from "@/app/cards/CardMintDef.module.css"
 
 
 
@@ -12,17 +14,17 @@ interface Props {
 	store?: UserStore
 }
 
-const StreamDetailView: FunctionComponent<Props> = ({
-	store: streamSo,
+const UserDetailView: FunctionComponent<Props> = ({
+	store,
 }) => {
 
 	// STORE
-	const streamSa = useStore(streamSo)
-	useStore(streamSo.state.group)
+	const streamSa = useStore(store)
+	useStore(store.state.group)
 
 	// HOOKs
 	useEffect(() => {
-		streamSo.fetchIfVoid()
+		store.fetchIfVoid()
 	}, [])
 
 	// HANDLER
@@ -30,12 +32,14 @@ const StreamDetailView: FunctionComponent<Props> = ({
 	// RENDER
 	const inRead = streamSa.editState == EDIT_STATE.READ
 
-	return <FrameworkCard variantBg
-		store={streamSo}
-		actionsRender={<ActionsCmp store={streamSo} />}
+	return <FrameworkCard
+		icon={<LogIcon />}
+		className={clsCard.root}
+		store={store}
+		actionsRender={<ActionsCmp store={store} />}
 	>
-		<Form store={streamSo} />
+		<Form store={store} />
 	</FrameworkCard>
 }
 
-export default StreamDetailView
+export default UserDetailView

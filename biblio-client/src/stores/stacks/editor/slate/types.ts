@@ -1,6 +1,6 @@
 import { BaseElement, BaseText } from "slate"
 import { ViewState } from "../../viewBase"
-import { Action } from "./actions"
+
 
 
 /**
@@ -50,14 +50,6 @@ export type TextType = {
 
 /** NODE tipizzato dell'editor */
 export type NodeType = Node & ElementCard & ElementImage & TextType
-
-/** aggiornamento DOC remoto*/
-export interface RemoteDoc {
-	children: NodeType[]
-	actions: Action[]
-	updateAt: number,
-}
-
 
 export function isNodeEq(node1: NodeType, node2: NodeType): boolean {
 	return node1.type == node2.type 

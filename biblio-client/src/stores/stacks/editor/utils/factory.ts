@@ -11,3 +11,5 @@ export function buildTextEditor(initValue: string) {
 	} as TextEditorState) as TextEditorStore
 	return store;
 }
+
+

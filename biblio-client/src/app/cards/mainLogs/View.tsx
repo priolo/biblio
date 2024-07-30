@@ -7,7 +7,7 @@ import { useStore } from "@priolo/jon"
 import React, { FunctionComponent, useRef } from "react"
 import { Virtuoso } from "react-virtuoso"
 import LogIcon from "../../../icons/LogIcon"
-import clsCard from "../CardWhiteDef.module.css"
+import clsCard from "@/app/cards/CardMintDef.module.css"
 import ItemRow from "./ItemRow"
 
 

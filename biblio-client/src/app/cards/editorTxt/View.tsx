@@ -2,7 +2,7 @@ import FrameworkCard from "@/components/cards/FrameworkCard"
 import { TextEditorStore } from "@/stores/stacks/editor"
 import { biblioOnKeyDown } from "@/stores/stacks/editor/utils/onkeydown"
 import { useStore } from "@priolo/jon"
-import { FunctionComponent } from "react"
+import { FunctionComponent, useEffect } from "react"
 import { Editable, Slate } from "slate-react"
 import ActionsCmp from "./Actions"
 import cls from "./View.module.css"
@@ -25,6 +25,9 @@ const EditorView: FunctionComponent<Props> = ({
 	useStore(store)
 
 	// HOOKs
+	useEffect(()=> {
+		store.fetch()
+	},[])
 
 	// HANDLER
 	const handleFocus = () => {

@@ -3,8 +3,8 @@ import { forEachViews } from "@/stores/docs/utils/manage";
 import { Path } from "slate";
 import { TextEditorStore } from "..";
 import { ViewStore } from "../../viewBase";
-import { NODE_TYPES, NodeType } from "./types";
-import { SugarEditor } from "./withSugar";
+import { NODE_TYPES, NodeType } from "../slate/types";
+import { SugarEditor } from "../slate/withSugar";
 
 
 

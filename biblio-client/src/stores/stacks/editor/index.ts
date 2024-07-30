@@ -5,22 +5,24 @@ import { createEditor } from "slate"
 import { withHistory } from 'slate-history'
 import { withReact } from "slate-react"
 import { EditorState } from "../editorBase"
-import { getActionsFromDocDiff } from "./utils/actions"
-import { NODE_TYPES, NodeType, RemoteDoc, isNodeEq } from "./utils/types"
-import { SugarEditor, withSugar } from "./utils/withSugar"
+import { getActionsFromDocDiff } from "../../../plugins/docsService/actions"
+import { NODE_TYPES, NodeType, isNodeEq } from "./slate/types"
+import { Doc, RemoteDoc } from "@/types/Doc"
+import { SugarEditor, withSugar } from "./slate/withSugar"
 import { DragDoc } from "@priolo/jack/dist/stores/mouse/utils"
 import { IdbLoadData } from "../../../utils/session/indexeddb"
 import docApi from "../../../api/doc"
+import { fetchDoc, updateDoc } from "../../../plugins/docsService"
 
 
 
 const setup = {
 
 	state: {
-		docId: <string>null,
+		/** Doc corrente in editor */
+		doc: <Partial<Doc>>null,
+		/** SLATE editor */
 		editor: <SugarEditor>null,
-		/** valora iniziale non viene aggiornato */
-		initValue: <string>null,
 		/** aggiornamento rispetto il remoto */
 		remote: <RemoteDoc>null,
 
@@ -40,7 +42,10 @@ const setup = {
 			const state = store.state as TextEditorState
 			return {
 				...viewSetup.getters.getSerialization(null, store),
-				children: state.editor.children,
+				doc: {
+					...state.doc,
+					children: state.editor.children
+				},
 			}
 		},
 		//#endregion
@@ -88,9 +93,14 @@ const setup = {
 		setSerialization: (data: any, store?: ViewStore) => {
 			viewSetup.actions.setSerialization(data, store)
 			const state = store.state as TextEditorState
-			state.editor.removeNodes({ at: [0] });
-			state.editor.insertNodes(data.children ?? [], { at: [0] });
+			state.doc = data.doc
 
+			state.editor.withoutNormalizing(() => {
+				state.editor.removeNodes({ at: { anchor: state.editor.start([]), focus: state.editor.end([]), } })
+				state.editor.insertNodes(state.doc.children ?? [], { at: [0] })
+			})
+
+			state.doc.children = null
 
 			// IdbLoadData(store.state.uuid).then(editorData => {
 			// 	state.editor.delete({
@@ -103,28 +113,36 @@ const setup = {
 		//#endregion
 
 		fetch: async (_: void, store?: TextEditorStore) => {
-			const doc = await docApi.get(store.state.docId)
+			const remote: RemoteDoc = await fetchDoc(store.state.doc.id)
+			store.state.editor.withoutNormalizing(() => {
+				store.state.editor.removeNodes({ at: { anchor: store.state.editor.start([]), focus: store.state.editor.end([]), } })
+				store.state.editor.insertNodes(remote.doc.children ?? [], { at: [0] });
+			})
 		},
 
 		onValueChange: (_: void, store?: TextEditorStore) => {
 			debounce("doc-change", () => {
-				//console.log("handleValueChange", store.state.editor.children)
-				//const state = store.state as TextEditorState
-				//IdbSaveOrUpdateData(store.state.uuid, state.editor.children)
-				const actions = getActionsFromDocDiff(
-					store.state.editor.children as NodeType[],
-					store.state.remote.children,
-					isNodeEq
-				)
-				store.state.remote.actions = actions
-				//store.state.editor.children = current as Descendant[]
-				console.log(actions)
-				//console.log(store.state.editor.children)
+				updateDoc({
+					id: store.state.doc.id,
+					children: store.state.editor.children as NodeType[]
+				})
+				// //console.log("handleValueChange", store.state.editor.children)
+				// //const state = store.state as TextEditorState
+				// //IdbSaveOrUpdateData(store.state.uuid, state.editor.children)
+				// const actions = getActionsFromDocDiff(
+				// 	store.state.editor.children as NodeType[],
+				// 	store.state.remote.children,
+				// 	isNodeEq
+				// )
+				// store.state.remote.actions = actions
+				// //store.state.editor.children = current as Descendant[]
+				// console.log(actions)
+				// //console.log(store.state.editor.children)
 			}, 1000)
 		},
 
 		fromLocalRemote: (_: void, store?: TextEditorStore) => {
-			store.state.editor.insertNodes(store.state.remote)
+			//store.state.editor.insertNodes(store.state.remote)
 		},
 
 	},

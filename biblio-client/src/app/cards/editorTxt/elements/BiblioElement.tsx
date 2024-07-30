@@ -1,4 +1,4 @@
-import { ElementType, NODE_TYPES } from "@/stores/stacks/editor/utils/types"
+import { ElementType, NODE_TYPES } from "@/stores/stacks/editor/slate/types"
 import { FunctionComponent } from "react"
 import { RenderElementProps } from "slate-react"
 import Card, { CardProps } from "./Card"
