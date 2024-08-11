@@ -5,13 +5,13 @@ import { User } from "../types/User";
 
 /** INDEX */
 function index(opt?: CallOptions): Promise<User[]> {
-	return ajax.get(`users`, null, opt)
+	return ajax.get(`users`, opt)
 }
 
 /** GET */
 async function get(id: string, opt?: CallOptions): Promise<User> {
 	if (!id) return
-	const user = await ajax.get(`users/${id}`, null, opt)
+	const user = await ajax.get(`users/${id}`, opt)
 	return user
 }
 
@@ -36,7 +36,7 @@ function update(user: User, opt?: CallOptions): Promise<User> {
 
 
 function _error(connectionId: string, opt?: CallOptions): Promise<User[]> {
-	return ajax.get(`connection/${connectionId}/stream_error`, null, opt)
+	return ajax.get(`connection/${connectionId}/stream_error`, opt)
 }
 
 

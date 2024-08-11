@@ -1,22 +1,22 @@
-import EditorIcon from "@/icons/EditorIcon"
 import HelpIcon from "@/icons/HelpIcon"
 import docsSo, { FIXED_CARD } from "@/stores/docs"
 import { deckCardsSo } from "@/stores/docs/cards"
 import { menuSo } from "@/stores/docs/links"
 import { buildUserCard } from "@/stores/stacks/account/utils/factory"
-import { buildTextEditor } from "@/stores/stacks/editor/utils/factory"
-import { ClearSession, StartSession, EndSession } from "@/utils/session/startup"
+import { ClearSession, EndSession, StartSession } from "@/utils/session/startup"
 import { Button } from "@priolo/jack"
 import { useStore } from "@priolo/jon"
 import React, { FunctionComponent } from "react"
+import { buildStore } from "../../stores/docs/utils/factory"
+import { AccountState, AccountStore } from "../../stores/stacks/account"
+import { TextEditorState, TextEditorStore } from "../../stores/stacks/editor"
 import { buildUsers } from "../../stores/stacks/streams/utils/factory"
+import { DOC_TYPE } from "../../types"
 import AboutButton from "./AboutButton"
 import cls from "./MainMenu.module.css"
 import MenuButton from "./MenuButton"
 import StoreButton from "./StoreButton"
-import { buildStore } from "../../stores/docs/utils/factory"
-import { DOC_TYPE } from "../../types"
-import { TextEditorState, TextEditorStore } from "../../stores/stacks/editor"
+import { NODE_TYPES } from "../../stores/stacks/editor/slate/types"
 
 
 
@@ -35,11 +35,6 @@ const MainMenu: FunctionComponent<Props> = ({
 	// HOOKS
 
 	// HANDLERS
-	const handleOpenEditor = () => {
-		const view = buildTextEditor("ciao!")
-		deckCardsSo.add({ view, anim: true })
-	}
-	const handleHelp = () => window.open("https://natsnui.app/help/")
 	const handleUser = () => {
 		const view = buildUserCard()
 		deckCardsSo.add({ view, anim: true })
@@ -48,53 +43,58 @@ const MainMenu: FunctionComponent<Props> = ({
 		const view = buildUsers()
 		deckCardsSo.add({ view, anim: true })
 	}
-	const handleDevDoc = () => {
+	const handleAccount = () => {
+		const view = buildStore({
+			type: DOC_TYPE.ACCOUNT,
+		} as AccountState) as AccountStore
+		deckCardsSo.add({ view, anim: true })
+	}
+
+	const handleDocNew = () => {
 		const view = buildStore({
 			type: DOC_TYPE.TEXT_EDITOR,
-			doc: { id: "test-uuid"},
+		} as TextEditorState) as TextEditorStore
+		deckCardsSo.add({ view, anim: true })
+	}
+	const handleDocTest = () => {
+		const view = buildStore({
+			type: DOC_TYPE.TEXT_EDITOR,
+			docId: "test-uuid",
+		} as TextEditorState) as TextEditorStore
+		deckCardsSo.add({ view, anim: true })
+	}
+	const handleDocDev = () => {
+		const view = buildStore({
+			type: DOC_TYPE.TEXT_EDITOR,
+			initValue: [{ type: NODE_TYPES.CODE, children: [{ text: "var c = 67" }] }]
 		} as TextEditorState) as TextEditorStore
 		deckCardsSo.add({ view, anim: true })
 	}
 
+
 	// RENDER
-	//if (!docsSo.state?.fixedViews) return null
-	//const views = menuSa.all
-
 	return <div style={style} className={cls.root}>
-
-		{/* <StoreButton
-			label="ALL"
-			store={docsSo.state.fixedViews[FIXED_CARD.CONNECTIONS]}
-		/>
-
-		{views.map((view) => (
-			<StoreButton key={view.state.uuid}
-				store={view}
-			/>
-		))} */}
-
-		<div style={{ flex: 1 }} />
 
 		{/* *** DEBUG *** */}
 		{process.env.NODE_ENV === 'development' && <>
 			<Button children="SAVE" onClick={() => EndSession()} />
 			<Button children="LOAD" onClick={() => StartSession()} />
 			<Button children="RESET" onClick={() => ClearSession()} />
-			<Button children="DOC" onClick={handleDevDoc} />
+			
+			<Button children="DOC NEW" onClick={handleDocNew} />
+			<Button children="DOC TEST" onClick={handleDocTest} />
+			<Button children="DOC DEV" onClick={handleDocDev} />
+
+			<Button children="ACCOUNT" onClick={handleAccount} />
 		</>}
 		{/* *** DEBUG *** */}
-
-		{/* <StoreButton
-			label="HELP"
-			store={docSo.state.fixedViews[FIXED_CARD.HELP]}
-		/> */}
 
 		<MenuButton 
 			title={"USER"}
 			subtitle={"SEI TU!"}
 			onClick={handleUser}
 		>
-			<HelpIcon style={{ width: 20 }} className="color-fg" />
+			<HelpIcon style={{ width: 20 }}/>
 		</MenuButton>
 
 		<MenuButton 
@@ -102,21 +102,13 @@ const MainMenu: FunctionComponent<Props> = ({
 			subtitle={"TUTTI GLI ALTRI"}
 			onClick={handleUsers}
 		>
-			<HelpIcon style={{ width: 20 }} className="color-fg" />
+			<HelpIcon style={{ width: 20 }}/>
 		</MenuButton>
 
 		<StoreButton
 			label="LOG"
 			store={docsSo.state.fixedViews?.[FIXED_CARD.LOGS]}
 		/>
-
-		<MenuButton 
-			title="A little reminder"
-			subtitle="NOTE"
-			onClick={() => handleOpenEditor()}
-		>
-			<EditorIcon style={{ width: 20 }} className="color-fg" />
-		</MenuButton>
 
 		<AboutButton />
 

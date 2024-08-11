@@ -59,20 +59,10 @@ const EditorCodeBase: ForwardRefRenderFunction<EditorRefProps, Props> = ({
 	useImperativeHandle(ref, () => ({ format: formatRun, }), [])
 
 	// RENDER
-	if (format == MSG_FORMAT.BASE64) {
-		return <Base64Cmp style={{ flex: 1, overflowY: "auto" }}
-			text={value}
-		/>
-	}
-	if (format == MSG_FORMAT.HEX) {
-		return <HexTable style={{ flex: 1, overflowY: "auto" }}
-			text={value}
-		/>
-	}
 	return <Editor
 		className={className}
 		defaultLanguage="json"
-		language={format.toString()}
+		//language={format.toString()}
 		value={value}
 		theme="vs-dark"
 		onMount={handleEditorDidMount}

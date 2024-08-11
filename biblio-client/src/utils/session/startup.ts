@@ -11,7 +11,6 @@ import { ViewStore } from "@/stores/stacks/viewBase"
 import { DOC_TYPE } from "@/types"
 import { delay } from "../time"
 import { loadLocalStorage, saveLocalStorage } from "./storage"
-import { SocketService } from "../../plugins/SocketService"
 import { Session } from "./types"
 
 
@@ -88,7 +87,11 @@ function buildCards(session: Session) {
 	// DECK
 	const deckStates = session.deckUuids?.map(uuid => session.allStates.find(s => s.uuid == uuid))
 	const deckStores = deckStates?.map(state => {
-		const store: ViewStore = buildStore({ type: state.type, group: deckCardsSo })
+		const store: ViewStore = buildStore({ 
+			...state,
+			type: state.type, 
+			group: deckCardsSo,
+		})
 		store?.setSerialization(state)
 		return store
 	}).filter(s => !!s) ?? []
@@ -96,7 +99,11 @@ function buildCards(session: Session) {
 	// DRAWER
 	const drawerStates = session.drawerUuids?.map(uuid => session.allStates.find(s => s.uuid == uuid))
 	const drawerStores = drawerStates?.map(state => {
-		const store: ViewStore = buildStore({ type: state.type, group: drawerCardsSo })
+		const store: ViewStore = buildStore({ 
+			...state,
+			type: state.type, 
+			group: drawerCardsSo 
+		})
 		store?.setSerialization(state)
 		return store
 	}).filter(s => !!s) ?? []
@@ -106,7 +113,7 @@ function buildCards(session: Session) {
 		let store: ViewStore = forEachViews([...deckStores, ...drawerStores], (v) => v.state.uuid == uuid ? v : null)
 		if (!store) {
 			const state = session.allStates.find(s => s.uuid == uuid)
-			store = state ? buildStore({ type: state.type }) : null
+			store = state ? buildStore({ ...state, type: state.type }) : null
 			store?.setSerialization(state)
 		}
 		return store

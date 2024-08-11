@@ -8,7 +8,7 @@ import { LOAD_STATE, LoadBaseStore } from "@priolo/jack"
 enum METHOD {
 	POST = "post",
 	GET = "get",
-	PATCH = "patch",
+	PATCH = "PATCH",
 	PUT = "put",
 	DELETE = "delete"
 }
@@ -23,7 +23,7 @@ const optionsDefault = {
 	signal: <AbortSignal>null,
 	/** se true setto nello store l'oggetto per l'abort */
 	manageAbort: false,
-	/** non restituire trasformato in camelCase */
+	/** [DISABILITATO] non restituire trasformato in camelCase */
 	noCamel: false,
 
 }
@@ -55,7 +55,7 @@ export class AjaxService {
 		options = { ...optionsDefault, ...options }
 
 		// PREPARE DATA
-		data = camelToSnake(data)
+		//data = camelToSnake(data)
 		const headers = {
 			"Content-Type": "application/json",
 			"Accept": "application/json",
@@ -100,7 +100,7 @@ export class AjaxService {
 		let jsonError: string = null
 		try {
 			const raw = await response.json()
-			ret = options.noCamel ? raw : snakeToCamel(raw)
+			ret = raw//options.noCamel ? raw : snakeToCamel(raw)
 		} catch (e) {
 			jsonError = e.toString()
 		}

@@ -1,5 +1,7 @@
+import { BaseOperation } from "slate"
 import { NodeType } from "../stores/stacks/editor/slate/types"
 import { User } from "./User"
+
 
 
 /** è un dcumento con il suo contenuto */
@@ -11,11 +13,12 @@ export interface Doc {
 	children: NodeType[]
 }
 
-
-/** aggiornamento DOC remoto*/
+/** aggiornamenti ricevuto/da inviare al BE*/
 export interface RemoteDoc {
-	doc: Doc
-	actions?: Action[]
+	status: DOC_STATUS
+	doc: Partial<Doc>
+	buffIn: BaseOperation[]
+	buffOut: BaseOperation[]
 }
 
 /** filtro richiesto per una lista di docs */
@@ -23,26 +26,11 @@ export interface FilterDoc {
 	author: User,
 }
 
-
-/** tipo di azione da compiere */
-export enum ACTION_VERB {
-	ADD,
+export enum DOC_STATUS {
+	/** il DOC è stato appena creato localmente */
+	LOCAL,
+	/** il DOC è stato modificto localmente rispetto al remoto */
 	MODIFY,
-	MOVE,
-	DELETE,
-	TRIM
+	/** il DOC è localmente uguale al remoto */
+	SYNC,
 }
-
-/** l'informazione da trasformare */
-export interface NodeWithId {
-	id?: string;
-}
-/** un Action di trasformazione */
-export interface Action {
-	verb: ACTION_VERB
-	node?: NodeWithId
-	position?: number
-}
-
-
-

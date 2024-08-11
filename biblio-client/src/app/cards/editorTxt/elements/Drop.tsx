@@ -25,7 +25,7 @@ const Drop: FunctionComponent<RenderElementProps & HTMLProps<HTMLDivElement>> = 
 	const handleMouseOver = (_: React.DragEvent<HTMLDivElement>) => {
 		if (!mouseSo.state.drag?.source?.view) return
 		const path = ReactEditor.findPath(editor, element)
-		mouseSo.setDrag({ ...mouseSo.state.drag, destination: { view: editor.view, index: path?.[0] } })
+		mouseSo.setDrag({ ...mouseSo.state.drag, destination: { view: editor.store, index: path?.[0] } })
 	}
 	const handleMouseLeave = () => {
 		if (!mouseSo.state.drag?.source?.view) return

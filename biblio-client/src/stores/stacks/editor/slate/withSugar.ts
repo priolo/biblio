@@ -3,32 +3,40 @@ import { NODE_TYPES, NodeType } from "./types"
 import { ReactEditor } from "slate-react"
 import { ViewStore } from "../../viewBase"
 import { generateUUID } from "../../../../utils/object"
+import { addActionDoc } from "@/plugins/docsService"
+import { TextEditorStore } from ".."
 
-/**
 
- */
+
+
+
+/** Implementazione specifca dell'editor SLATE **/
 export const withSugar = (editor: ReactEditor) => {
 
 	//const { onChange/*normalizeNode, isInline, isVoid*/ } = editor
 	//const { insertNode, insertFragment } = editor;
 	//const { insertData } = editor
 	const se = editor as SugarEditor
+	se.actionsDisabled = false
+	se.store = null
 
 
 	const { apply } = editor;
-
 	editor.apply = operation => {
-		switch (operation.type) {
-			case "insert_node":
-				(operation.node as NodeType).id = generateUUID()
-				break
-			case "split_node":
-				if (operation.position == 1 && operation.path?.length == 1) {
-					(<Partial<NodeType>>operation.properties).id = generateUUID()
-				}
-				break
-		}
-		console.log(operation)
+		// switch (operation.type) {
+		// 	case "insert_node":
+		// 		(operation.node as NodeType).id = generateUUID()
+		// 		break
+		// 	case "split_node":
+		// 		if (operation.position == 1 && operation.path?.length == 1) {
+		// 			(<Partial<NodeType>>operation.properties).id = generateUUID()
+		// 		}
+		// 		break
+		// }
+		//if ( !se.actionsDisabled ){
+			console.log(operation)
+			addActionDoc(se.store?.state.docId, operation)
+		//}
 		apply(operation);
 	};
 
@@ -155,6 +163,7 @@ export const withSugar = (editor: ReactEditor) => {
 
 
 export interface SugarEditor extends ReactEditor {
-	view?: ViewStore
+	store?: TextEditorStore
+	actionsDisabled?: boolean
 	setTypeOnSelect: (type: NODE_TYPES) => void
 }

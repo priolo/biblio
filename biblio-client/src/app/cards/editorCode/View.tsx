@@ -4,6 +4,10 @@ import { EditorCodeState, EditorCodeStore } from "@/stores/stacks/editorCode"
 import { useStore } from "@priolo/jon"
 import { FunctionComponent } from "react"
 import cls from "./View.module.css"
+import clsCard from "../CardCyanDef.module.css"
+import MessageIcon from "../../../icons/cards/MessageIcon"
+import ActionsCmp from "./Actions"
+
 
 
 interface Props {
@@ -25,14 +29,17 @@ const EditorCodeView: FunctionComponent<Props> = ({
 	// RENDER
 
 	return <FrameworkCard
+		className={clsCard.root}
+		icon={<MessageIcon />}
 		store={store}
-		// actionsRender={<>
-		// 	<FormatAction store={store} />
-		// </>}
+		actionsRender={<>
+			<ActionsCmp store={store} />
+		</>}
 	>
 		<div className={`lyt-form ${cls.form}`}>
 
-			<EditorCode autoFormat readOnly
+			<EditorCode autoFormat
+				//readOnly
 				//ref={ref => state.editorRef = ref}
 				//format={state.format}
 				value={store.state.code}

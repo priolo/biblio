@@ -4,6 +4,9 @@ import { AccountStore } from "@/stores/stacks/account"
 import { useStore } from "@priolo/jon"
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google"
 import { FunctionComponent, useEffect } from "react"
+import clsCard from "../CardWhiteDef.module.css"
+import CardIcon from "../../../components/cards/CardIcon"
+import { DOC_TYPE } from "../../../types"
 
 
 
@@ -28,19 +31,21 @@ const UserView: FunctionComponent<Props> = ({
 	const handleLoginSuccess = (response: CredentialResponse) => {
 		console.log('Login Success:', response);
 		authSo.createSession(response.credential)
-	};
+	}
 
 	const handleLoginFailure = () => {
 		console.log('Login Failure:');
-	};
+	}
 
 	// RENDER
 	return <FrameworkCard
+		icon={<CardIcon type={DOC_TYPE.ACCOUNT} />}
+		className={clsCard.root}
 		store={store}
 	>
 		<div className="lyt-form">
 
-			{authSa.user != null ? <div>SUCCESS3</div> : <div>LOGIN!!!</div>}
+			{authSa.user != null ? <div>SUCCESS</div> : <div>LOGIN!!!</div>}
 
 			<GoogleOAuthProvider clientId="106027300810-0udm0cjghhjr87626qrvcoug5ahgq1bh.apps.googleusercontent.com">
 				<div>

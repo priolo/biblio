@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
+import { BaseOperation, createEditor, Descendant, withoutNormalizing } from "slate"
 import { Bus, RepoRestActions, httpRouter } from "typexpress"
-
+import { Doc } from "../repository/Doc.js"
 
 
 
@@ -14,9 +15,9 @@ export default class DocRoute extends httpRouter.Service {
 			routers: [
 				{ path: "/", verb: "get", method: "getAll" },
 				{ path: "/:id", verb: "get", method: "getById" },
-				{ path: "/", verb: "post", method: "save" },
+				{ path: "/", verb: "post", method: "create" },
 				{ path: "/:id", verb: "delete", method: "delete" },
-				{ path: "/update", verb: "post", method: "update" }
+				{ path: "/:id", verb: "patch", method: "update" }
 			]
 		}
 	}
@@ -30,38 +31,72 @@ export default class DocRoute extends httpRouter.Service {
 
 	async getById(req: Request, res: Response) {
 		const id = req.params["id"]
-		const doc = await new Bus(this, this.state.repository).dispatch({
+		const docDB:Doc = await new Bus(this, this.state.repository).dispatch({
 			type: RepoRestActions.GET_BY_ID,
 			payload: id
 		})
-		res.json({ data: doc })
+		res.json({ data: docDB })
 	}
 
-	async save(req: Request, res: Response) {
-		const doc = req.body
-		const docDB = await new Bus(this, this.state.repository).dispatch({
+	async create(req: Request, res: Response) {
+		const body: { doc: Doc } = req.body
+		const docDB: Doc = await new Bus(this, this.state.repository).dispatch({
 			type: RepoRestActions.SAVE,
-			payload: doc,
+			payload: body.doc,
 		})
-		res.json(docDB)
+		// i children non servono
+		res.json({ data: "ok" })
 	}
 
 	async delete(req: Request, res: Response) {
 		const id = req.params["id"]
-		const doc = await new Bus(this, this.state.repository).dispatch({
+		await new Bus(this, this.state.repository).dispatch({
 			type: RepoRestActions.DELETE,
 			payload: id
 		})
-		res.json(doc)
+		res.json({ data: "ok" })
 	}
 
+	/** 
+	 * aggiorna un DOC tramite un array di ACTIONS
+	 */
 	async update(req: Request, res: Response) {
 		const id = req.params["id"]
-		const doc = await new Bus(this, this.state.repository).dispatch({
-			type: RepoRestActions.DELETE,
+		const body: { actions: BaseOperation[] } = req.body
+		if (!id || !(body?.actions?.length > 0)) return
+
+		// recupero il DOC interessato
+		const doc: Doc = await new Bus(this, this.state.repository).dispatch({
+			type: RepoRestActions.GET_BY_ID,
 			payload: id
 		})
-		res.json(doc)
-	}
 
+		// applico le ACTIONS
+		try {
+			doc.children = applyOperations(body.actions, doc.children)
+			await new Bus(this, this.state.repository).dispatch({
+				type: RepoRestActions.SAVE,
+				payload: doc,
+			})
+			// TODO: memorizzare le ACTIONS nella history
+		} catch (e) {
+			console.error(e)
+			// restituire errore!
+		}
+
+		res.json({ data: "ok" })
+	}
+}
+
+
+
+export function applyOperations(actions: BaseOperation[], initialValue: Descendant[]): Descendant[] {
+	const editor = createEditor();
+	editor.children = initialValue;
+	withoutNormalizing(editor, () => {
+		actions.forEach(op => {
+			editor.apply(op);
+		})
+	})
+	return editor.children;
 }

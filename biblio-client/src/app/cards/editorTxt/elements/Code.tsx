@@ -1,20 +1,18 @@
-import { GetAllCards } from "@/stores/docs/cards";
-import { getById } from "@/stores/docs/utils/manage";
-import { ElementCard } from "@/stores/stacks/editor/slate/types";
+import { ElementCode } from "@/stores/stacks/editor/slate/types";
 import { SugarEditor } from "@/stores/stacks/editor/slate/withSugar";
-import { buildCodeEditor } from "@/stores/stacks/editorCode/factory";
-import { ViewStore } from "@/stores/stacks/viewBase";
-import { CopyButton } from "@priolo/jack";
+import { CopyButton, IconButton } from "@priolo/jack";
 import { FunctionComponent } from "react";
 import { Node } from "slate";
 import { RenderElementProps, useFocused, useSelected, useSlate } from "slate-react";
+import ArrowRightIcon from "../../../../icons/ArrowRightIcon";
 import cls from "./Code.module.css";
 import Drop from "./Drop";
+import { buildCodeEditor } from "../../../../stores/stacks/editorCode/factory";
 
 
 
 interface Props extends RenderElementProps {
-	element: ElementCard
+	element: ElementCode
 }
 
 
@@ -32,22 +30,22 @@ const Code: FunctionComponent<Props> = ({
 
 	// HANDLERS
 	const handleOpen = () => {
-		let view: ViewStore = getById(GetAllCards(), element.data?.uuid)
-		if (!!view) {
-			view.state.group?.focus(view)
-			return
-		}
+		// let view: ViewStore = getById(GetAllCards(), element.data?.uuid)
+		// if (!!view) {
+		// 	view.state.group?.focus(view)
+		// 	return
+		// }
 		const text = Node.string(element)
-		view = buildCodeEditor(text)
+		const view = buildCodeEditor(text)
 		if (!view) return
-		editor.view.state.group.addLink({ view, parent: editor.view, anim: true })
+		editor.store.state.group.addLink({ view, parent: editor.store, anim: true })
 	}
 	const handleCopy = () => Node.string(element)
 
 	// RENDER
 	const haveFocus = selected && focused
-	const clsRoot = `${cls.root} ${haveFocus ? cls.focus : ''} hover-container`
-	const clsBtt = `${cls.btt} hover-show`
+	const clsRoot = `${cls.root} ${haveFocus ? cls.focus : ''} jack-hover-container`
+	const clsBtt = `${cls.btt} jack-hover-hide`
 
 	return <Drop 
 		attributes={attributes}
@@ -55,13 +53,10 @@ const Code: FunctionComponent<Props> = ({
 		className={clsRoot} 
 	>
 		<div className={clsBtt}>
-
 			<CopyButton value={handleCopy} />
-
-			{/* <IconButton 
+			<IconButton 
 				onClick={handleOpen}
-			><ArrowRightIcon /></IconButton> */}
-
+			><ArrowRightIcon /></IconButton>
 		</div>
 		{children}
 	</Drop>

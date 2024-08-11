@@ -36,6 +36,10 @@ export type ElementCard = {
 	subtitle?: string
 } & ElementType
 
+export type ElementCode = {
+	code?: string
+} & ElementType
+
 export type ElementImage = {
 	url: string,
 } & ElementType
@@ -51,10 +55,10 @@ export type TextType = {
 /** NODE tipizzato dell'editor */
 export type NodeType = Node & ElementCard & ElementImage & TextType
 
-export function isNodeEq(node1: NodeType, node2: NodeType): boolean {
-	return node1.type == node2.type 
-		&& (
-			node1.children == node2.children
-			|| (node1.children.length == node2.children.length && node1.children[0].text == node2.children[0].text)
-		)
-} 
+// export function isNodeEq(node1: NodeType, node2: NodeType): boolean {
+// 	return node1.type == node2.type 
+// 		&& (
+// 			node1.children == node2.children
+// 			|| (node1.children.length == node2.children.length && node1.children[0].text == node2.children[0].text)
+// 		)
+// } 

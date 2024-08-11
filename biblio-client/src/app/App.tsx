@@ -21,6 +21,7 @@ const App: FunctionComponent = () => {
 	useEffect(() => {
 		async function fn() {
 			await delay(1000)
+			// spostare in start session
 			await authSo.current()
 		}
 		fn() 

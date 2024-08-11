@@ -1,6 +1,7 @@
 import { buildStore } from "@/stores/docs/utils/factory";
 import { DOC_TYPE } from "@/types";
 import { EditorCodeState } from ".";
+import { EditorStore } from "../editorBase";
 
 
 
@@ -9,6 +10,6 @@ export function buildCodeEditor(code: string) {
 	const store = buildStore({
 		type: DOC_TYPE.CODE_EDITOR,
 		code,
-	} as EditorCodeState)
+	} as EditorCodeState) as EditorStore
 	return store
 }

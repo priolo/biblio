@@ -13,10 +13,10 @@
     "@priolo/jon-utils": "^0.2.2"
   },
   "scripts": {
-    "build": "npx tsc",
     "build-watch": "tsc -w",
-    "start": "cross-env NODE_ENV=production node dist/start.js",
-    "start:dev": "cross-env NODE_ENV=development node dist/start.js"
+    "start:dev": "cross-env NODE_ENV=development node dist/start.js",
+    "build": "npx tsc",
+    "start": "cross-env NODE_ENV=production node dist/start.js"
   },
   "dependencies": {
     "@priolo/jon-utils": "^0.4.3",
@@ -25,7 +25,8 @@
     "google-auth-library": "^9.10.0",
     "mysql2": "^3.9.7",
     "typexpress": "file://C:/Users/iorio/Documents/typexpress/typexpress",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "slate": "^0.103.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.4",

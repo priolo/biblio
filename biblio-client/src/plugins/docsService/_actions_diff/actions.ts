@@ -1,7 +1,16 @@
-import { Action, ACTION_VERB, NodeWithId } from "../../types/Doc";
-import { generateUUID } from "../../utils/object";
+import { generateUUID } from "../../../utils/object";
 
-
+// da cancellare
+/** riceve un Doc e ne estrapola le differenze cn quello presente nella "library" */
+// export async function updateDoc(local: Partial<Doc>) {
+// 	const remote = await fetchDoc(local.id)
+// 	const actions = getActionsFromDocDiff(
+// 		local.children as NodeType[],
+// 		remote.doc.children,
+// 		isNodeEq
+// 	)
+// 	console.log(actions)
+// }
 
 /** restituisce un array di Action ce indicano come trasformare doc1 in doc2 */
 export function getActionsFromDocDiff(
@@ -100,3 +109,25 @@ function exeAction(nodes: NodeWithId[], action: Action) {
 function isNodeEq(node1: NodeWithId, node2: NodeWithId) {
 	return node1["value"] == node2["value"]
 }
+/** tipo di azione da compiere */
+
+
+export enum ACTION_VERB {
+	ADD,
+	MODIFY,
+	MOVE,
+	DELETE,
+	TRIM
+}/** l'informazione da trasformare */
+
+
+export interface NodeWithId {
+	id?: string
+}
+/** un Action di trasformazione */
+export interface Action {
+	verb: ACTION_VERB
+	node?: NodeWithId
+	position?: number
+}
+

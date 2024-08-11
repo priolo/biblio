@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { NodeType, getActionsFromDocDiff } from './actions';
-import { ACTION_VERB } from "@/types/Doc";
+import { ACTION_VERB } from "./actions";
 import { generateUUID } from '../../../../utils/object';
 
 

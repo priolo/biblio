@@ -1,18 +1,15 @@
+import { createDocLib, fetchDoc, getDocLib, syncRemoteDoc } from "@/plugins/docsService"
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
+import { DOC_STATUS, RemoteDoc } from "@/types/Doc"
 import { debounce } from "@/utils/time"
+import { DragDoc } from "@priolo/jack/dist/stores/mouse/utils"
 import { mixStores, StoreCore } from "@priolo/jon"
 import { createEditor } from "slate"
 import { withHistory } from 'slate-history'
 import { withReact } from "slate-react"
 import { EditorState } from "../editorBase"
-import { getActionsFromDocDiff } from "../../../plugins/docsService/actions"
-import { NODE_TYPES, NodeType, isNodeEq } from "./slate/types"
-import { Doc, RemoteDoc } from "@/types/Doc"
+import { NODE_TYPES, NodeType } from "./slate/types"
 import { SugarEditor, withSugar } from "./slate/withSugar"
-import { DragDoc } from "@priolo/jack/dist/stores/mouse/utils"
-import { IdbLoadData } from "../../../utils/session/indexeddb"
-import docApi from "../../../api/doc"
-import { fetchDoc, updateDoc } from "../../../plugins/docsService"
 
 
 
@@ -20,13 +17,12 @@ const setup = {
 
 	state: {
 		/** Doc corrente in editor */
-		doc: <Partial<Doc>>null,
+		docId: <string>null,
 		/** SLATE editor */
 		editor: <SugarEditor>null,
-		/** aggiornamento rispetto il remoto */
-		remote: <RemoteDoc>null,
 
-		//formatOpen: false,
+		/** testo iniziale */
+		initValue:  <NodeType[]>[{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }],
 
 		//#region VIEWBASE
 		width: 370,
@@ -39,13 +35,12 @@ const setup = {
 		getTitle: (_: void, store?: ViewStore) => "NOTE",
 		getSubTitle: (_: void, store?: ViewStore) => "Just for an ephemeral note",
 		getSerialization: (_: void, store?: ViewStore) => {
-			const state = store.state as TextEditorState
+			const editorSa = store.state as TextEditorState
+			const remote = getDocLib(editorSa.docId)
+			const docId = remote.status == DOC_STATUS.LOCAL ? null : editorSa.docId
 			return {
 				...viewSetup.getters.getSerialization(null, store),
-				doc: {
-					...state.doc,
-					children: state.editor.children
-				},
+				docId,
 			}
 		},
 		//#endregion
@@ -60,15 +55,19 @@ const setup = {
 			const editor = editorSo.state.editor
 			if (!data.source?.view) return
 
+			// se è uno spostamento al'interno dello stesso documento...
 			if (data.source.view == data.destination?.view) {
 				editor.moveNodes({ at: [data.source.index], to: [data.destination.index] })
 
+				// si trata di uno spostamento da CARD esterna
 			} else {
+				// è un NODE di una CARD esterna
 				if (data.source.index) {
 					const sourceEditor = (<TextEditorStore>data.source.view).state.editor
 					if (!sourceEditor) return
 					const [node] = sourceEditor.node([data.source.index])
 					editor.insertNode(node, { at: [data.destination.index] })
+					// è tutta la CARD
 				} else {
 					// cotruisco un NODE da una VIEW
 					const node = {
@@ -82,67 +81,43 @@ const setup = {
 			}
 		},
 
-		onCreated: (_: void, store?: ViewStore) => {
+		/** chiamata dalla build dello stesso store */
+		onCreated: async (_: void, store?: ViewStore) => {
 			const editorSo = store as TextEditorStore
+			
+			// creo l'editor SLATE
 			const editor: SugarEditor = withSugar(withHistory(withReact(createEditor())))
-			editor.insertNodes(initValue)
-			editor.view = store
+			editor.store = editorSo
+			editor.children = editorSo.state.initValue ?? [{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }] as NodeType[]
 			editorSo.state.editor = editor
+
+			// creo/cerco nella LIBRARY
+			let remote: RemoteDoc
+			if (!editorSo.state.docId) {
+				remote = createDocLib()
+				editorSo.state.docId = remote.doc.id
+			} else {
+				remote = await fetchDoc(editorSo.state.docId)
+			}
 		},
 
-		setSerialization: (data: any, store?: ViewStore) => {
-			viewSetup.actions.setSerialization(data, store)
-			const state = store.state as TextEditorState
-			state.doc = data.doc
-
-			state.editor.withoutNormalizing(() => {
-				state.editor.removeNodes({ at: { anchor: state.editor.start([]), focus: state.editor.end([]), } })
-				state.editor.insertNodes(state.doc.children ?? [], { at: [0] })
-			})
-
-			state.doc.children = null
-
-			// IdbLoadData(store.state.uuid).then(editorData => {
-			// 	state.editor.delete({
-			// 		at: { anchor: state.editor.start([]), focus: state.editor.end([]) },
-			// 	});
-			// 	state.editor.insertNodes(editorData, { at: [0] });
-			// })
-		},
-
+		
 		//#endregion
 
-		fetch: async (_: void, store?: TextEditorStore) => {
-			const remote: RemoteDoc = await fetchDoc(store.state.doc.id)
-			store.state.editor.withoutNormalizing(() => {
-				store.state.editor.removeNodes({ at: { anchor: store.state.editor.start([]), focus: store.state.editor.end([]), } })
-				store.state.editor.insertNodes(remote.doc.children ?? [], { at: [0] });
-			})
-		},
-
+		/** quando il DOC viene modificato da SLATE */
 		onValueChange: (_: void, store?: TextEditorStore) => {
-			debounce("doc-change", () => {
-				updateDoc({
-					id: store.state.doc.id,
-					children: store.state.editor.children as NodeType[]
-				})
-				// //console.log("handleValueChange", store.state.editor.children)
-				// //const state = store.state as TextEditorState
-				// //IdbSaveOrUpdateData(store.state.uuid, state.editor.children)
-				// const actions = getActionsFromDocDiff(
-				// 	store.state.editor.children as NodeType[],
-				// 	store.state.remote.children,
-				// 	isNodeEq
-				// )
-				// store.state.remote.actions = actions
-				// //store.state.editor.children = current as Descendant[]
-				// console.log(actions)
-				// //console.log(store.state.editor.children)
-			}, 1000)
-		},
+			debounce("doc-change", async () => {
+				syncRemoteDoc(store.state.docId)
 
-		fromLocalRemote: (_: void, store?: TextEditorStore) => {
-			//store.state.editor.insertNodes(store.state.remote)
+
+				// if (!store.state.docId) {
+				// 	if (store.state.editor.children?.length > 0) {
+				// 		store.state.doc = await createDoc({ children: store.state.editor.children as NodeType[] })
+				// 	}
+				// } else {
+
+				// }
+			}, 5000)
 		},
 
 	},

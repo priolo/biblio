@@ -2,14 +2,14 @@ import FrameworkCard from "@/components/cards/FrameworkCard"
 import { TextEditorStore } from "@/stores/stacks/editor"
 import { biblioOnKeyDown } from "@/stores/stacks/editor/utils/onkeydown"
 import { useStore } from "@priolo/jon"
-import { FunctionComponent, useEffect } from "react"
+import { FunctionComponent } from "react"
 import { Editable, Slate } from "slate-react"
+import MessageIcon from "../../../icons/cards/MessageIcon"
+import clsCard from "../CardCyanDef.module.css"
 import ActionsCmp from "./Actions"
 import cls from "./View.module.css"
 import BiblioElement from "./elements/BiblioElement"
 import BiblioLeaf from "./leafs/BiblioLeaf"
-import clsCard from "../CardCyanDef.module.css"
-import MessageIcon from "../../../icons/cards/MessageIcon"
 
 
 
@@ -25,9 +25,6 @@ const EditorView: FunctionComponent<Props> = ({
 	useStore(store)
 
 	// HOOKs
-	useEffect(()=> {
-		store.fetch()
-	},[])
 
 	// HANDLER
 	const handleFocus = () => {
@@ -45,11 +42,13 @@ const EditorView: FunctionComponent<Props> = ({
 		biblioOnKeyDown(event, editor)
 	}
 
-	const handleValueChange = () => store.onValueChange()
+	const handleValueChange = () => {
+		store.onValueChange()
+	}
 
 	// RENDER
 	const editor = store.state.editor
-	console.log("SLATE render")
+
 	return <FrameworkCard
 		className={clsCard.root}
 		icon={<MessageIcon />}
@@ -63,11 +62,11 @@ const EditorView: FunctionComponent<Props> = ({
 			onValueChange={handleValueChange}
 		>
 
-			<ActionsCmp store={store} style={{margin: '-10px -10px 5px -10px'}} />
+			<ActionsCmp store={store} style={{ margin: '-10px -10px 5px -10px' }} />
 
-			<Editable 
+			<Editable
 				className={cls.editor}
-				style={{ flex: 1, overflowY: "auto"}}
+				style={{ flex: 1, overflowY: "auto" }}
 				spellCheck={false}
 				renderElement={props => <BiblioElement {...props} />}
 				renderLeaf={props => <BiblioLeaf {...props} />}

@@ -19,7 +19,7 @@ const setup = {
 				credentials: 'include', // Includi i cookie nella richiesta
 			})
 				.then(response => response.json())
-				.then(data => store.setUser(data))
+				.then(data => store.setUser(data?.user))
 				.catch(error => console.error('Error:', error));
 		},
 		createSession: (token: string, store?: AuthStore) => {
