@@ -1,13 +1,8 @@
 import { ElementCode } from "@/stores/stacks/editor/slate/types";
-import { SugarEditor } from "@/stores/stacks/editor/slate/withSugar";
-import { CopyButton, IconButton } from "@priolo/jack";
-import { FunctionComponent } from "react";
-import { Node } from "slate";
-import { RenderElementProps, useFocused, useSelected, useSlate } from "slate-react";
-import ArrowRightIcon from "../../../../icons/ArrowRightIcon";
-import cls from "./Code.module.css";
-import Drop from "./Drop";
-import { buildCodeEditor } from "../../../../stores/stacks/editorCode/factory";
+import Editor from "@monaco-editor/react";
+import { FunctionComponent, useEffect, useRef } from "react";
+import { BaseEditor, Transforms } from "slate";
+import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate, useSlateStatic } from "slate-react";
 
 
 
@@ -23,43 +18,44 @@ const Code: FunctionComponent<Props> = ({
 	children,
 }) => {
 
-	// HOOKs
-	const editor = useSlate() as SugarEditor
-	const selected = useSelected()
-	const focused = useFocused()
+	//const editor = useSlate();
+	const editor = useSlateStatic();
+	const selected = useSelected();
+	const focused = useFocused();
 
-	// HANDLERS
-	const handleOpen = () => {
-		// let view: ViewStore = getById(GetAllCards(), element.data?.uuid)
-		// if (!!view) {
-		// 	view.state.group?.focus(view)
-		// 	return
-		// }
-		const text = Node.string(element)
-		const view = buildCodeEditor(text)
-		if (!view) return
-		editor.store.state.group.addLink({ view, parent: editor.store, anim: true })
+	const handleChange = (newValue) => {
+		const path = ReactEditor.findPath(editor, element);
+		Transforms.setNodes(
+			editor,
+			{ code: newValue },
+			{ at: path }
+		)
 	}
-	const handleCopy = () => Node.string(element)
+	const onEditorDidMount = (editor:BaseEditor) => {
+		// editor.setPosition({lineNumber: 1, column: 6})
+		// editor.focus()
+		editor.getModel().onDidChangeContent((event) => {
+			console.log('Il contenuto è cambiato:', event);
+			// Puoi aggiungere qui la logica per gestire il cambiamento
+		});
+	}
 
-	// RENDER
-	const haveFocus = selected && focused
-	const clsRoot = `${cls.root} ${haveFocus ? cls.focus : ''} jack-hover-container`
-	const clsBtt = `${cls.btt} jack-hover-hide`
-
-	return <Drop 
-		attributes={attributes}
-		element={element}
-		className={clsRoot} 
-	>
-		<div className={clsBtt}>
-			<CopyButton value={handleCopy} />
-			<IconButton 
-				onClick={handleOpen}
-			><ArrowRightIcon /></IconButton>
+	return (
+		<div {...attributes}>
+			<Editor
+				height="200px"
+				language="javascript"
+				theme="vs-dark"
+				value={element.code || ''}
+				onChange={handleChange}
+				onMount={onEditorDidMount}
+				options={{
+					minimap: { enabled: false },
+					scrollBeyondLastLine: false,
+				}}
+			/>
 		</div>
-		{children}
-	</Drop>
+	)
 }
 
 export default Code

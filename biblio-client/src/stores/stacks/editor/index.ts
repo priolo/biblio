@@ -2,7 +2,7 @@ import { createDocLib, fetchDoc, getDocLib, syncRemoteDoc } from "@/plugins/docs
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
 import { DOC_STATUS, RemoteDoc } from "@/types/Doc"
 import { debounce } from "@/utils/time"
-import { DragDoc } from "@priolo/jack/dist/stores/mouse/utils"
+import { DragDoc } from "@priolo/jack"
 import { mixStores, StoreCore } from "@priolo/jon"
 import { createEditor } from "slate"
 import { withHistory } from 'slate-history'
