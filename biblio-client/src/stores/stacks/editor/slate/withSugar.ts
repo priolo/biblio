@@ -21,24 +21,31 @@ export const withSugar = (editor: ReactEditor) => {
 	se.store = null
 
 
-	const { apply } = editor;
-	editor.apply = operation => {
-		// switch (operation.type) {
-		// 	case "insert_node":
-		// 		(operation.node as NodeType).id = generateUUID()
-		// 		break
-		// 	case "split_node":
-		// 		if (operation.position == 1 && operation.path?.length == 1) {
-		// 			(<Partial<NodeType>>operation.properties).id = generateUUID()
-		// 		}
-		// 		break
-		// }
-		//if ( !se.actionsDisabled ){
-			console.log(operation)
-			addActionDoc(se.store?.state.docId, operation)
-		//}
-		apply(operation);
-	};
+	const { apply, isVoid } = editor;
+
+	// editor.apply = operation => {
+	// 	// switch (operation.type) {
+	// 	// 	case "insert_node":
+	// 	// 		(operation.node as NodeType).id = generateUUID()
+	// 	// 		break
+	// 	// 	case "split_node":
+	// 	// 		if (operation.position == 1 && operation.path?.length == 1) {
+	// 	// 			(<Partial<NodeType>>operation.properties).id = generateUUID()
+	// 	// 		}
+	// 	// 		break
+	// 	// }
+	// 	//if ( !se.actionsDisabled ){
+	// 	console.log(operation)
+	// 	addActionDoc(se.store?.state.docId, operation)
+	// 	//}
+	// 	apply(operation);
+	// };
+
+	editor.isVoid = element => {
+		return element.type == NODE_TYPES.CODE ? true : isVoid(element)
+	}
+
+
 
 	// const { normalizeNode } = editor
 
@@ -77,21 +84,33 @@ export const withSugar = (editor: ReactEditor) => {
 
 		const selectA = editor.selection.anchor.path[0]
 		const selectB = editor.selection.focus.path[0]
+		const path = [selectA]
 		const split = type != NODE_TYPES.TEXT
 		const onlySelect = type == NODE_TYPES.TEXT
-		const merge = type == NODE_TYPES.CODE
+		const merge = false //type == NODE_TYPES.CODE
+
+		const currentNode = editor.children[selectA]
 
 		// non devo eseguire il merge...
 		if (!merge) {
-			const node: Partial<NodeType> = { type }
-			Transforms.setNodes(
-				editor,
+			let node: Partial<NodeType> = { type }
+			if (type == NODE_TYPES.CODE && currentNode.type != NODE_TYPES.CODE) {
+				node.code = currentNode.children?.[0]?.text ?? ""
+			}
+			if (type != NODE_TYPES.CODE && currentNode.type == NODE_TYPES.CODE) {
+				const newValue = currentNode.code ?? ""
+				editor.setNodes({ type }, { at: path })
+				editor.insertText(newValue, { at: path })
+
+				return
+			}
+			editor.setNodes(
 				node,
-				{
-					match: n => !Editor.isEditor(n) && Element.isElement(n),
-					split,
-					at: onlySelect ? undefined : [selectA]
-				},
+				// {
+				// 	match: n => !Editor.isEditor(n) && Element.isElement(n),
+				// 	split,
+				// 	at: onlySelect ? undefined : [selectA]
+				// },
 			)
 			return
 		}
@@ -128,10 +147,10 @@ export const withSugar = (editor: ReactEditor) => {
 	// 	// const text = data.getData('text/plain')
 	// 	// if (eq.isUrl(text)) {
 	// 	// 	Editor.insertNode(editor, {
-	// 	// 		type: BLOCK_TYPE.TEXT, 
-	// 	// 		children: [{ 
+	// 	// 		type: BLOCK_TYPE.TEXT,
+	// 	// 		children: [{
 	// 	// 			link: true,
-	// 	// 			text: text, 
+	// 	// 			text: text,
 	// 	// 			url: text,
 	// 	// 		}]
 	// 	// 	})
