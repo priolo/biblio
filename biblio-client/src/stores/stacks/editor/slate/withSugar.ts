@@ -101,7 +101,6 @@ export const withSugar = (editor: ReactEditor) => {
 				const newValue = currentNode.code ?? ""
 				editor.setNodes({ type }, { at: path })
 				editor.insertText(newValue, { at: path })
-
 				return
 			}
 			editor.setNodes(
