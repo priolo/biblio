@@ -10,9 +10,13 @@ import ActionsCmp from "./Actions"
 import cls from "./View.module.css"
 import BiblioElement from "./elements/BiblioElement"
 import BiblioLeaf from "./leafs/BiblioLeaf"
+import EditorIcon from "../../../icons/EditorIcon"
 
+import Prism from "prismjs";
+//import { SetNodeToDecorations, useDecorate } from "./elements/Code"
 
-
+import { Node } from "slate"
+console.log(Object.keys(Prism.languages));
 interface Props {
 	store?: TextEditorStore
 }
@@ -48,10 +52,11 @@ const EditorView: FunctionComponent<Props> = ({
 
 	// RENDER
 	const editor = store.state.editor
+	//const decorate = useDecorate(editor)
 
 	return <FrameworkCard
 		className={clsCard.root}
-		icon={<MessageIcon />}
+		icon={<EditorIcon />}
 		store={store}
 		//actionsRender={<ActionsCmp store={store} />}
 		iconizedRender={null}
@@ -63,8 +68,9 @@ const EditorView: FunctionComponent<Props> = ({
 		>
 
 			<ActionsCmp store={store} style={{ margin: '-10px -10px 5px -10px' }} />
-
+			{/* <SetNodeToDecorations /> */}
 			<Editable
+				decorate={decorateCode}
 				className={cls.editor}
 				style={{ flex: 1, overflowY: "auto" }}
 				spellCheck={false}
@@ -83,3 +89,27 @@ const EditorView: FunctionComponent<Props> = ({
 
 export default EditorView
 
+const decorateCode = ([node, path]) => {
+	const ranges = []
+	if (node.type === 'code') {
+		const text = Node.string(node)
+		const tokens = Prism.tokenize(text, Prism.languages.markdown)
+		let start = 0
+
+		for (const token of tokens) {
+			const length = token.length
+			const end = start + length
+
+			if (typeof token !== 'string') {
+				ranges.push({
+					anchor: { path, offset: start },
+					focus: { path, offset: end },
+					className: `token ${token.type}`,
+				})
+			}
+
+			start = end
+		}
+	}
+	return ranges
+}

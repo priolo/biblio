@@ -3,6 +3,14 @@
 import ReactDOM from 'react-dom/client';
 import App from './app/App.tsx';
 
+
+import "prismjs/themes/prism-funky.css";
+
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-markdown';
+import 'prismjs/components/prism-css';
+
 import '@fontsource/darker-grotesque/800.css';
 import '@fontsource-variable/inter';
 

@@ -21,8 +21,8 @@ const BiblioLeaf: FunctionComponent<Props> = ({
 	const cnRoot = `${cls.root} ${clsBold} ${clsItalic} ${clsCode} ${clsLink}`
 
 	return <span
-		{...attributes}
-		className={cnRoot}
+		{...attributes} 
+		className={leaf.className}
 	>
 		{children}
 	</span>

@@ -1,4 +1,3 @@
-import EditorIcon from "@/icons/EditorIcon"
 import HelpIcon from "@/icons/HelpIcon"
 import LogIcon from "@/icons/LogIcon"
 import NuiIcon from "@/icons/NuiIcon"
@@ -17,6 +16,7 @@ import StreamIcon from "@/icons/cards/StreamIcon"
 import StreamsIcon from "@/icons/cards/StreamsIcon"
 import { DOC_TYPE } from "@/types"
 import { FunctionComponent } from "react"
+import { EditorIcon } from "@priolo/jack"
 
 
 
@@ -44,9 +44,9 @@ const CardIcon: FunctionComponent<Props> = ({
 		case DOC_TYPE.ABOUT:
 			return <div className={className} style={{ fontSize: 16, fontWeight: 700 }}>?</div>
 		case DOC_TYPE.TEXT_EDITOR:
-			return <EditorIcon className={className} style={style} />
+			return null//<EditorIcon className={className} style={style} />
 		case DOC_TYPE.CODE_EDITOR:
-			return <EditorIcon className={className} style={style} />
+			return null//<EditorIcon className={className} style={style} />
 
 		case DOC_TYPE.ACCOUNT:
 			return <SyncIcon className={className} style={style} />

@@ -41,9 +41,13 @@ export const withSugar = (editor: ReactEditor) => {
 	// 	apply(operation);
 	// };
 
-	editor.isVoid = element => {
-		return element.type == NODE_TYPES.CODE ? true : isVoid(element)
-	}
+
+
+
+	
+	// editor.isVoid = element => {
+	// 	return element.type == NODE_TYPES.CODE ? true : isVoid(element)
+	// }
 
 
 
@@ -75,68 +79,93 @@ export const withSugar = (editor: ReactEditor) => {
 	// 	onChange(options)
 	// }
 
-	/**
-	 * Elimino i BLOCKs selezionati, li unisco in un unico TYPE e li reinserisco
-	 */
 	se.setTypeOnSelect = (type: NODE_TYPES) => {
 		// Non fare nulla se non c'è una selezione o se la selezione è collassata
 		if (!editor.selection) return;
 
 		const selectA = editor.selection.anchor.path[0]
-		const selectB = editor.selection.focus.path[0]
 		const path = [selectA]
-		const split = type != NODE_TYPES.TEXT
-		const onlySelect = type == NODE_TYPES.TEXT
-		const merge = false //type == NODE_TYPES.CODE
-
 		const currentNode = editor.children[selectA]
 
-		// non devo eseguire il merge...
-		if (!merge) {
-			let node: Partial<NodeType> = { type }
-			if (type == NODE_TYPES.CODE && currentNode.type != NODE_TYPES.CODE) {
-				node.code = currentNode.children?.[0]?.text ?? ""
-			}
-			if (type != NODE_TYPES.CODE && currentNode.type == NODE_TYPES.CODE) {
-				const newValue = currentNode.code ?? ""
-				editor.setNodes({ type }, { at: path })
-				editor.insertText(newValue, { at: path })
-				return
-			}
-			editor.setNodes(
-				node,
-				// {
-				// 	match: n => !Editor.isEditor(n) && Element.isElement(n),
-				// 	split,
-				// 	at: onlySelect ? undefined : [selectA]
-				// },
-			)
-			return
-		}
+		editor.setNodes({ type }, { at: path })
 
-		// prendo tutti i TEXT presenti nella selection
-		const textsGen = Node.texts(editor, {
-			from: [Math.min(selectA, selectB)],
-			to: [Math.max(selectA, selectB)],
-		})
-		// se true prende del NODE solo la proprietà "text" altrimenti tutto
-		const onlyText = type == NODE_TYPES.CODE //|| type == BLOCK_TYPE.IMAGE
-		// mergio tutti i TEXT
-		const texts = [...textsGen].map((textEntry, index, array) => {
-			const textNode = textEntry[0]
-			const endline = index < array.length - 1 ? "\n" : ""
-			const text = `${textNode.text}${endline}`
-			return { ...(onlyText ? {} : textNode), text }
-		})
-		// creo il nuovo node
-		const node = { type, children: texts }
-		// rimuovo i vecchi NODE
-		Transforms.removeNodes(editor)
-		// inserisco al loro posto il nuovo NODE
-		Transforms.insertNodes(editor, node, {
-			select: true, hanging: true, voids: true, mode: "highest",
-		})
+		// if (type == NODE_TYPES.CODE && currentNode.type != NODE_TYPES.CODE) {
+		// 	editor.setNodes({
+		// 		type,
+		// 		code: currentNode.children?.[0]?.text ?? ""
+		// 	})
+		// }
+
+		// if (type != NODE_TYPES.CODE && currentNode.type == NODE_TYPES.CODE) {
+		// 	const newValue = currentNode.code ?? ""
+		// 	// devo settare prima il type" del nde perche' il type "code" infatti non è editabile
+		// 	editor.setNodes({ type }, { at: path })
+		// 	editor.insertText(newValue, { at: path })
+		// }
+
 	}
+	/**
+	 * Elimino i BLOCKs selezionati, li unisco in un unico TYPE e li reinserisco
+	 */
+	// se.setTypeOnSelect = (type: NODE_TYPES) => {
+	// 	// Non fare nulla se non c'è una selezione o se la selezione è collassata
+	// 	if (!editor.selection) return;
+
+	// 	const selectA = editor.selection.anchor.path[0]
+	// 	const selectB = editor.selection.focus.path[0]
+	// 	const path = [selectA]
+	// 	const split = type != NODE_TYPES.TEXT
+	// 	const onlySelect = type == NODE_TYPES.TEXT
+	// 	const merge = false //type == NODE_TYPES.CODE
+
+	// 	const currentNode = editor.children[selectA]
+
+	// 	// non devo eseguire il merge...
+	// 	if (!merge) {
+	// 		let node: Partial<NodeType> = { type }
+	// 		if (type == NODE_TYPES.CODE && currentNode.type != NODE_TYPES.CODE) {
+	// 			node.code = currentNode.children?.[0]?.text ?? ""
+	// 		}
+	// 		if (type != NODE_TYPES.CODE && currentNode.type == NODE_TYPES.CODE) {
+	// 			const newValue = currentNode.code ?? ""
+	// 			editor.setNodes({ type }, { at: path })
+	// 			editor.insertText(newValue, { at: path })
+	// 			return
+	// 		}
+	// 		editor.setNodes(
+	// 			node,
+	// 			// {
+	// 			// 	match: n => !Editor.isEditor(n) && Element.isElement(n),
+	// 			// 	split,
+	// 			// 	at: onlySelect ? undefined : [selectA]
+	// 			// },
+	// 		)
+	// 		return
+	// 	}
+
+	// 	// prendo tutti i TEXT presenti nella selection
+	// 	const textsGen = Node.texts(editor, {
+	// 		from: [Math.min(selectA, selectB)],
+	// 		to: [Math.max(selectA, selectB)],
+	// 	})
+	// 	// se true prende del NODE solo la proprietà "text" altrimenti tutto
+	// 	const onlyText = type == NODE_TYPES.CODE //|| type == BLOCK_TYPE.IMAGE
+	// 	// mergio tutti i TEXT
+	// 	const texts = [...textsGen].map((textEntry, index, array) => {
+	// 		const textNode = textEntry[0]
+	// 		const endline = index < array.length - 1 ? "\n" : ""
+	// 		const text = `${textNode.text}${endline}`
+	// 		return { ...(onlyText ? {} : textNode), text }
+	// 	})
+	// 	// creo il nuovo node
+	// 	const node = { type, children: texts }
+	// 	// rimuovo i vecchi NODE
+	// 	Transforms.removeNodes(editor)
+	// 	// inserisco al loro posto il nuovo NODE
+	// 	Transforms.insertNodes(editor, node, {
+	// 		select: true, hanging: true, voids: true, mode: "highest",
+	// 	})
+	// }
 
 
 	// editor.insertData = (data) => {

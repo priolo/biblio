@@ -37,7 +37,9 @@ export type ElementCard = {
 } & ElementType
 
 export type ElementCode = {
-	code?: string
+	// size?: NODE_CODE_SIZE
+	language?: string
+	// code?: string
 } & ElementType
 
 export type ElementImage = {
@@ -62,3 +64,9 @@ export type NodeType = Node & ElementCard & ElementImage & TextType
 // 			|| (node1.children.length == node2.children.length && node1.children[0].text == node2.children[0].text)
 // 		)
 // } 
+
+export enum NODE_CODE_SIZE {
+	FULL =  "full",
+	COLLAPSED = "collapsed",
+	//WINDOW = "window",
+}

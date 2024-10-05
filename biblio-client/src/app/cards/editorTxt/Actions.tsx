@@ -1,7 +1,7 @@
-import { Button, IconButton, TextInput } from "@priolo/jack"
+import { Button, IconButton, TextInput, ListDialog } from "@priolo/jack"
 import LinkIcon from "@/icons/LinkIcon"
 import { TextEditorStore } from "@/stores/stacks/editor"
-import { NODE_TYPES, NodeType } from "@/stores/stacks/editor/slate/types"
+import { NODE_CODE_SIZE, NODE_TYPES, NodeType } from "@/stores/stacks/editor/slate/types"
 import { SugarEditor } from "@/stores/stacks/editor/slate/withSugar"
 import { useStore } from "@priolo/jon"
 import { FunctionComponent, useState } from "react"
@@ -66,7 +66,7 @@ const ActionsCmp: FunctionComponent<Props> = ({
 		editor.setTypeOnSelect(NODE_TYPES.CHAPTER)
 		ReactEditor.focus(editor)
 	}
-	const handleParagraph = (e) => {
+	const handleParagraph = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		editor.setTypeOnSelect(NODE_TYPES.PARAGRAPH)
 		ReactEditor.focus(editor)
@@ -81,6 +81,27 @@ const ActionsCmp: FunctionComponent<Props> = ({
 		e.preventDefault()
 		editor.setTypeOnSelect(NODE_TYPES.CODE)
 		ReactEditor.focus(editor)
+	}
+	const handleToggleCodeSize = (e) => {
+		// const selectA = editor.selection.anchor.path[0]
+		// const path = [selectA]
+		// const currentNode = editor.children[selectA]
+
+		const path = ReactEditor.findPath(editor, node)
+		const newShow = node.size == NODE_CODE_SIZE.COLLAPSED ? NODE_CODE_SIZE.WINDOW
+			: node.size == NODE_CODE_SIZE.WINDOW ? NODE_CODE_SIZE.FULL
+				: node.size == NODE_CODE_SIZE.FULL ? NODE_CODE_SIZE.COLLAPSED : NODE_CODE_SIZE.FULL
+		editor.setNodes(
+			{ size: newShow },
+			{ at: path }
+		)
+	}
+	const handleLang = (index: number) => {
+		const path = ReactEditor.findPath(editor, node)
+		editor.setNodes(
+			{ lang: languages[index] },
+			{ at: path }
+		)
 	}
 	// const handleImageCode = (e) => {
 	// 	e.preventDefault()
@@ -97,21 +118,39 @@ const ActionsCmp: FunctionComponent<Props> = ({
 	const isLink = marks?.["link"] === true
 	const urlMark = marks?.["url"] ?? ""
 
+	const languages = ["javascript", "typescript", "html", "xml"]
+
 	return (<div
 		className={cls.actions}
 		style={style}
 	>
 
-		<Button select={isBold}
-			onClick={handleBold}
-		>B</Button>
-		<Button select={isItalic}
-			style={{ fontStyle: "italic" }}
-			onClick={handleItalic}
-		>I</Button>
-		<Button select={isLink}
-			onClick={handleLink}
-		>L</Button>
+
+		{type == NODE_TYPES.CODE ? <>
+			<Button
+				onClick={handleToggleCodeSize}
+			>T</Button>
+			{/* <Button
+				onClick={handleLang}
+			>L</Button> */}
+			<ListDialog width={80}
+				store={store}
+				select={languages.indexOf(node.lang) ?? 0}
+				items={languages}
+				onSelect={handleLang}
+			/>
+		</> : <>
+			<Button select={isBold}
+				onClick={handleBold}
+			>B</Button>
+			<Button select={isItalic}
+				style={{ fontStyle: "italic" }}
+				onClick={handleItalic}
+			>I</Button>
+			<Button select={isLink}
+				onClick={handleLink}
+			>L</Button>
+		</>}
 
 		<div className="lbl-divider-v2" />
 
@@ -142,6 +181,8 @@ const ActionsCmp: FunctionComponent<Props> = ({
 			>IMAGE</Button> */}
 			</>}
 		</div>
+
+
 	</div>)
 }
 
