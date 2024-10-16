@@ -21,29 +21,25 @@ export const withSugar = (editor: ReactEditor) => {
 	se.store = null
 
 
-	const { apply, isVoid } = editor;
+	const { apply, isVoid, insertData } = editor;
 
-	// editor.apply = operation => {
-	// 	// switch (operation.type) {
-	// 	// 	case "insert_node":
-	// 	// 		(operation.node as NodeType).id = generateUUID()
-	// 	// 		break
-	// 	// 	case "split_node":
-	// 	// 		if (operation.position == 1 && operation.path?.length == 1) {
-	// 	// 			(<Partial<NodeType>>operation.properties).id = generateUUID()
-	// 	// 		}
-	// 	// 		break
-	// 	// }
-	// 	//if ( !se.actionsDisabled ){
-	// 	console.log(operation)
-	// 	addActionDoc(se.store?.state.docId, operation)
-	// 	//}
-	// 	apply(operation);
-	// };
-
-
-
-
+	editor.apply = operation => {
+		// switch (operation.type) {
+		// 	case "insert_node":
+		// 		(operation.node as NodeType).id = generateUUID()
+		// 		break
+		// 	case "split_node":
+		// 		if (operation.position == 1 && operation.path?.length == 1) {
+		// 			(<Partial<NodeType>>operation.properties).id = generateUUID()
+		// 		}
+		// 		break
+		// }
+		//if ( !se.actionsDisabled ){
+		console.log(operation)
+		addActionDoc(se.store?.state.docId, operation)
+		//}
+		apply(operation);
+	};
 	
 	// editor.isVoid = element => {
 	// 	return element.type == NODE_TYPES.CODE ? true : isVoid(element)
@@ -104,6 +100,7 @@ export const withSugar = (editor: ReactEditor) => {
 		// }
 
 	}
+
 	/**
 	 * Elimino i BLOCKs selezionati, li unisco in un unico TYPE e li reinserisco
 	 */
@@ -167,25 +164,39 @@ export const withSugar = (editor: ReactEditor) => {
 	// 	})
 	// }
 
+	editor.insertData = (data) => {
+		const text = data.getData('text/plain')
+        if (text) {
+            // const lines = text.split('\n')
+            // const combinedText = lines.join(' ')
+			const combinedText = text
+            const fragment = {
+                type: NODE_TYPES.CODE, // Assicurati di usare il tipo di nodo corretto
+                children: [{ text: combinedText }],
+            }
+            Transforms.insertNodes(editor, fragment)
+        } else {
+            insertData(data)
+        }
 
-	// editor.insertData = (data) => {
-	// 	const fnOrigin = insertData(data)
-	// 	// if (!fnOrigin) return null
 
-	// 	// const text = data.getData('text/plain')
-	// 	// if (eq.isUrl(text)) {
-	// 	// 	Editor.insertNode(editor, {
-	// 	// 		type: BLOCK_TYPE.TEXT,
-	// 	// 		children: [{
-	// 	// 			link: true,
-	// 	// 			text: text,
-	// 	// 			url: text,
-	// 	// 		}]
-	// 	// 	})
-	// 	// 	return null
-	// 	// }
-	// 	return fnOrigin
-	// }
+		// const fnOrigin = insertData(data)
+		// if (!fnOrigin) return null
+
+		// const text = data.getData('text/plain')
+		// if (eq.isUrl(text)) {
+		// 	Editor.insertNode(editor, {
+		// 		type: NODE_TYPES.TEXT,
+		// 		children: [{
+		// 			link: true,
+		// 			text: text,
+		// 			url: text,
+		// 		}]
+		// 	})
+		// 	return null
+		// }
+		// return fnOrigin
+	}
 
 	// editor.insertNode = (node) => {
 	// 	debugger
@@ -207,6 +218,9 @@ export const withSugar = (editor: ReactEditor) => {
 
 	return se
 }
+
+
+
 
 
 export interface SugarEditor extends ReactEditor {

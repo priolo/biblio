@@ -9,12 +9,33 @@ import { Doc } from "./repository/Doc.js";
 import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import { httpRouter, http, httpStatic, ws, typeorm } from "typexpress"
+import { IClient } from "typexpress/dist/services/ws/utils.js";
+
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
 //type HttpCnf = Partial<HttpService["stateDefault"]>
+
+interface SharedMem {
+	[sharedArrayId: string]: SharedArray
+}
+
+interface SharedArray {
+	id: string
+	listeners: IClient[]
+	ActionsBuffer: CwsAction[]
+}
+
+interface CwsAction {
+	type: string
+	index: number
+}
+
+interface CwsMessage {
+	action: CwsAction
+}
 
 
 
@@ -55,27 +76,18 @@ function buildNodeConfig() {
 					dir: path.join(__dirname, "../biblio-client/dist"),
 					spaFile: "index.html",
 				},
-				// <ws.SocketServerConf>{
-				// 	class: "ws",
-				// 	children: [
-				// 		<ws.SocketRouteConf>{
-				// 			class: "ws/route",
-				// 			onConnect: (client) => {
-				// 				console.log("CONNECT")
-				// 			},
-				// 			onMessage: async function (client, message) {
-				// 				await this.dispatch({
-				// 					type: ws.SocketRouteActions.SEND,
-				// 					payload: { client, message }
-				// 				})
-				// 				await this.dispatch({
-				// 					type: ws.SocketRouteActions.DISCONNECT,
-				// 					payload: client
-				// 				})
-				// 			},
-				// 		}
-				// 	],
-				// }
+				<ws.SocketServerConf>{
+					class: "ws",
+					// un povero client s'e' connesso
+					onConnect: function (client) {
+						console.log("ws/route onConnect")
+					},
+					// un client ha una qualche richiesta
+					onMessage: async function (client, message) {
+						const action = message.action
+						this.sendToAll(message)
+					},
+				}
 			]
 		},
 		<typeorm.conf>{

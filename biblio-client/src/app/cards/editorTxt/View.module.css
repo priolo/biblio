@@ -1,3 +1,7 @@
+.editor {
+	tab-size: 2; /* Imposta la lunghezza del tab a 4 spazi */
+}
+
 .editor:focus {
   	outline: none;
 }

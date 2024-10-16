@@ -1,11 +1,9 @@
-//import '@/plugins/msw';
-
 import ReactDOM from 'react-dom/client';
 import App from './app/App.tsx';
 
 
+//#region CSS
 import "prismjs/themes/prism-funky.css";
-
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-markdown';
@@ -23,9 +21,16 @@ import './css/layout.css';
 import './css/scrollbar.css';
 import './css/monaco.css';
 import "@priolo/jack/dist/style.css";
+//#endregion
 
 
-import "./utils/session/startup.ts"
+
+//#region PLUGIN
+//import '@/plugins/msw';
+import "./plugins/session";
+//#endregion
+
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // <React.StrictMode>

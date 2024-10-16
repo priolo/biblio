@@ -9,9 +9,9 @@ import { HelpStore } from "@/stores/stacks/help"
 import { ViewLogStore } from "@/stores/stacks/log"
 import { ViewStore } from "@/stores/stacks/viewBase"
 import { DOC_TYPE } from "@/types"
-import { delay } from "../time"
 import { loadLocalStorage, saveLocalStorage } from "./storage"
 import { Session } from "./types"
+import { delay } from "../../utils/time"
 
 
 
@@ -20,6 +20,12 @@ window.addEventListener("beforeunload", async (event) => EndSession())
 window.onerror = (message, url, line, col, error) => {
 	logSo.addError(error)
 }
+window.addEventListener('online', function() {
+    console.log("Sei tornato online!");
+});
+window.addEventListener('offline', function() {
+    console.log("Sei andato offline!");
+});
 
 export async function EndSession() {
 	const deckStates = deckCardsSo.state.all.map(store => store.getSerialization())

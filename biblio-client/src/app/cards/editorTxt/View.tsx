@@ -2,21 +2,20 @@ import FrameworkCard from "@/components/cards/FrameworkCard"
 import { TextEditorStore } from "@/stores/stacks/editor"
 import { biblioOnKeyDown } from "@/stores/stacks/editor/utils/onkeydown"
 import { useStore } from "@priolo/jon"
-import { FunctionComponent } from "react"
+import { FunctionComponent, useCallback, useEffect } from "react"
 import { Editable, Slate } from "slate-react"
-import MessageIcon from "../../../icons/cards/MessageIcon"
+import EditorIcon from "../../../icons/EditorIcon"
 import clsCard from "../CardCyanDef.module.css"
 import ActionsCmp from "./Actions"
 import cls from "./View.module.css"
 import BiblioElement from "./elements/BiblioElement"
 import BiblioLeaf from "./leafs/BiblioLeaf"
-import EditorIcon from "../../../icons/EditorIcon"
 
-import Prism from "prismjs";
-//import { SetNodeToDecorations, useDecorate } from "./elements/Code"
+import Prism from "prismjs"
+import { Editor, Node } from "slate"
 
-import { Node } from "slate"
-console.log(Object.keys(Prism.languages));
+
+
 interface Props {
 	store?: TextEditorStore
 }
@@ -52,7 +51,6 @@ const EditorView: FunctionComponent<Props> = ({
 
 	// RENDER
 	const editor = store.state.editor
-	//const decorate = useDecorate(editor)
 
 	return <FrameworkCard
 		className={clsCard.root}
@@ -68,10 +66,10 @@ const EditorView: FunctionComponent<Props> = ({
 		>
 
 			<ActionsCmp store={store} style={{ margin: '-10px -10px 5px -10px' }} />
-			{/* <SetNodeToDecorations /> */}
+
 			<Editable
 				decorate={decorateCode}
-				className={cls.editor}
+				className={`${cls.editor} code-editor`}
 				style={{ flex: 1, overflowY: "auto" }}
 				spellCheck={false}
 				renderElement={props => <BiblioElement {...props} />}
@@ -92,8 +90,9 @@ export default EditorView
 const decorateCode = ([node, path]) => {
 	const ranges = []
 	if (node.type === 'code') {
+		console.log("decorateCode")
 		const text = Node.string(node)
-		const tokens = Prism.tokenize(text, Prism.languages.markdown)
+		const tokens = Prism.tokenize(text, Prism.languages.javascript)
 		let start = 0
 
 		for (const token of tokens) {
@@ -113,3 +112,31 @@ const decorateCode = ([node, path]) => {
 	}
 	return ranges
 }
+
+// const decorateCode = ([node, path]) => {
+// 	const ranges = []
+// 	if (node.type === 'code') {
+// 	  const text = Node.string(node)
+// 	  const language = 'javascript' // Cambia questa riga per supportare altri linguaggi
+// 	  const { value } = hljs.highlight(text, { language })
+// 	  const tokens = value.split(/\r\n|\r|\n/)
+	  
+// 	  let start = 0
+// 	  for (const token of tokens) {
+// 		const length = token.length
+// 		const end = start + length
+  
+// 		const tokenClasses = token.match(/class="([^"]+)"/)?.[1]
+// 		if (tokenClasses) {
+// 		  ranges.push({
+// 			anchor: { path, offset: start },
+// 			focus: { path, offset: end },
+// 			className: tokenClasses,
+// 		  })
+// 		}
+  
+// 		start = end + 1 // +1 per il carattere di nuova riga
+// 	  }
+// 	}
+// 	return ranges
+//   }

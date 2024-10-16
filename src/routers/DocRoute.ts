@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { BaseOperation, createEditor, Descendant, withoutNormalizing } from "slate"
 import { Bus, RepoRestActions, httpRouter } from "typexpress"
 import { Doc } from "../repository/Doc.js"
+import { Editor, Transforms } from "slate";
 
 
 
@@ -95,6 +96,10 @@ export function applyOperations(actions: BaseOperation[], initialValue: Descenda
 	editor.children = initialValue;
 	withoutNormalizing(editor, () => {
 		actions.forEach(op => {
+			if (op.type === 'set_selection' && !editor.selection) {
+                // Imposta una selezione di default se non c'è una selezione corrente
+                Transforms.select(editor, { anchor: { path: [0, 0], offset: 0 }, focus: { path: [0, 0], offset: 0 } });
+            }
 			editor.apply(op);
 		})
 	})

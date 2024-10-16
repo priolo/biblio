@@ -7,6 +7,7 @@ import { useStore } from "@priolo/jon"
 import { FunctionComponent, useState } from "react"
 import { ReactEditor, useSlate } from "slate-react"
 import cls from "./View.module.css"
+import { Editor, Node, Transforms } from "slate"
 
 
 
@@ -82,6 +83,7 @@ const ActionsCmp: FunctionComponent<Props> = ({
 		editor.setTypeOnSelect(NODE_TYPES.CODE)
 		ReactEditor.focus(editor)
 	}
+
 	const handleToggleCodeSize = (e) => {
 		// const selectA = editor.selection.anchor.path[0]
 		// const path = [selectA]
@@ -108,6 +110,51 @@ const ActionsCmp: FunctionComponent<Props> = ({
 	// 	editor.setTypeOnSelect(NODE_TYPES.IMAGE)
 	// 	ReactEditor.focus(editor)
 	// }
+
+
+
+	const newChildren = [
+		{ type: 'paragraph', children: [{ text: 'Nuovo paragrafo' }] },
+		{ type: 'text', children: [{ text: 'normalissimo testo innocuo' }] },
+	];
+	const handleOTest = (e) => {
+		e.preventDefault()
+		e.stopPropagation()
+
+		// Salva la selezione corrente
+		const currentSelection = editor.selection
+
+		const start = Editor.start(editor, []);
+		const end = Editor.end(editor, []);
+		const range = { anchor: start, focus: end };
+		Transforms.removeNodes(editor, { at: range });
+		Transforms.insertNodes(editor, newChildren, { at: [0] });
+
+
+		// Ripristina la selezione originale, se esisteva
+		if (currentSelection) {
+			// Assicurati che la selezione sia ancora valida nel nuovo contenuto
+			const lastValidPosition = Editor.end(editor, [])
+			const newAnchor = {
+				path: currentSelection.anchor.path,
+				offset: Math.min(currentSelection.anchor.offset, lastValidPosition.offset)
+			}
+			const newFocus = {
+				path: currentSelection.focus.path,
+				offset: Math.min(currentSelection.focus.offset, lastValidPosition.offset)
+			}
+			const newSelection = {
+				anchor: newAnchor,
+				focus: newFocus
+			}
+			Transforms.select(editor, newSelection)
+		}
+
+		ReactEditor.focus(editor);
+	}
+
+
+
 
 	// RENDER
 	const node = editor.selection ? editor.node(editor.selection.focus, { depth: 1 })?.[0] as NodeType : null
@@ -140,6 +187,10 @@ const ActionsCmp: FunctionComponent<Props> = ({
 				onSelect={handleLang}
 			/>
 		</> : <>
+			<Button
+				onClick={handleOTest}
+			>O</Button>
+
 			<Button select={isBold}
 				onClick={handleBold}
 			>B</Button>

@@ -98,6 +98,7 @@ const setup = {
 				editorSo.state.docId = remote.doc.id
 			} else {
 				remote = await fetchDoc(editorSo.state.docId)
+				editor.children = remote.doc.children
 			}
 		},
 

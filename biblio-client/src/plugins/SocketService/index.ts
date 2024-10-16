@@ -45,12 +45,6 @@ export class SocketService {
 			let url = `${protocol}//${host}:${port}/`
 			if (base) url = `${url}/${base}`
 			if (connId) url = `${url}?id=${connId}`
-			logSo.add({
-				type: MESSAGE_TYPE.INFO,
-				title: "WS-CONNECTIONS",
-				body: `try_connecting`,
-				data: url,
-			})
 			this.websocket = new WebSocket(url);
 		} catch (error) {
 			this.reconnect.start()
@@ -78,12 +72,6 @@ export class SocketService {
 	 * chiude il socket e mantiene chiuso (usato nel logout)
 	 */
 	disconnect() {
-		logSo.add({
-			type: MESSAGE_TYPE.INFO,
-			title: "WS-CONNECTIONS",
-			body: `disconnect`
-		})
-		//changeConnectionStatus(this.cnnId, CNN_STATUS.UNDEFINED)
 		this.cnnId = null
 		this.reconnect.enabled = false
 		this.reconnect.stop()
@@ -94,33 +82,9 @@ export class SocketService {
 	 * invia un messaggio al server
 	 */
 	send(msg: string) {
-		logSo.add({
-			type: MESSAGE_TYPE.INFO,
-			title: "WS-CONNECTIONS",
-			body: `send:FE>BE`,
-			data: msg,
-		})
-		this.websocket.send(msg)
+ 		this.websocket.send(msg)
 	}
 
-	sendSubjects(subjects: string[]) {
-		logSo.add({
-			type: MESSAGE_TYPE.INFO,
-			title: "WS-CONNECTIONS",
-			body: `send:FE>BE`,
-			data: subjects
-		})
-		const msg: SocketMessage = {
-			type: MSG_TYPE.SUB_REQUEST,
-			payload: { subjects },
-		}
-		try {
-			const msgStr = JSON.stringify(msg)
-			this.send(msgStr)
-		} catch (err) {
-			logSo.addError(err)
-		}
-	}
 
 	//#region SOCKET EVENT
 
@@ -141,53 +105,45 @@ export class SocketService {
 
 	/** ricevo un messaggio dal BE */
 	handleMessage(e: MessageEvent) {
-		const message: SocketMessage = JSON.parse(e.data) as SocketMessage
-		const type = message.type
-		switch (type) {
-
-			case MSG_TYPE.CNN_STATUS: {
-				let payload = message.payload as PayloadStatus
-				this.onStatus?.(payload)
-				let body = `${payload.status}`
-				if (payload.error) {body += ` - ${payload.error}`}
-				logSo.add({
-					type: MESSAGE_TYPE.INFO,
-					title: "CONNECTION STATUS",
-					body: body
-				})
-				break
-			}
-
-			case MSG_TYPE.NATS_MESSAGE: {
-				if (!this.onMessage) return
-				let payload = message.payload as PayloadMessage
-				this.onMessage({
-					subject: payload.subject,
-					payload: atob(payload.payload),
-				})
-				break
-			}
-			
-			case MSG_TYPE.ERROR: {
-				const error: string = (message.payload as PayloadError)?.error
-				//this.onError?.(message.payload as PayloadError)
-				logSo.add({
-					type: MESSAGE_TYPE.ERROR,
-					title: "WS-CONNECTIONS-ERROR",
-					body: error,
-				})
-				break
-			}
-		}
+		const message = JSON.parse(e.data)
+		
 	}
 
 	handleError(e: Event) {
-		logSo.add({
-			type: MESSAGE_TYPE.ERROR,
-			title: "WS-CONNECTIONS",
-			body: `error`
-		})
 	}
 
 	//#endregion
 }
+
+
+const cws = new SocketService({
+	protocol: window.location.protocol == "http:" ? "ws:" : "wss:",
+	host: window.location.hostname,
+	port: 3000, //import.meta.env.VITE_API_WS_PORT ?? window.location.port,
+	base: "",
+})
+cws.connect()
+export default cws
+
+
+
+interface SharedMem {
+	[sharedArrayId: string]: SharedArray
+}
+
+interface SharedArray {
+	value: any[]
+	id: string
+	ActionsBuffer: CwsAction[]
+}
+
+interface CwsAction {
+	type: string
+	index: number
+}
+
+interface CwsMessage {
+	action: CwsAction
+}
+
+const sharedMem: SharedMem = {}

@@ -1,4 +1,5 @@
-import { Bus, RepoStructActions, RootService } from "typexpress";
+import { RootService } from "typexpress/dist/core/RootService.js";
+import { Bus, RepoStructActions } from "typexpress";
 import buildNodeConfig from "./config.js";
 import dotenv from "dotenv";
 import { ENV_TYPE } from "./utils.js";
