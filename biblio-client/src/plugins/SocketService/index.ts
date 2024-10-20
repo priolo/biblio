@@ -3,6 +3,7 @@ import { Reconnect } from "./reconnect.js";
 import { MSG_TYPE, Payload, PayloadError, PayloadMessage, PayloadStatus, SocketMessage, SocketOptions } from "./types.js";
 import { MESSAGE_TYPE } from "@/stores/log/utils.js";
 import { optionsDefault } from "./utils.js";
+import { clientObjects } from "../docsService/index.js";
 
 
 
@@ -19,13 +20,6 @@ export class SocketService {
 	cnnId: string = null
 	// modulo per la riconnessione
 	reconnect: Reconnect;
-
-	// callback su apertura connessione
-	onOpen: () => void = null
-	// callback su arrivo messaggio
-	onMessage?: (message: PayloadMessage) => void
-	onStatus?: (payload: PayloadStatus) => void
-	onError?: (error: PayloadError) => void
 
 	constructor(options: SocketOptions = {}) {
 		this.options = { ...optionsDefault, ...options }
@@ -92,7 +86,7 @@ export class SocketService {
 		//console.log("socket:open")
 		this.reconnect.stop()
 		this.reconnect.tryZero()
-		this.onOpen?.()
+		//this.onOpen?.()
 		//changeConnectionStatus(this.cnnId, CNN_STATUS.RECONNECTING)
 	}
 
@@ -105,8 +99,8 @@ export class SocketService {
 
 	/** ricevo un messaggio dal BE */
 	handleMessage(e: MessageEvent) {
-		const message = JSON.parse(e.data)
-		
+		console.log("socket::receive", JSON.parse(e.data))
+		clientObjects.receive(e.data)
 	}
 
 	handleError(e: Event) {

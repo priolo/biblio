@@ -1,4 +1,4 @@
-import { createDocLib, fetchDoc, getDocLib, syncRemoteDoc } from "@/plugins/docsService"
+import { clientObjects, fetchDoc } from "@/plugins/docsService"
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
 import { DOC_STATUS, RemoteDoc } from "@/types/Doc"
 import { debounce } from "@/utils/time"
@@ -10,6 +10,8 @@ import { withReact } from "slate-react"
 import { EditorState } from "../editorBase"
 import { NODE_TYPES, NodeType } from "./slate/types"
 import { SugarEditor, withSugar } from "./slate/withSugar"
+import { ClientObject } from "../../../plugins/docsService/ClientObjects.type"
+import { createUUID } from "../../docs/utils/factory"
 
 
 
@@ -36,8 +38,8 @@ const setup = {
 		getSubTitle: (_: void, store?: ViewStore) => "Just for an ephemeral note",
 		getSerialization: (_: void, store?: ViewStore) => {
 			const editorSa = store.state as TextEditorState
-			const remote = getDocLib(editorSa.docId)
-			const docId = remote.status == DOC_STATUS.LOCAL ? null : editorSa.docId
+			const remote = clientObjects.objects[editorSa.docId]
+			const docId = remote ? null : editorSa.docId
 			return {
 				...viewSetup.getters.getSerialization(null, store),
 				docId,
@@ -92,14 +94,20 @@ const setup = {
 			editorSo.state.editor = editor
 
 			// creo/cerco nella LIBRARY
-			let remote: RemoteDoc
+			let remote: ClientObject
 			if (!editorSo.state.docId) {
-				remote = createDocLib()
-				editorSo.state.docId = remote.doc.id
+				remote = await fetchDoc(createUUID())
+				editorSo.state.docId = remote.idObj
 			} else {
 				remote = await fetchDoc(editorSo.state.docId)
-				editor.children = remote.doc.children
+				editor.children = remote.value as NodeType[]
 			}
+
+			clientObjects.observe(editorSo.state.docId, (data) => {
+				// bisogna assicurarsi che la selezione non vada fuori dal range del documento altrimenti da errore
+				editor.children = data as NodeType[]
+				store._update()
+			})
 		},
 
 		
@@ -107,18 +115,18 @@ const setup = {
 
 		/** quando il DOC viene modificato da SLATE */
 		onValueChange: (_: void, store?: TextEditorStore) => {
-			debounce("doc-change", async () => {
-				syncRemoteDoc(store.state.docId)
+			// debounce("doc-change", async () => {
 
+			// 	syncRemoteDoc(store.state.docId)
 
-				// if (!store.state.docId) {
-				// 	if (store.state.editor.children?.length > 0) {
-				// 		store.state.doc = await createDoc({ children: store.state.editor.children as NodeType[] })
-				// 	}
-				// } else {
+			// 	// if (!store.state.docId) {
+			// 	// 	if (store.state.editor.children?.length > 0) {
+			// 	// 		store.state.doc = await createDoc({ children: store.state.editor.children as NodeType[] })
+			// 	// 	}
+			// 	// } else {
+			// 	// }
 
-				// }
-			}, 5000)
+			// }, 5000)
 		},
 
 	},

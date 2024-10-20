@@ -3,8 +3,9 @@ import { NODE_TYPES, NodeType } from "./types"
 import { ReactEditor } from "slate-react"
 import { ViewStore } from "../../viewBase"
 import { generateUUID } from "../../../../utils/object"
-import { addActionDoc } from "@/plugins/docsService"
+import { addActionDoc } from "@/plugins/docsService/_index"
 import { TextEditorStore } from ".."
+import { clientObjects } from "../../../../plugins/docsService"
 
 
 
@@ -35,8 +36,9 @@ export const withSugar = (editor: ReactEditor) => {
 		// 		break
 		// }
 		//if ( !se.actionsDisabled ){
-		console.log(operation)
-		addActionDoc(se.store?.state.docId, operation)
+		//console.log(operation)
+		//addActionDoc(se.store?.state.docId, operation)
+		clientObjects.command(se.store?.state.docId, operation)
 		//}
 		apply(operation);
 	};

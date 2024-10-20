@@ -81,9 +81,9 @@ const MainMenu: FunctionComponent<Props> = ({
 			<Button children="LOAD" onClick={() => StartSession()} />
 			<Button children="RESET" onClick={() => ClearSession()} />
 			
-			<Button children="DOC NEW" onClick={handleDocNew} />
+			{/* <Button children="DOC NEW" onClick={handleDocNew} /> */}
 			<Button children="DOC TEST" onClick={handleDocTest} />
-			<Button children="DOC DEV" onClick={handleDocDev} />
+			{/* <Button children="DOC DEV" onClick={handleDocDev} /> */}
 
 			<Button children="ACCOUNT" onClick={handleAccount} />
 		</>}

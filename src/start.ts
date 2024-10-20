@@ -1,17 +1,20 @@
-import { RootService } from "typexpress/dist/core/RootService.js";
-import { Bus, RepoStructActions } from "typexpress";
-import buildNodeConfig from "./config.js";
 import dotenv from "dotenv";
+import { RootService } from "../node_modules/typexpress/dist/core/RootService";
+import { Bus, RepoStructActions} from "typexpress";
+import buildNodeConfig from "./config.js";
 import { ENV_TYPE } from "./utils.js";
+
+
+
+
 
 const envFile = `.env.${process.env.NODE_ENV}`;
 dotenv.config({ path: envFile });
 
 
-
 (async () => {
 
-	console.log(`*** BUILD CONGIF ***`)
+	console.log(`*** BUILD CONFIG ***`)
 	const cnf = buildNodeConfig()
 	console.log(JSON.stringify(cnf, null, "\t"))
 	console.log(`********************************************\n`);
@@ -21,6 +24,7 @@ dotenv.config({ path: envFile });
 	console.log(`*** START ***`)
 	const root = await RootService.Start(cnf)
 	console.log(`********************************************\n`)
+	
 
 	if (process.env.NODE_ENV == ENV_TYPE.TEST || (process.env.NODE_ENV == ENV_TYPE.DEV && process.env.DB_DEV_RESET == "true")) {
 		console.log("*** SEEDING ***")
@@ -66,5 +70,4 @@ dotenv.config({ path: envFile });
 
 		console.log(`********************************************\n`)
 	}
-
 })()

@@ -15,8 +15,8 @@ import { delay } from "../../utils/time"
 
 
 
-window.addEventListener("load", async (event) => StartSession())
-window.addEventListener("beforeunload", async (event) => EndSession())
+// window.addEventListener("load", async (event) => StartSession())
+// window.addEventListener("beforeunload", async (event) => EndSession())
 window.onerror = (message, url, line, col, error) => {
 	logSo.addError(error)
 }

@@ -10,7 +10,8 @@
   "//dependencies": {
     "typexpress": "file://C:/Users/iorio/Documents/typexpress/typexpress",
     "@priolo/jon-utils#local": "file:C://Users//iorio//Documents//jon-utils",
-    "@priolo/jon-utils": "^0.2.2"
+    "@priolo/jon-utils": "^0.2.2",
+    "@priolo/jess": "file://C:/Users/iorio/Documents/jess"
   },
   "scripts": {
     "build-watch": "tsc -w",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "@priolo/jon-utils": "^0.4.3",
+    "@priolo/jess": "file://C:/Users/iorio/Documents/jess",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "google-auth-library": "^9.10.0",

@@ -1,34 +1,35 @@
 {
-    "compilerOptions": {
-      "target": "ESNext",
-      "module": "NodeNext",
-      "moduleResolution": "NodeNext",
-      "outDir": "./dist",
-      "rootDir": "./src",
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "sourceMap": true,
-      "preserveConstEnums": true,
-      "allowJs": true,
-      "paths": {
-        "@/*": [
-          "./src/*"
-        ]
-      },
-      "declaration": true,
-      "declarationMap": true,
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "strict": false,
-      "strictNullChecks": false
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "preserveConstEnums": true,
+    "allowJs": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
     },
-    "include": [
-      "src"
-    ],
-    "exclude": [
-      "node_modules",
-      "dist",
-      "**/*.test.ts"
-    ]
-  }
+    "declaration": true,
+    "declarationMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ]
+}

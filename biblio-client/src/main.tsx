@@ -22,7 +22,7 @@ import './css/scrollbar.css';
 import './css/monaco.css';
 import "@priolo/jack/dist/style.css";
 //#endregion
-
+import {add} from "@priolo/jess"
 
 
 //#region PLUGIN
@@ -30,7 +30,7 @@ import "@priolo/jack/dist/style.css";
 import "./plugins/session";
 //#endregion
 
-
+console.log(add(1, 2)); // Output: 3
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // <React.StrictMode>

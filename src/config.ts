@@ -10,36 +10,19 @@ import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import { httpRouter, http, httpStatic, ws, typeorm } from "typexpress"
 import { IClient } from "typexpress/dist/services/ws/utils.js";
+import { ServerObjects } from "./shared/ServerObjects.js";
+import { ApplyAction } from "./shared/SlateApplicator.js";
 
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-//type HttpCnf = Partial<HttpService["stateDefault"]>
-
-interface SharedMem {
-	[sharedArrayId: string]: SharedArray
-}
-
-interface SharedArray {
-	id: string
-	listeners: IClient[]
-	ActionsBuffer: CwsAction[]
-}
-
-interface CwsAction {
-	type: string
-	index: number
-}
-
-interface CwsMessage {
-	action: CwsAction
-}
-
 
 
 export const PORT = process.env.PORT || 3000;
+
+
 
 function buildNodeConfig() {
 	return [
@@ -79,13 +62,8 @@ function buildNodeConfig() {
 				<ws.SocketServerConf>{
 					class: "ws",
 					// un povero client s'e' connesso
-					onConnect: function (client) {
+					onConnect: function (c) {
 						console.log("ws/route onConnect")
-					},
-					// un client ha una qualche richiesta
-					onMessage: async function (client, message) {
-						const action = message.action
-						this.sendToAll(message)
 					},
 				}
 			]
@@ -127,4 +105,7 @@ function buildNodeConfig() {
 	]
 }
 
+
+
 export default buildNodeConfig
+
