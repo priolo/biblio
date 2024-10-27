@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { RootService } from "../node_modules/typexpress/dist/core/RootService";
+import { RootService } from "../node_modules/typexpress/dist/core/RootService.js";
 import { Bus, RepoStructActions} from "typexpress";
 import buildNodeConfig from "./config.js";
 import { ENV_TYPE } from "./utils.js";
@@ -25,6 +25,9 @@ dotenv.config({ path: envFile });
 	const root = await RootService.Start(cnf)
 	console.log(`********************************************\n`)
 	
+	
+
+
 
 	if (process.env.NODE_ENV == ENV_TYPE.TEST || (process.env.NODE_ENV == ENV_TYPE.DEV && process.env.DB_DEV_RESET == "true")) {
 		console.log("*** SEEDING ***")

@@ -1,6 +1,6 @@
 {
   "name": "biblio-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "general biblio",
   "private": true,
   "type": "module",
@@ -20,20 +20,20 @@
     "start": "cross-env NODE_ENV=production node dist/start.js"
   },
   "dependencies": {
-    "@priolo/jon-utils": "^0.4.3",
     "@priolo/jess": "file://C:/Users/iorio/Documents/jess",
+    "@priolo/jon-utils": "^0.4.3",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "google-auth-library": "^9.10.0",
     "mysql2": "^3.9.7",
-    "typexpress": "file://C:/Users/iorio/Documents/typexpress/typexpress",
+    "slate": "^0.103.0",
     "typeorm": "^0.3.20",
-    "slate": "^0.103.0"
+    "typexpress": "file://C:/Users/iorio/Documents/typexpress/typexpress"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.4",
     "@types/express": "^4.17.8",
-    "@types/node": "^14.14.7",
+    "@types/node": "^14.18.63",
     "typescript": "^5.5.4"
   },
   "engines": {

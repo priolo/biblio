@@ -18,13 +18,16 @@ import { ApplyAction } from "./shared/SlateApplicator.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
-
 export const PORT = process.env.PORT || 3000;
 
-
+const server = new ServerObjects()
+server.apply = ApplyAction
 
 function buildNodeConfig() {
+
+
+
+
 	return [
 		<http.conf>{
 			class: "http",
@@ -61,10 +64,22 @@ function buildNodeConfig() {
 				},
 				<ws.SocketServerConf>{
 					class: "ws",
+					onInit: function (this: ws.Service) {
+						console.log("ws/route onInit")
+						server.onSend = async (client: IClient, message) => this.sendToClient(client, JSON.stringify(message))
+					},
 					// un povero client s'e' connesso
-					onConnect: function (c) {
+					onConnect: function (client: IClient) {
 						console.log("ws/route onConnect")
 					},
+					onMessage: function (client: IClient, message: string) {
+						console.log("ws/route onMessage")
+						server.receive(message, client)
+					},
+					onDisconnect: function (client: IClient) {
+						console.log("ws/route onDisconnect")
+						server.disconnect(client)
+					}
 				}
 			]
 		},
