@@ -46,7 +46,7 @@ export type AccountState = typeof setup.state & ViewState
 export type AccountGetters = typeof setup.getters
 export type AccountActions = typeof setup.actions
 export type AccountMutators = typeof setup.mutators
-export interface AccountStore extends ViewStore, StoreCore<AccountState>, AccountGetters, AccountActions, AccountMutators {
+export interface AccountStore extends ViewStore, AccountGetters, AccountActions, AccountMutators {
 	state: AccountState
 }
 const userSetup = mixStores(viewSetup, setup)

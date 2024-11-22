@@ -1,17 +1,15 @@
 import { clientObjects, fetchDoc } from "@/plugins/docsService"
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
-import { DOC_STATUS, RemoteDoc } from "@/types/Doc"
-import { debounce } from "@/utils/time"
 import { DragDoc } from "@priolo/jack"
-import { mixStores, StoreCore } from "@priolo/jon"
-import { createEditor } from "slate"
+import { ClientObject } from "@priolo/jess"
+import { mixStores } from "@priolo/jon"
+import { createEditor, Editor, Node, Point, Transforms } from "slate"
 import { withHistory } from 'slate-history'
 import { withReact } from "slate-react"
+import { createUUID } from "../../docs/utils/factory"
 import { EditorState } from "../editorBase"
 import { NODE_TYPES, NodeType } from "./slate/types"
 import { SugarEditor, withSugar } from "./slate/withSugar"
-import { ClientObject } from "../../../plugins/docsService/ClientObjects.type"
-import { createUUID } from "../../docs/utils/factory"
 
 
 
@@ -24,7 +22,7 @@ const setup = {
 		editor: <SugarEditor>null,
 
 		/** testo iniziale */
-		initValue:  <NodeType[]>[{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }],
+		initValue: <NodeType[]>[{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }],
 
 		//#region VIEWBASE
 		width: 370,
@@ -86,7 +84,7 @@ const setup = {
 		/** chiamata dalla build dello stesso store */
 		onCreated: async (_: void, store?: ViewStore) => {
 			const editorSo = store as TextEditorStore
-			
+
 			// creo l'editor SLATE
 			const editor: SugarEditor = withSugar(withHistory(withReact(createEditor())))
 			editor.store = editorSo
@@ -104,13 +102,13 @@ const setup = {
 			}
 
 			clientObjects.observe(editorSo.state.docId, (data) => {
-				// bisogna assicurarsi che la selezione non vada fuori dal range del documento altrimenti da errore
-				editor.children = data as NodeType[]
+				const valueCalc = clientObjects.getObject(editorSo.state.docId).valueWait
+				updateEditorChildren(editor, valueCalc as NodeType[])
 				store._update()
 			})
 		},
-
 		
+
 		//#endregion
 
 		/** quando il DOC viene modificato da SLATE */
@@ -140,8 +138,9 @@ export type TextEditorState = typeof setup.state & ViewState & EditorState
 export type TextEditorGetters = typeof setup.getters
 export type TextEditorActions = typeof setup.actions
 export type TextEditorMutators = typeof setup.mutators
-export interface TextEditorStore extends ViewStore, StoreCore<TextEditorState>, TextEditorGetters, TextEditorActions, TextEditorMutators {
+export interface TextEditorStore extends ViewStore, TextEditorGetters, TextEditorActions, TextEditorMutators {
 	state: TextEditorState
+	onCreated: (_: void, store?: ViewStore) => Promise<void>;
 }
 const txtEditorSetup = mixStores(viewSetup, setup)
 export default txtEditorSetup
@@ -180,3 +179,23 @@ const initValue = [{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }]
 
 // ]
 
+
+// Funzione per aggiornare editor.children in modo sicuro
+function updateEditorChildren(editor: Editor, newChildren: any[]) {
+	editor.children = newChildren;
+	if (!editor.selection) return
+	Transforms.select(editor, {
+		anchor: adjustPoint(editor, editor.selection.anchor),
+		focus: adjustPoint(editor, editor.selection.focus)
+	})
+}
+
+// Funzione per correggere un punto
+function adjustPoint(editor: Editor, point: Point): Point {
+	const [node] = Editor.node(editor, point.path);
+	const textLength = Node.string(node).length;
+	return {
+		path: point.path,
+		offset: Math.min(point.offset, textLength)
+	}
+}

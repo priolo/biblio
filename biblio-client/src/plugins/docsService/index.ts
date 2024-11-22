@@ -1,7 +1,6 @@
+import { ClientObject, ClientObjects } from "@priolo/jess"
+import { ApplyAction } from "@priolo/jess/dist/applicators/SlateApplicator"
 import cws from "../SocketService"
-import { ClientObjects } from "./ClientObjects"
-import { ClientObject } from "./ClientObjects.type"
-import { ApplyAction } from "./SlateApplicator"
 
 
 
@@ -15,8 +14,12 @@ clientObjects.apply = ApplyAction
 export async function fetchDoc(docId: string): Promise<ClientObject> {
 	let doc = clientObjects.objects[docId]
 	if (!doc) {
-		await clientObjects.init(docId)
+		await clientObjects.init(docId, true)
 		doc = clientObjects.objects[docId]
 	}
 	return doc
 }
+
+setInterval(() => {
+	clientObjects.update()
+}, 1000)

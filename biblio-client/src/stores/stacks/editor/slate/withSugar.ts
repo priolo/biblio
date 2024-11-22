@@ -1,4 +1,4 @@
-import { BaseOperation, Editor, Element, Node, Range, Transforms } from "slate"
+import { BaseOperation, Editor, Element, Node, Operation, Range, Transforms } from "slate"
 import { NODE_TYPES, NodeType } from "./types"
 import { ReactEditor } from "slate-react"
 import { ViewStore } from "../../viewBase"
@@ -18,13 +18,15 @@ export const withSugar = (editor: ReactEditor) => {
 	//const { insertNode, insertFragment } = editor;
 	//const { insertData } = editor
 	const se = editor as SugarEditor
+
 	se.actionsDisabled = false
+	/** lo store che contiene questo editor */
 	se.store = null
 
 
 	const { apply, isVoid, insertData } = editor;
 
-	editor.apply = operation => {
+	editor.apply = (operation:Operation) => {
 		// switch (operation.type) {
 		// 	case "insert_node":
 		// 		(operation.node as NodeType).id = generateUUID()
@@ -38,7 +40,11 @@ export const withSugar = (editor: ReactEditor) => {
 		//if ( !se.actionsDisabled ){
 		//console.log(operation)
 		//addActionDoc(se.store?.state.docId, operation)
-		clientObjects.command(se.store?.state.docId, operation)
+
+		// utto quello che NON è un operazione di selezione
+		if ( !Operation.isSelectionOperation(operation) ) {
+			clientObjects.command(se.store?.state.docId, operation)
+		}
 		//}
 		apply(operation);
 	};

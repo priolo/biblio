@@ -1,9 +1,7 @@
-import logSo from "@/stores/log/index.js";
-import { Reconnect } from "./reconnect.js";
-import { MSG_TYPE, Payload, PayloadError, PayloadMessage, PayloadStatus, SocketMessage, SocketOptions } from "./types.js";
-import { MESSAGE_TYPE } from "@/stores/log/utils.js";
-import { optionsDefault } from "./utils.js";
 import { clientObjects } from "../docsService/index.js";
+import { Reconnect } from "./reconnect.js";
+import { SocketOptions } from "./types.js";
+import { optionsDefault } from "./utils.js";
 
 
 

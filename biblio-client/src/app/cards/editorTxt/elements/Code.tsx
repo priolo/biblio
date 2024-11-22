@@ -58,7 +58,7 @@ const Code: FunctionComponent<Props> = ({
 		element={element}
 		className={`${clsRoot} language-${element.language}`} 
 	>
-		<code >{children}</code>
+		<code>{children}</code>
 		{/* <div className={clsBtt}>
 			<CopyButton value={handleCopy} />
 			<IconButton 
