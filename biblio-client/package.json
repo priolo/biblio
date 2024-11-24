@@ -26,26 +26,26 @@
     "@priolo/jon": "^0.7.7",
     "@react-oauth/google": "^0.12.1",
     "cross-env": "^7.0.3",
-    "dayjs": "^1.11.12",
-    "monaco-editor": "^0.51.0",
+    "dayjs": "^1.11.13",
+    "monaco-editor": "^0.52.0",
     "prismjs": "^1.29.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-virtuoso": "^4.7.1",
+    "react-virtuoso": "^4.12.2",
     "slate": "^0.110.2",
-    "slate-history": "^0.109.0",
+    "slate-history": "^0.110.3",
     "slate-react": "^0.111.0",
-    "ws": "^8.14.2"
+    "ws": "^8.18.0"
   },
   "devDependencies": {
-    "@types/prismjs": "^1.26.4",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react-swc": "^3.7.0",
+    "@types/prismjs": "^1.26.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react-swc": "^3.7.1",
     "msw": "^2.3.4",
     "typescript": "^5.5.4",
-    "vite": "^5.3.5",
-    "vitest": "^2.0.5"
+    "vite": "^5.4.11",
+    "vitest": "^2.1.5"
   },
   "msw": {
     "workerDirectory": "public"

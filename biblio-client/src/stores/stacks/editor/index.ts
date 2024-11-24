@@ -10,6 +10,7 @@ import { createUUID } from "../../docs/utils/factory"
 import { EditorState } from "../editorBase"
 import { NODE_TYPES, NodeType } from "./slate/types"
 import { SugarEditor, withSugar } from "./slate/withSugar"
+import { updateEditorChildren } from "./utils/manage"
 
 
 
@@ -107,7 +108,7 @@ const setup = {
 				store._update()
 			})
 		},
-		
+
 
 		//#endregion
 
@@ -180,22 +181,3 @@ const initValue = [{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }]
 // ]
 
 
-// Funzione per aggiornare editor.children in modo sicuro
-function updateEditorChildren(editor: Editor, newChildren: any[]) {
-	editor.children = newChildren;
-	if (!editor.selection) return
-	Transforms.select(editor, {
-		anchor: adjustPoint(editor, editor.selection.anchor),
-		focus: adjustPoint(editor, editor.selection.focus)
-	})
-}
-
-// Funzione per correggere un punto
-function adjustPoint(editor: Editor, point: Point): Point {
-	const [node] = Editor.node(editor, point.path);
-	const textLength = Node.string(node).length;
-	return {
-		path: point.path,
-		offset: Math.min(point.offset, textLength)
-	}
-}

@@ -24,7 +24,7 @@ export const withSugar = (editor: ReactEditor) => {
 	se.store = null
 
 
-	const { apply, isVoid, insertData } = editor;
+	const { apply} = editor;
 
 	editor.apply = (operation:Operation) => {
 		// switch (operation.type) {
@@ -41,8 +41,9 @@ export const withSugar = (editor: ReactEditor) => {
 		//console.log(operation)
 		//addActionDoc(se.store?.state.docId, operation)
 
-		// utto quello che NON è un operazione di selezione
+		// tutto quello che NON è un operazione di selezione
 		if ( !Operation.isSelectionOperation(operation) ) {
+			console.log("operation:", operation)
 			clientObjects.command(se.store?.state.docId, operation)
 		}
 		//}
@@ -91,7 +92,7 @@ export const withSugar = (editor: ReactEditor) => {
 		const path = [selectA]
 		const currentNode = editor.children[selectA]
 
-		editor.setNodes({ type }, { at: path })
+		editor.setNodes<NodeType>({ type }, { at: path })
 
 		// if (type == NODE_TYPES.CODE && currentNode.type != NODE_TYPES.CODE) {
 		// 	editor.setNodes({
@@ -172,39 +173,6 @@ export const withSugar = (editor: ReactEditor) => {
 	// 	})
 	// }
 
-	editor.insertData = (data) => {
-		const text = data.getData('text/plain')
-        if (text) {
-            // const lines = text.split('\n')
-            // const combinedText = lines.join(' ')
-			const combinedText = text
-            const fragment = {
-                type: NODE_TYPES.CODE, // Assicurati di usare il tipo di nodo corretto
-                children: [{ text: combinedText }],
-            }
-            Transforms.insertNodes(editor, fragment)
-        } else {
-            insertData(data)
-        }
-
-
-		// const fnOrigin = insertData(data)
-		// if (!fnOrigin) return null
-
-		// const text = data.getData('text/plain')
-		// if (eq.isUrl(text)) {
-		// 	Editor.insertNode(editor, {
-		// 		type: NODE_TYPES.TEXT,
-		// 		children: [{
-		// 			link: true,
-		// 			text: text,
-		// 			url: text,
-		// 		}]
-		// 	})
-		// 	return null
-		// }
-		// return fnOrigin
-	}
 
 	// editor.insertNode = (node) => {
 	// 	debugger

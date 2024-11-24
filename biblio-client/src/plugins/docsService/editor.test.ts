@@ -1,7 +1,6 @@
+import { BaseOperation } from 'slate';
 import { describe, expect, it } from 'vitest';
-import { BaseOperation, createEditor, withoutNormalizing } from 'slate';
 import { applyOperations, normalizeBuffActions } from './utils';
-
 
 
 
@@ -231,7 +230,7 @@ describe('normalizeBuffActions', () => {
 				"position": 1,
 				"properties": {
 					"type": "text"
-				}
+				} as Partial<Node>
 			}
 		]
 
