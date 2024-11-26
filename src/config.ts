@@ -19,7 +19,7 @@ const __dirname = dirname(__filename);
 export const PORT = process.env.PORT || 3000;
 
 const server = new ServerObjects()
-server.apply = SlateApplicator.ApplyAction
+server.apply = SlateApplicator.ApplyActions
 
 function buildNodeConfig() {
 

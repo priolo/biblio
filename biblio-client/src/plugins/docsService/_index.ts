@@ -3,7 +3,7 @@ import docApi from "../../api/doc";
 import { NODE_TYPES, NodeType } from "../../stores/stacks/editor/slate/types";
 import { DOC_STATUS, RemoteDoc } from "../../types/Doc";
 import { generateUUID } from "../../utils/object";
-import { applyOperations, normalizeBuffActions } from "./utils";
+import { applyOperations, normalizeBuffActions } from "../../stores/stacks/editor/utils/normalize";
 import cws from "@/plugins/SocketService"
 
 

@@ -3,14 +3,14 @@ import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
 import { DragDoc } from "@priolo/jack"
 import { ClientObject } from "@priolo/jess"
 import { mixStores } from "@priolo/jon"
-import { createEditor, Editor, Node, Point, Transforms } from "slate"
+import { createEditor } from "slate"
 import { withHistory } from 'slate-history'
 import { withReact } from "slate-react"
 import { createUUID } from "../../docs/utils/factory"
 import { EditorState } from "../editorBase"
 import { NODE_TYPES, NodeType } from "./slate/types"
 import { SugarEditor, withSugar } from "./slate/withSugar"
-import { updateEditorChildren } from "./utils/manage"
+import { updateEditorChildren } from "./utils/slate"
 
 
 
@@ -107,6 +107,7 @@ const setup = {
 				updateEditorChildren(editor, valueCalc as NodeType[])
 				store._update()
 			})
+			// [II] e onDestroy unobserve????
 		},
 
 
@@ -146,7 +147,7 @@ export interface TextEditorStore extends ViewStore, TextEditorGetters, TextEdito
 const txtEditorSetup = mixStores(viewSetup, setup)
 export default txtEditorSetup
 
-const initValue = [{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }]
+//const initValue = [{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }]
 // const initValue = [
 // 	{
 // 		type: NODE_TYPES.CHAPTER,

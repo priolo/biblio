@@ -1,8 +1,8 @@
 import { createEditor } from "slate";
 import { describe, expect, it } from "vitest";
-import { updateEditorChildren } from "./manage";
-
-
+import { updateEditorChildren } from "./slate";
+ 
+ 
 
 describe('utils for SUGAR EDITOR', () => {
 
@@ -14,16 +14,15 @@ describe('utils for SUGAR EDITOR', () => {
 			{ children: [{ text: 'World' }] },
 		]
 		// selezion due righe
-		editor.setSelection({
+		editor.selection = {
 			anchor: { path: [0, 0], offset: 0 },
 			focus: { path: [1, 0], offset: 3 }
-		})
+		}
 		// aggiorno a una sola riga
 		updateEditorChildren(editor, [
 			{ children: [{ text: 'Hello' }] },
 		])
-
-
+		// mi aspetto che la selezione sia retrocessa
 		expect(editor.selection).toEqual({
 			anchor: { path: [0, 0], offset: 0 },
 			focus: { path: [0, 0], offset: 0 }

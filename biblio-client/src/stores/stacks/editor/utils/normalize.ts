@@ -1,5 +1,5 @@
 import { BaseOperation, createEditor, Descendant, withoutNormalizing } from "slate"
-import { NODE_TYPES } from "../../stores/stacks/editor/slate/types"
+import { NODE_TYPES } from "../slate/types"
 
 /** normalizzo un array di ACTIONs 
  * set_selection 
@@ -9,8 +9,9 @@ import { NODE_TYPES } from "../../stores/stacks/editor/slate/types"
  * 		accorpare tutti gli insert-text in serie
  * remove_text 
  * 		eliminare la proprietà "text"
+ * [II][TO DO] unire split_node e merge_node
 */
-export function normalizeBuffActions(actions: BaseOperation[]) {
+export function normalizeBuffActions(actions: BaseOperation[]): BaseOperation[] {
 	if (!actions) return []
 	let norm = []
 	let indexLastSelection = -1

@@ -1,6 +1,6 @@
 import { BaseOperation } from 'slate';
 import { describe, expect, it } from 'vitest';
-import { applyOperations, normalizeBuffActions } from './utils';
+import { applyOperations, normalizeBuffActions } from './normalize';
 
 
 
