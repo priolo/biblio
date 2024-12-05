@@ -1,7 +1,7 @@
 import { Operation } from "slate"
 import { ReactEditor } from "slate-react"
 import { TextEditorStore } from ".."
-import { clientObjects } from "../../../../plugins/docsService"
+import { sendCommands } from "../../../../plugins/docsService"
 import { NODE_TYPES, NodeType } from "./types"
 
 
@@ -14,16 +14,12 @@ export const withSugar = (editor: ReactEditor) => {
 	se.actionsDisabled = false
 	/** lo store che contiene questo editor */
 	se.store = null
-	const { apply} = editor;
+	const { apply } = editor;
 
-	editor.apply = (operation:Operation) => {
+	editor.apply = (operation: Operation) => {
 		// sincronizza tutto quello che NON è un operazione di selezione
-		if ( !Operation.isSelectionOperation(operation) ) {
-			console.log("operation:", operation)
-			clientObjects.command(se.store?.state.docId, operation)
-
-			if (updateTimeout) clearTimeout(updateTimeout)
-			updateTimeout = setTimeout(() => clientObjects.update(), 1000)
+		if (!Operation.isSelectionOperation(operation)) {
+			sendCommands(se.store.state.docId, operation)
 		}
 		apply(operation);
 	};

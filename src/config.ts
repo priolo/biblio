@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import { httpRouter, http, httpStatic, ws, typeorm } from "typexpress"
 import { IClient } from "typexpress/dist/services/ws/utils.js";
-import { ServerObjects, SlateApplicator } from "@priolo/jess";
+import { ServerObjects, SlateApplicator, TextApplicator } from "@priolo/jess";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,7 +19,8 @@ const __dirname = dirname(__filename);
 export const PORT = process.env.PORT || 3000;
 
 const server = new ServerObjects()
-server.apply = SlateApplicator.ApplyActions
+server.apply = SlateApplicator.ApplyCommands
+let timeoutId: any = null
 
 function buildNodeConfig() {
 
@@ -48,7 +49,6 @@ function buildNodeConfig() {
 								{ method: (req, res, next) => res.json({ data: "debug:reset:ok" }) },
 							]
 						},
-
 					]
 				},
 				<httpStatic.conf>{
@@ -70,7 +70,8 @@ function buildNodeConfig() {
 					onMessage: function (client: IClient, message: string) {
 						console.log("ws/route onMessage")
 						server.receive(message.toString(), client)
-						debounce("serve-update", () => server.update(), 1000)
+						clearTimeout(timeoutId)
+						timeoutId = setTimeout(() => server.update(), 1000)
 					},
 					onDisconnect: function (client: IClient) {
 						console.log("ws/route onDisconnect")
@@ -121,21 +122,21 @@ function buildNodeConfig() {
 export default buildNodeConfig
 
 
-let timeoutIDs = {};
+// let timeoutIDs = {};
 
-/**
- * attende un determinato tempo prima di eseguire una funzione
- * se la funzione è richiamata resetta il tempo e riaspetta
- */
-export function debounce(name, callback, delay=0) {
-	if (delay == 0) {
-		callback.apply(this, null);
-	} else {
-		let toId = timeoutIDs[name];
-		if (toId != null) clearTimeout(toId);
-		timeoutIDs[name] = setTimeout(() => {
-			delete timeoutIDs[name];
-			callback.apply(this, null);
-		}, delay);
-	}
-}
+// /**
+//  * attende un determinato tempo prima di eseguire una funzione
+//  * se la funzione è richiamata resetta il tempo e riaspetta
+//  */
+// export function debounce(name, callback, delay=0) {
+// 	if (delay == 0) {
+// 		callback.apply(this, null);
+// 	} else {
+// 		let toId = timeoutIDs[name];
+// 		if (toId != null) clearTimeout(toId);
+// 		timeoutIDs[name] = setTimeout(() => {
+// 			delete timeoutIDs[name];
+// 			callback.apply(this, null);
+// 		}, delay);
+// 	}
+// }

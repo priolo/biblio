@@ -2,7 +2,9 @@ import FrameworkCard from "@/components/cards/FrameworkCard"
 import { TextEditorStore } from "@/stores/stacks/editor"
 import { biblioOnKeyDown } from "@/stores/stacks/editor/utils/onkeydown"
 import { useStore } from "@priolo/jon"
-import { FunctionComponent, useCallback, useEffect } from "react"
+import Prism from "prismjs"
+import { FunctionComponent } from "react"
+import { Node } from "slate"
 import { Editable, Slate } from "slate-react"
 import EditorIcon from "../../../icons/EditorIcon"
 import clsCard from "../CardCyanDef.module.css"
@@ -10,9 +12,6 @@ import ActionsCmp from "./Actions"
 import cls from "./View.module.css"
 import BiblioElement from "./elements/BiblioElement"
 import BiblioLeaf from "./leafs/BiblioLeaf"
-
-import Prism from "prismjs"
-import { Editor, Node } from "slate"
 
 
 
@@ -45,9 +44,9 @@ const EditorView: FunctionComponent<Props> = ({
 		biblioOnKeyDown(event, editor)
 	}
 
-	const handleValueChange = () => {
-		store.onValueChange()
-	}
+	// const handleValueChange = () => {
+	// 	store.onValueChange()
+	// }
 
 	// RENDER
 	const editor = store.state.editor
@@ -61,12 +60,9 @@ const EditorView: FunctionComponent<Props> = ({
 	>
 		<Slate
 			editor={editor}
-			initialValue={editor.children}
-			onValueChange={handleValueChange}
+			initialValue={[{ children: [{ text: '' }] }]}
 		>
-
 			<ActionsCmp store={store} style={{ margin: '-10px -10px 5px -10px' }} />
-
 			<Editable
 				decorate={decorateCode}
 				className={`${cls.editor} code-editor`}
@@ -79,9 +75,7 @@ const EditorView: FunctionComponent<Props> = ({
 				onBlur={handleBlur}
 				onDragStart={handleStartDrag}
 			/>
-
 		</Slate>
-
 	</FrameworkCard>
 }
 

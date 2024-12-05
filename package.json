@@ -3,21 +3,21 @@
   "version": "0.1.0",
   "description": "general biblio",
   "private": true,
-  "type": "module",
-  "main": "dist/start.js",
   "author": "Iorio Ivano <iorioivano@gmail.com>",
   "license": "MIT",
+
+  "type": "module",
+  "main": "dist/start.js",
+  
+  "scripts": {
+    "start": "cross-env NODE_ENV=production tsx src/start.ts",
+    "start:dev": "cross-env NODE_ENV=development tsx src/start.ts"
+  },
   "//dependencies": {
     "typexpress": "file://C:/Users/iorio/Documents/typexpress/typexpress",
     "@priolo/jon-utils#local": "file:C://Users//iorio//Documents//jon-utils",
     "@priolo/jon-utils": "^0.2.2",
     "@priolo/jess": "file://C:/Users/iorio/Documents/jess"
-  },
-  "scripts": {
-    "build-watch": "tsc -w",
-    "start:dev": "cross-env NODE_ENV=development node dist/start.js",
-    "build": "npx tsc",
-    "start": "cross-env NODE_ENV=production node dist/start.js"
   },
   "dependencies": {
     "@priolo/jess": "file://C:/Users/iorio/Documents/jess",
@@ -34,7 +34,8 @@
     "@tsconfig/node18": "^18.2.4",
     "@types/express": "^4.17.8",
     "@types/node": "^14.18.63",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "tsx": "^4.19.2"
   },
   "engines": {
     "node": ">=16"

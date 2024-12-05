@@ -1,7 +1,6 @@
-import { clientObjects, fetchDoc } from "@/plugins/docsService"
+import { clientObjects } from "@/plugins/docsService"
 import viewSetup, { ViewState, ViewStore } from "@/stores/stacks/viewBase"
 import { DragDoc } from "@priolo/jack"
-import { ClientObject } from "@priolo/jess"
 import { mixStores } from "@priolo/jon"
 import { createEditor } from "slate"
 import { withHistory } from 'slate-history'
@@ -11,6 +10,7 @@ import { EditorState } from "../editorBase"
 import { NODE_TYPES, NodeType } from "./slate/types"
 import { SugarEditor, withSugar } from "./slate/withSugar"
 import { updateEditorChildren } from "./utils/slate"
+import { SlateApplicator } from "@priolo/jess"
 
 
 
@@ -35,15 +35,6 @@ const setup = {
 		//#region VIEWBASE
 		getTitle: (_: void, store?: ViewStore) => "NOTE",
 		getSubTitle: (_: void, store?: ViewStore) => "Just for an ephemeral note",
-		getSerialization: (_: void, store?: ViewStore) => {
-			const editorSa = store.state as TextEditorState
-			const remote = clientObjects.objects[editorSa.docId]
-			const docId = remote ? null : editorSa.docId
-			return {
-				...viewSetup.getters.getSerialization(null, store),
-				docId,
-			}
-		},
 		//#endregion
 	},
 
@@ -89,45 +80,25 @@ const setup = {
 			// creo l'editor SLATE
 			const editor: SugarEditor = withSugar(withHistory(withReact(createEditor())))
 			editor.store = editorSo
-			editor.children = editorSo.state.initValue ?? [{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }] as NodeType[]
+			//editor.children = editorSo.state.initValue ?? [{ type: NODE_TYPES.TEXT, children: [{ text: "" }] }] as NodeType[]
 			editorSo.state.editor = editor
 
-			// creo/cerco nella LIBRARY
-			let remote: ClientObject
-			if (!editorSo.state.docId) {
-				remote = await fetchDoc(createUUID())
-				editorSo.state.docId = remote.idObj
-			} else {
-				remote = await fetchDoc(editorSo.state.docId)
-				editor.children = remote.value as NodeType[]
-			}
 
-			clientObjects.observe(editorSo.state.docId, (data) => {
-				const valueCalc = clientObjects.getObject(editorSo.state.docId).valueWait
-				updateEditorChildren(editor, valueCalc as NodeType[])
-				store._update()
+
+			const docId = editorSo.state.docId
+
+
+			clientObjects.observe(docId, (data) => {
+				const children = clientObjects.getObject(docId).valueTemp
+				SlateApplicator.UpdateChildren(editor, children)
 			})
+			await clientObjects.init(docId, true)
+
 			// [II] e onDestroy unobserve????
 		},
 
 
 		//#endregion
-
-		/** quando il DOC viene modificato da SLATE */
-		onValueChange: (_: void, store?: TextEditorStore) => {
-			// debounce("doc-change", async () => {
-
-			// 	syncRemoteDoc(store.state.docId)
-
-			// 	// if (!store.state.docId) {
-			// 	// 	if (store.state.editor.children?.length > 0) {
-			// 	// 		store.state.doc = await createDoc({ children: store.state.editor.children as NodeType[] })
-			// 	// 	}
-			// 	// } else {
-			// 	// }
-
-			// }, 5000)
-		},
 
 	},
 
