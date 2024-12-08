@@ -44,6 +44,10 @@ const EditorView: FunctionComponent<Props> = ({
 		biblioOnKeyDown(event, editor)
 	}
 
+	const handleCopy = (event: React.ClipboardEvent<HTMLDivElement>) => {
+		editor.onCopy(event.nativeEvent);
+	}
+
 	// const handleValueChange = () => {
 	// 	store.onValueChange()
 	// }
@@ -74,6 +78,7 @@ const EditorView: FunctionComponent<Props> = ({
 				onFocus={handleFocus}
 				onBlur={handleBlur}
 				onDragStart={handleStartDrag}
+				onCopy={handleCopy}
 			/>
 		</Slate>
 	</FrameworkCard>
@@ -113,7 +118,7 @@ const decorateCode = ([node, path]) => {
 // 	  const text = Node.string(node)
 // 	  const language = 'javascript' // Cambia questa riga per supportare altri linguaggi
 // 	  const { value } = hljs.highlight(text, { language })
-// 	  const tokens = value.split(/\r\n|\r|\n/)
+// 	  const tokens = value.split(/\r\n|\r|\n/
 	  
 // 	  let start = 0
 // 	  for (const token of tokens) {

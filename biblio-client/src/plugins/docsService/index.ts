@@ -8,11 +8,7 @@ export const clientObjects = new ClientObjects()
 clientObjects.apply = SlateApplicator.ApplyCommands
 //clientObjects.onSend = async (messages) => cws.send(JSON.stringify(messages))
 clientObjects.onSend = async (messages) => {
-
-
 	const { msgGen, msgUpdatesMap } = splitMessages(messages)
-
-
 	/** i messaggi UPDATE normalizzati */
 	const mesUpNorm: ClientUpdateMessage[] = []
 
@@ -20,7 +16,6 @@ clientObjects.onSend = async (messages) => {
 		const messagesUp = msgUpdatesMap[idObj]
 		const commands = messagesUp.map(msg => msg.action.command)
 		const commandsNorm = SlateApplicator.Normalize(commands)
-
 		const msgUpdate: ClientUpdateMessage = {
 			type: ClientMessageType.UPDATE,
 			idObj: idObj,
@@ -31,29 +26,16 @@ clientObjects.onSend = async (messages) => {
 			}
 		}
 		mesUpNorm.push(msgUpdate)
-
-
-		// const messageUpNorm = commandsNorm.map<ClientUpdateMessage>((commandNorm, index) => ({
-		// 	type: ClientMessageType.UPDATE,
-		// 	idObj: idObj,
-		// 	action: {
-		// 		idClient: messagesUp[0].action.idClient,
-		// 		counter: messagesUp[0].action.counter + index,
-		// 		command: commandNorm,
-		// 	}
-		// }))
-		//mesUpNorm.push(...messageUpNorm)
 	}
 
 	const allMessages = msgGen.concat(mesUpNorm)
 	cws.send(JSON.stringify(allMessages))
-
 	console.log("socket::send", allMessages)
 	return allMessages
 }
 
 /**
- * Divido il messaggi da UPDATE a non UPDATE
+ * Divido il messaggi da UPDATE a non UPDATE e questi li raggruppo per idObject
  */
 function splitMessages(messages: ClientMessage[]): { msgGen: ClientMessage[], msgUpdatesMap: { [idObj: string]: ClientUpdateMessage[] } } {
 	/** tutti i messaggi che non sono UPDATE */
