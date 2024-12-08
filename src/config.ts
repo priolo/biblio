@@ -68,7 +68,7 @@ function buildNodeConfig() {
 						console.log("ws/route onConnect")
 					},
 					onMessage: function (client: IClient, message: string) {
-						console.log("ws/route onMessage")
+						console.log("ws/route onMessage", message)
 						server.receive(message.toString(), client)
 						clearTimeout(timeoutId)
 						timeoutId = setTimeout(() => server.update(), 1000)

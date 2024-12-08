@@ -1,26 +1,21 @@
 import { clientObjects } from "../docsService/index.js";
 import { Reconnect } from "./reconnect.js";
 import { SocketOptions } from "./types.js";
-import { optionsDefault } from "./utils.js";
 
 
 
 /**
  * Crea una connessione WS
- * gestisce le riconnessioni
- * gestisce la tabella dei COMMANDS
  */
 export class SocketService {
 
 	options: SocketOptions;
 	websocket: WebSocket;
-	// l'ultimo id connection utilizzato per la connessione WS
-	cnnId: string = null
 	// modulo per la riconnessione
 	reconnect: Reconnect;
 
-	constructor(options: SocketOptions = {}) {
-		this.options = { ...optionsDefault, ...options }
+	constructor(options: SocketOptions) {
+		this.options = options
 		this.websocket = null
 		this.reconnect = new Reconnect(this)
 	}
@@ -28,15 +23,13 @@ export class SocketService {
 	/** 
 	 * tenta di aprire il socket
 	 */
-	connect(connId: string = this.cnnId) {
+	connect() {
 		if (this.websocket) return
-		this.cnnId = connId
 		const { protocol, host, port, base } = this.options
 		this.reconnect.enabled = true
 		try {
 			let url = `${protocol}//${host}:${port}/`
 			if (base) url = `${url}/${base}`
-			if (connId) url = `${url}?id=${connId}`
 			this.websocket = new WebSocket(url);
 		} catch (error) {
 			this.reconnect.start()
@@ -57,14 +50,12 @@ export class SocketService {
 		if (!this.websocket) return
 		this.websocket.close()
 		this.websocket = null
-		if (newCnnId) this.cnnId = newCnnId
 	}
 
 	/** 
 	 * chiude il socket e mantiene chiuso (usato nel logout)
 	 */
 	disconnect() {
-		this.cnnId = null
 		this.reconnect.enabled = false
 		this.reconnect.stop()
 		this.clear()
@@ -74,7 +65,7 @@ export class SocketService {
 	 * invia un messaggio al server
 	 */
 	send(msg: string) {
- 		this.websocket.send(msg)
+		this.websocket.send(msg)
 	}
 
 
@@ -116,26 +107,3 @@ const cws = new SocketService({
 })
 cws.connect()
 export default cws
-
-
-
-interface SharedMem {
-	[sharedArrayId: string]: SharedArray
-}
-
-interface SharedArray {
-	value: any[]
-	id: string
-	ActionsBuffer: CwsAction[]
-}
-
-interface CwsAction {
-	type: string
-	index: number
-}
-
-interface CwsMessage {
-	action: CwsAction
-}
-
-const sharedMem: SharedMem = {}

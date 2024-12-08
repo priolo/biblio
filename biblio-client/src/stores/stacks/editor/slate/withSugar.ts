@@ -17,10 +17,8 @@ export const withSugar = (editor: ReactEditor) => {
 	const { apply } = editor;
 
 	editor.apply = (operation: Operation) => {
-		// sincronizza tutto quello che NON è un operazione di selezione
-		if (!Operation.isSelectionOperation(operation)) {
-			sendCommands(se.store.state.docId, operation)
-		}
+		// sincronizza con il server 
+		sendCommands(se.store.state.docId, operation)
 		apply(operation);
 	};
 
