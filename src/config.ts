@@ -121,7 +121,9 @@ function buildNodeConfig() {
 
 export default buildNodeConfig
 
-
+export function pippo() {
+	return true
+}
 // let timeoutIDs = {};
 
 // /**

@@ -1,9 +1,10 @@
 {
+  "extends": "@tsconfig/node22",
   "compilerOptions": {
 
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "nodenext",
+    //"target": "ESNext",
+    //"module": "NodeNext",
+    //"moduleResolution": "nodenext",
 
     "outDir": "./dist",
     "rootDir": "./src",

@@ -1,12 +1,20 @@
+import { email, PathFinder, RootService, service, typeorm } from "typexpress"
 import buildNodeConfig from "../config"
-import { Bus, email, service, PathFinder, RepoRestActions, RootService, typeorm } from "typexpress"
-import path from "path"
-import fs from "fs"
 import { ajax } from "./utils/ajax"
+import { OAuth2Client } from 'google-auth-library';
 
-
-
-
+// Mock the OAuth2Client
+jest.mock('google-auth-library', () => {
+  const mOAuth2Client = {
+    verifyIdToken: jest.fn().mockResolvedValue({
+      getPayload: () => ({
+        email: 'testuser@gmail.com',
+        name: 'Test User',
+      }),
+    }),
+  };
+  return { OAuth2Client: jest.fn(() => mOAuth2Client) };
+});
 
 let root
 
@@ -51,4 +59,22 @@ test("register with email", async () => {
 	expect(response.data.token).not.toBeNull()
 
 })
+
+test("login with google", async () => {
+  const token = "test-google-oauth-token";
+
+  // Make a request to the Google login route
+  const response = await ajax.post(`/auth/google`, { token });
+  expect(response.status).toBe(200);
+  expect(response.data.user.email).toBe("testuser@gmail.com");
+
+  // Verify that the user is saved in the database
+  const userRepo = new PathFinder(root).getNode<typeorm.repo>("/typeorm/users");
+  const [user] = await userRepo.dispatch({
+    type: typeorm.Actions.FIND,
+    payload: { where: { email: "testuser@gmail.com" } }
+  });
+  expect(user).not.toBeNull();
+  expect(user.email).toBe("testuser@gmail.com");
+});
 

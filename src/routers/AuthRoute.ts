@@ -69,7 +69,7 @@ class AuthRoute extends httpRouter.Service {
 			});
 			const payload = ticket.getPayload();
 
-			// Genera il token JWT (qui usiamo lo stesso token, ma in pratica potresti voler generare un nuovo JWT)
+			// Genera il token JWT con l'email nel payload
 			const jwtToken = await new Bus(this, "/jwt").dispatch({
 				type: jwt.Actions.ENCODE,
 				payload: {
@@ -79,12 +79,12 @@ class AuthRoute extends httpRouter.Service {
 				},
 			})
 
-			// cerco un USER tramite email
+			// cerco lo USER tramite email
 			const users: any[] = await new Bus(this, "/typeorm/users").dispatch({
 				type: typeorm.Actions.FIND,
 				payload: {
 					where: { email: payload.email },
-					relations: ['providers']
+					//relations: ['providers']
 				}
 			})
 			let user = users?.[0]
@@ -105,17 +105,17 @@ class AuthRoute extends httpRouter.Service {
 
 			// salvo JWT nel PROVIDER dello USER
 			// [II] capire se è necessario
-			let provider = user.providers?.find(p => p.type == "google")
-			if (!provider) {
-				provider = await new Bus(this, "/typeorm/providers").dispatch({
-					type: RepoRestActions.SAVE,
-					payload: {
-						type: "google",
-						token,
-						user: { id: user.id },
-					}
-				})
-			}
+			// let provider = user.providers?.find(p => p.type == "google")
+			// if (!provider) {
+			// 	provider = await new Bus(this, "/typeorm/providers").dispatch({
+			// 		type: RepoRestActions.SAVE,
+			// 		payload: {
+			// 			type: "google",
+			// 			token,
+			// 			user: { id: user.id },
+			// 		}
+			// 	})
+			// }
 
 			// memorizzo JWT nei cookies. Imposta il cookie HTTP-only
 			res.cookie('jwt', jwtToken, {
