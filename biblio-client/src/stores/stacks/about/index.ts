@@ -59,7 +59,7 @@ export type AboutState = typeof setup.state & ViewState
 export type AboutGetters = typeof setup.getters
 export type AboutActions = typeof setup.actions
 export type AboutMutators = typeof setup.mutators
-export interface AboutStore extends ViewStore, StoreCore<AboutState>, AboutGetters, AboutActions, AboutMutators {
+export interface AboutStore extends ViewStore, AboutGetters, AboutActions, AboutMutators {
 	state: AboutState
 }
 const aboutSetup = mixStores(viewSetup, setup)

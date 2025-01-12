@@ -10,18 +10,10 @@ export enum DOC_TYPE {
 
 	TEXT_EDITOR = "text_editor",
 	CODE_EDITOR = "code_editor",
+	REFLECTION = "reflection",
 	HELP = "help",
 
 	ACCOUNT = "account",
-}
-
-export enum DOC_ANIM {
-	SHOW = "show",
-	EXIT = "exit",
-	DRAGGING = "dragging",
-	EXITING = "exiting",
-	SHOWING = "showing",
-	SIZING = "iconize",
 }
 
 export enum EDIT_STATE {
@@ -29,6 +21,3 @@ export enum EDIT_STATE {
 	READ,
 	EDIT,
 }
-
-export const ANIM_TIME = 200
-export const ANIM_TIME_CSS = 200

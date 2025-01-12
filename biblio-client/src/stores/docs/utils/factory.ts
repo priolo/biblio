@@ -9,6 +9,7 @@ import accountSetup from "@/stores/stacks/account";
 import { DOC_TYPE } from "@/types";
 import { createStore } from "@priolo/jon";
 import { ViewState, ViewStore } from "../../stacks/viewBase";
+import reflectionSetup from "../../stacks/reflection";
 
 
 
@@ -38,6 +39,7 @@ export function buildStore(state: Partial<ViewState>): ViewStore {
 
 		[DOC_TYPE.TEXT_EDITOR]: txtEditorSetup,
 		[DOC_TYPE.CODE_EDITOR]: editCodeSetup,
+		[DOC_TYPE.REFLECTION]: reflectionSetup,
 		[DOC_TYPE.HELP]: helpSetup,
 
 		[DOC_TYPE.ACCOUNT]: accountSetup,

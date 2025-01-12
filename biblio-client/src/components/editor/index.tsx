@@ -54,7 +54,7 @@ const EditorCodeBase: ForwardRefRenderFunction<EditorRefProps, Props> = ({
 		editorRef.current = editor
 		editor.updateOptions(editorOptionsDefault)
 		// Formatta automaticamente il JSON all'avvio
-		//if (autoFormat) setTimeout(formatRun, 300)
+		if (autoFormat) setTimeout(formatRun, 300)
 	}
 	useImperativeHandle(ref, () => ({ format: formatRun, }), [])
 

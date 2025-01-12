@@ -1,4 +1,4 @@
-import { clientObjects } from "../docsService/index.js";
+import { EventEmitter } from "@priolo/jon-utils";
 import { Reconnect } from "./reconnect.js";
 import { SocketOptions } from "./types.js";
 
@@ -6,19 +6,22 @@ import { SocketOptions } from "./types.js";
 
 /**
  * Crea una connessione WS
+ * [II] mttere in jon-utils
  */
 export class SocketService {
-
-	options: SocketOptions;
-	websocket: WebSocket;
-	// modulo per la riconnessione
-	reconnect: Reconnect;
 
 	constructor(options: SocketOptions) {
 		this.options = options
 		this.websocket = null
 		this.reconnect = new Reconnect(this)
+		this.emitter = new EventEmitter()
 	}
+
+	options: SocketOptions;
+	websocket: WebSocket
+	/** modulo per la riconnessione */
+	reconnect: Reconnect
+	emitter: EventEmitter
 
 	/** 
 	 * tenta di aprire il socket
@@ -37,18 +40,24 @@ export class SocketService {
 			return
 		}
 
-		this.websocket.onopen = this.handleOpen.bind(this);
-		this.websocket.onclose = this.handleClose.bind(this);
-		this.websocket.onmessage = this.handleMessage.bind(this);
-		this.websocket.onerror = this.handleError.bind(this);
+		this.websocket.addEventListener("open",  this.handleOpen)
+		this.websocket.addEventListener("close",  this.handleClose)
+		this.websocket.addEventListener("message",  this.handleMessage)
+		this.websocket.addEventListener("error",  this.handleError)
+		
+		this.emitter.emit("connection", this.websocket.readyState)
 	}
 
 	/** 
 	 * libera tutte le risorse
 	 */
-	clear(newCnnId: string = null) {
+	clear() {
 		if (!this.websocket) return
 		this.websocket.close()
+		this.websocket.removeEventListener("open",  this.handleOpen)
+		this.websocket.removeEventListener("close",  this.handleClose)
+		this.websocket.removeEventListener("message",  this.handleMessage)
+		this.websocket.removeEventListener("error",  this.handleError)
 		this.websocket = null
 	}
 
@@ -68,42 +77,70 @@ export class SocketService {
 		this.websocket.send(msg)
 	}
 
-
 	//#region SOCKET EVENT
 
-	handleOpen(_: Event) {
-		//console.log("socket:open")
+	handleOpen = (_: Event) => {
+		console.log("socket:open")
+		this.emitter.emit("connection", this.websocket.readyState)
 		this.reconnect.stop()
 		this.reconnect.tryZero()
-		//this.onOpen?.()
-		//changeConnectionStatus(this.cnnId, CNN_STATUS.RECONNECTING)
 	}
 
-	handleClose(_: CloseEvent) {
-		//console.log("socket:close")
+	handleClose = (_: CloseEvent) => {
+		console.log("socket:close")
+		this.emitter.emit("connection", this.websocket.readyState)
 		this.clear()
 		this.reconnect.start()
-		//changeConnectionStatus(this.cnnId, CNN_STATUS.RECONNECTING)
 	}
 
-	/** ricevo un messaggio dal BE */
-	handleMessage(e: MessageEvent) {
-		console.log("socket::receive", JSON.parse(e.data))
-		clientObjects.receive(e.data)
+	handleMessage = (event: MessageEvent) => {
+		console.log("socket:message")
+		this.emitter.emit("message", event.data)
 	}
 
-	handleError(e: Event) {
+	handleError = (event: Event) => {
+		console.error("socket:error")
+		//this.reconnect.start()
+		this.emitter.emit("error", event)
 	}
 
 	//#endregion
+
+	async connectAndWait(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			const cb = () => {
+				this.websocket.removeEventListener("open", cb)
+				resolve()
+			}
+			try {
+				this.connect()
+			} catch (error) {
+				reject(error)
+			}
+			this.websocket.addEventListener("open", cb)
+		})
+	}
+
+	async sendAndWait(msg: string, callback: (data: any) => boolean, timeout: number = 5000): Promise<any> {
+		return new Promise<MessageEvent>((resolve, reject) => {
+
+			const cb = (event: MessageEvent) => {
+				if (!callback(event.data)) return
+				this.websocket.removeEventListener("message", cb)
+				clearTimeout(timeoutId)
+				resolve(event.data)
+			}
+
+			this.websocket.addEventListener("message", cb)
+			this.send(msg)
+
+			const timeoutId = setTimeout(() => {
+				this.websocket.removeEventListener("message", cb)
+				clearTimeout(timeoutId)
+				reject()
+			}, timeout);
+		})
+	}
 }
 
 
-const cws = new SocketService({
-	protocol: window.location.protocol == "http:" ? "ws:" : "wss:",
-	host: window.location.hostname,
-	port: 3000, //import.meta.env.VITE_API_WS_PORT ?? window.location.port,
-	base: "",
-})
-cws.connect()
-export default cws
